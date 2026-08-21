@@ -1,0 +1,579 @@
+@import 'view-ui-plus/src/styles/index.less';
+@ionicons-font-path: "view-ui-plus/src/styles/common/iconfont/fonts";
+
+// Here are the variables to cover, such as:
+@primary-color          : #2B5CD9;
+@info-color             : #2db7f5;
+@success-color          : #5EB028;
+@warning-color          : #FF7919;
+@error-color            : #ed4014;
+@text-color             : #191B1F;
+@subsidiary-color       : #8491A5;
+@link-color             : @primary-color;
+
+// Base
+@body-background        : #fcfcfc;
+@ui-font-family         : PingFang SC, Microsoft YaHei, Arial, sans-serif;
+@font-family            : @ui-font-family !important;
+
+@font-size-base         : 13px;
+@font-size-large        : 14px;
+@border-radius-small    : 5px;
+
+// Border color
+@border-color-base      : #f3f3f3;  // outside
+@border-color-split     : @border-color-base;  // inside
+
+// Design Tokens
+:root {
+    // Primitive: color
+    --ui-color-brand-600: @primary-color;
+    --ui-color-blue-50: #f4f8ff;
+    --ui-color-blue-75: #edf1ff;
+    --ui-color-blue-100: #e6f0ff;
+    --ui-color-blue-150: #dce7ff;
+    --ui-color-blue-400: #557de1;
+    --ui-color-blue-500: #57a3f3;
+    --ui-color-blue-600: #2d8cf0;
+    --ui-color-orange-300: #ffc053;
+    --ui-color-orange-50: #fff1d4;
+    --ui-color-orange-500: #f98a14;
+    --ui-color-orange-600: @warning-color;
+    --ui-color-red-25: #fff5f5;
+    --ui-color-red-30: #fff1f0;
+    --ui-color-red-100: #ffd8d6;
+    --ui-color-red-300: #f08a80;
+    --ui-color-red-400: #f05050;
+    --ui-color-red-500: #fa4444;
+    --ui-color-red-550: #e04b3f;
+    --ui-color-amber-500: #f9a000;
+    --ui-color-neutral-0: #fff;
+    --ui-color-neutral-50: #fafafa;
+    --ui-color-neutral-100: #f7faff;
+    --ui-color-neutral-200: #eee;
+    --ui-color-neutral-225: #e8eaec;
+    --ui-color-neutral-250: #dcdee2;
+    --ui-color-neutral-275: #ddd;
+    --ui-color-neutral-300: #e0e0e0;
+    --ui-color-neutral-350: #bbb;
+    --ui-color-neutral-400: #c5c8ce;
+    --ui-color-neutral-500: @subsidiary-color;
+    --ui-color-neutral-550: #999aaa;
+    --ui-color-neutral-600: #808695;
+    --ui-color-neutral-700: #667085;
+    --ui-color-neutral-800: #515a6e;
+    --ui-color-neutral-900: @text-color;
+    --ui-color-gold-100: #ffe8a8;
+    --ui-color-gold-300: #ffcb52;
+    --ui-color-gold-700: #9e6c0a;
+    --ui-color-gold-800: #7a551d;
+
+    // Primitive: typography
+    --ui-font-size-xs: 12px;
+    --ui-font-size-md: @font-size-large;
+    --ui-font-size-lg: 16px;
+    --ui-font-size-xl: 18px;
+    --ui-font-size-2xl: 20px;
+    --ui-font-size-3xl: 22px;
+    --ui-font-weight-regular: 400;
+    --ui-font-weight-semibold: 600;
+    --ui-font-weight-bold: 700;
+    --ui-line-height-md: 20px;
+    --ui-line-height-xl: 28px;
+    --ui-line-height-2xl: 32px;
+    --ui-line-height-3xl: 36px;
+
+    // Primitive: spacing
+    --ui-space-2: 2px;
+    --ui-space-4: 4px;
+    --ui-space-6: 6px;
+    --ui-space-8: 8px;
+    --ui-space-10: 10px;
+    --ui-space-12: 12px;
+    --ui-space-16: 16px;
+    --ui-space-20: 20px;
+    --ui-space-24: 24px;
+    --ui-space-32: 32px;
+
+    // Primitive: border, radius, opacity, shadow, duration and easing
+    --ui-border-width: 1px;
+    --ui-border-width-thick: 6px;
+    --ui-border-style: solid;
+    --ui-radius-xs: 2px;
+    --ui-radius-3: 3px;
+    --ui-radius-sm: 4px;
+    --ui-radius-md: @border-radius-small;
+    --ui-radius-6: 6px;
+    --ui-radius-lg: 8px;
+    --ui-radius-xl: 10px;
+    --ui-radius-2xl: 12px;
+    --ui-radius-3xl: 20px;
+    --ui-radius-full: 999px;
+    --ui-radius-circle: 50%;
+    --ui-opacity-hidden: 0;
+    --ui-opacity-faint: 0.2;
+    --ui-opacity-disabled: 0.5;
+    --ui-opacity-muted: 0.8;
+    --ui-opacity-visible: 1;
+    --ui-shadow-neutral-card: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --ui-shadow-neutral-floating: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --ui-shadow-image: 0 0 2px rgba(0, 0, 0, 0.2);
+
+    // Generated repeated-value tokens: start
+    --ui-margin-0-0-10: 0 0 10px;
+    --ui-margin-0-0-14: 0 0 14px;
+    --ui-margin-0-0-16: 0 0 16px;
+    --ui-margin-0-0-4: 0 0 4px;
+    --ui-margin-0-0-8: 0 0 8px;
+    --ui-margin-0-10: 0 10px;
+    --ui-margin-0-3: 0 3px;
+    --ui-margin-0-4: 0 4px;
+    --ui-margin-0-6-6: 0 6px 6px;
+    --ui-margin-0-8: 0 8px;
+    --ui-margin-12-0: 12px 0;
+    --ui-margin-12-0-0: 12px 0 0;
+    --ui-margin-14-0-0: 14px 0 0;
+    --ui-margin-16-auto: 16px auto;
+    --ui-margin-16-neg-16-0-neg-16: 16px -16px 0 -16px;
+    --ui-margin-20-0: 20px 0;
+    --ui-margin-24-0: 24px 0;
+    --ui-margin-2-0-0: 2px 0 0;
+    --ui-margin-3-0-0: 3px 0 0;
+    --ui-margin-5-0-0: 5px 0 0;
+    --ui-margin-5-0-20: 5px 0 20px;
+    --ui-margin-6-0-0: 6px 0 0;
+    --ui-margin-80-auto-0: 80px auto 0;
+    --ui-margin-40-auto: 40px auto;
+    --ui-margin-12-auto: 12px auto;
+    --ui-margin-neg-15-neg-15-neg-22: -15px -15px -22px;
+    --ui-margin-neg-4-0-0: -4px 0 0;
+    --ui-padding-0_75rem-2rem: 0.75rem 2rem;
+    --ui-padding-0-0-8: 0 0 8px;
+    --ui-padding-0-10: 0 10px;
+    --ui-padding-0-12: 0 12px;
+    --ui-padding-0-14: 0 14px;
+    --ui-padding-0-15: 0 15px;
+    --ui-padding-0-16: 0 16px;
+    --ui-padding-0-24: 0 24px;
+    --ui-padding-0-2-0-10: 0 2px 0 10px;
+    --ui-padding-0-4: 0 4px;
+    --ui-padding-0-5: 0 5px;
+    --ui-padding-0-6: 0 6px;
+    --ui-padding-0-8: 0 8px;
+    --ui-padding-0-9: 0 9px;
+    --ui-padding-10-0: 10px 0;
+    --ui-padding-10-12: 10px 12px;
+    --ui-padding-10-14: 10px 14px;
+    --ui-padding-10: var(--ui-space-10);
+    --ui-padding-12-0: 12px 0;
+    --ui-padding-12-16: 12px 16px;
+    --ui-padding-12: var(--ui-space-12);
+    --ui-padding-14: 14px;
+    --ui-padding-14-16: 14px 16px;
+    --ui-padding-14-18: 14px 18px;
+    --ui-padding-15: 15px;
+    --ui-padding-15-15-10: 15px 15px 10px;
+    --ui-padding-15-20: 15px 20px;
+    --ui-padding-16: var(--ui-space-16);
+    --ui-padding-16-18: 16px 18px;
+    --ui-padding-16-20: 16px 20px;
+    --ui-padding-16-24: 16px 24px;
+    --ui-padding-18: 18px;
+    --ui-padding-1-6: 1px 6px;
+    --ui-padding-20-0: 20px 0;
+    --ui-padding-20: var(--ui-space-20);
+    --ui-padding-24: var(--ui-space-24);
+    --ui-padding-24-0: 24px 0;
+    --ui-padding-2-12: 2px 12px;
+    --ui-padding-2-7: 2px 7px;
+    --ui-padding-2-8: 2px 8px;
+    --ui-padding-30: 30px;
+    --ui-padding-30-0: 30px 0;
+    --ui-padding-32: var(--ui-space-32);
+    --ui-padding-3-10: 3px 10px;
+    --ui-padding-3-8: 3px 8px;
+    --ui-padding-3: 3px;
+    --ui-padding-40-0: 40px 0;
+    --ui-padding-48-24: 48px 24px;
+    --ui-padding-4-10: 4px 10px;
+    --ui-padding-4-12: 4px 12px;
+    --ui-padding-4-16: 4px 16px;
+    --ui-padding-4-6: 4px 6px;
+    --ui-padding-4-8: 4px 8px;
+    --ui-padding-4: var(--ui-space-4);
+    --ui-padding-5-10: 5px 10px;
+    --ui-padding-5-9: 5px 9px;
+    --ui-padding-5: 5px;
+    --ui-padding-6-12: 6px 12px;
+    --ui-padding-6-8: 6px 8px;
+    --ui-padding-6: var(--ui-space-6);
+    --ui-padding-7-12: 7px 12px;
+    --ui-padding-7-8: 7px 8px;
+    --ui-padding-8-10: 8px 10px;
+    --ui-padding-8-12: 8px 12px;
+    --ui-padding-8-16: 8px 16px;
+    --ui-padding-8: var(--ui-space-8);
+    --ui-padding-9-12: 9px 12px;
+    --ui-radius-0-3-3-0: 0 3px 3px 0;
+    --ui-radius-11: 11px;
+    --ui-radius-14: 14px;
+    --ui-radius-15: 15px;
+    --ui-radius-16: 16px;
+    --ui-radius-24: 24px;
+    --ui-radius-7: 7px;
+    --ui-radius-9: 9px;
+    --ui-size-100: 100px;
+    --ui-size-10: var(--ui-space-10);
+    --ui-size-12: var(--ui-space-12);
+    --ui-size-144: 144px;
+    --ui-size-150: 150px;
+    --ui-size-160: 160px;
+    --ui-size-16: var(--ui-space-16);
+    --ui-size-18: 18px;
+    --ui-size-1: 1px;
+    --ui-size-200: 200px;
+    --ui-size-20: var(--ui-space-20);
+    --ui-size-2: var(--ui-space-2);
+    --ui-size-22: 22px;
+    --ui-size-240: 240px;
+    --ui-size-249: 249px;
+    --ui-size-24: var(--ui-space-24);
+    --ui-size-260: 260px;
+    --ui-size-26: 26px;
+    --ui-size-280: 280px;
+    --ui-size-28: 28px;
+    --ui-size-300: 300px;
+    --ui-size-30: 30px;
+    --ui-size-320: 320px;
+    --ui-size-32: var(--ui-space-32);
+    --ui-size-3: 3px;
+    --ui-size-34: 34px;
+    --ui-size-360: 360px;
+    --ui-size-36: 36px;
+    --ui-size-38: 38px;
+    --ui-size-397: 397px;
+    --ui-size-40: 40px;
+    --ui-size-4: var(--ui-space-4);
+    --ui-size-42: 42px;
+    --ui-size-44: 44px;
+    --ui-size-46: 46px;
+    --ui-size-48: 48px;
+    --ui-size-50: 50px;
+    --ui-size-52: 52px;
+    --ui-size-56: 56px;
+    --ui-size-58: 58px;
+    --ui-size-60: 60px;
+    --ui-size-64: 64px;
+    --ui-size-6: var(--ui-space-6);
+    --ui-size-7: 7px;
+    --ui-size-80: 80px;
+    --ui-size-8: var(--ui-space-8);
+    --ui-size-84: 84px;
+    --ui-size-86: 86px;
+    --ui-size-88: 88px;
+    --ui-size-96: 96px;
+    // Generated repeated-value tokens: end
+    // Semantic
+    --ui-color-primary: var(--ui-color-brand-600);
+    --ui-color-info: var(--ui-color-blue-600);
+    --ui-color-success: @success-color;
+    --ui-color-warning: var(--ui-color-orange-600);
+    --ui-color-error: var(--ui-color-red-500);
+    --ui-color-error-strong: @error-color;
+    --ui-color-notice: var(--ui-color-amber-500);
+    --ui-color-money: var(--ui-color-gold-700);
+    --ui-color-text: var(--ui-color-neutral-900);
+    --ui-color-text-inverse: var(--ui-color-neutral-0);
+    --ui-color-text-muted: var(--ui-color-neutral-500);
+    --ui-color-text-secondary: var(--ui-color-neutral-550);
+    --ui-color-text-subtle: var(--ui-color-neutral-700);
+    --ui-color-surface: var(--ui-color-neutral-0);
+    --ui-color-surface-subtle: var(--ui-color-neutral-100);
+    --ui-color-surface-muted: var(--ui-color-neutral-50);
+    --ui-color-surface-hover: var(--ui-color-neutral-100);
+    --ui-color-surface-selected: var(--ui-color-blue-75);
+    --ui-color-surface-selected-strong: var(--ui-color-blue-150);
+    --ui-color-surface-navigation: var(--ui-color-blue-50);
+    --ui-color-surface-neutral: var(--ui-color-neutral-200);
+    --ui-color-surface-danger-soft: var(--ui-color-red-25);
+    --ui-color-status-warning-surface: var(--ui-color-orange-50);
+    --ui-color-status-error-surface: var(--ui-color-red-30);
+    --ui-color-surface-disabled: var(--ui-color-neutral-300);
+    --ui-color-surface-overlay-soft: rgba(255, 255, 255, 0.6);
+    --ui-color-surface-overlay-strong: rgba(255, 255, 255, 0.96);
+    --ui-color-page: var(--ui-color-neutral-50);
+    --ui-color-border-subtle: var(--ui-color-neutral-200);
+    --ui-color-border-muted: var(--ui-color-neutral-225);
+    --ui-color-border-default: var(--ui-color-neutral-250);
+    --ui-color-border-strong: var(--ui-color-neutral-275);
+    --ui-color-border-interactive: var(--ui-color-blue-400);
+    --ui-color-border-error: var(--ui-color-red-300);
+    --ui-color-border-error-strong: var(--ui-color-red-550);
+    --ui-color-border-error-subtle: var(--ui-color-red-100);
+    --ui-color-border-disabled: var(--ui-color-neutral-350);
+    --ui-color-border-primary-subtle: var(--ui-color-blue-100);
+    --ui-color-border-primary-muted: var(--ui-color-blue-150);
+    --ui-color-border-primary-soft: color-mix(in srgb, var(--ui-color-primary) 16%, transparent);
+    --ui-color-border-overlay-soft: color-mix(in srgb, var(--ui-color-neutral-900) 6%, transparent);
+    --ui-color-border-on-dark: var(--ui-color-surface);
+    --ui-color-border-on-dark-muted: color-mix(in srgb, var(--ui-color-surface) 72%, transparent);
+    --ui-color-border-transparent: transparent;
+    --ui-color-divider: @border-color-split;
+    --ui-border-subtle: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-subtle);
+    --ui-border-muted: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-muted);
+    --ui-border-default: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-default);
+    --ui-border-strong: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-strong);
+    --ui-border-primary-subtle: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-primary-subtle);
+    --ui-border-primary-muted: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-primary-muted);
+    --ui-border-primary-soft: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-primary-soft);
+    --ui-border-primary-accent: calc(var(--ui-border-width) * 2) var(--ui-border-style) var(--ui-color-primary);
+    --ui-border-primary-emphasis: var(--ui-space-4) var(--ui-border-style) var(--ui-color-primary);
+    --ui-border-error-subtle: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-error-subtle);
+    --ui-border-overlay-soft: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-overlay-soft);
+    --ui-border-on-dark: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-on-dark);
+    --ui-border-on-dark-muted: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-on-dark-muted);
+    --ui-border-on-dark-thick: var(--ui-border-width-thick) var(--ui-border-style) var(--ui-color-border-on-dark);
+    --ui-border-transparent: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-transparent);
+    --ui-border-divider: var(--ui-border-width) var(--ui-border-style) var(--ui-color-divider);
+    --ui-color-control-background: var(--ui-color-surface);
+    --ui-color-control-border: var(--ui-color-neutral-250);
+    --ui-color-control-border-hover: var(--ui-color-blue-500);
+    --ui-color-control-border-focus: var(--ui-color-blue-600);
+    --ui-color-control-text: var(--ui-color-neutral-800);
+    --ui-color-control-text-muted: var(--ui-color-neutral-600);
+    --ui-color-control-text-disabled: var(--ui-color-neutral-400);
+    --ui-control-focus-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-color-control-border-focus) 20%, transparent);
+    --ui-shadow-surface: 0 2px 10px rgba(55, 99, 170, 0.08);
+    --ui-shadow-primary-soft: 0 2px 8px color-mix(in srgb, var(--ui-color-primary) 12%, transparent);
+    --ui-shadow-primary-card: 0 4px 12px rgba(0, 100, 255, 0.08);
+    --ui-shadow-focus-brand: 0 0 0 2px color-mix(in srgb, var(--ui-color-primary) 20%, transparent);
+    --ui-shadow-focus-error: 0 0 0 2px color-mix(in srgb, var(--ui-color-red-550) 8%, transparent);
+    --ui-shadow-media: 2px 2px 8px 0 rgba(0, 0, 0, 0.08);
+    --ui-shadow-media-strong: 2px 2px 8px 0 rgba(0, 0, 0, 0.2);
+    --ui-shadow-header: 0 4px 10px rgba(78, 89, 105, 0.06);
+    --ui-shadow-panel-hover: 0 4px 16px rgba(0, 0, 0, 0.06);
+    --ui-shadow-interactive-hover:
+        0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --ui-shadow-list-card-hover: 0 2px 16px rgba(20, 41, 87, 0.1);
+    --ui-shadow-mobile-membership:
+        inset 0 1px 1px rgba(255, 255, 255, 0.1),
+        0 4px 15px rgba(0, 0, 0, 0.15);
+    --ui-shadow-mobile-action: 0 4px 10px rgba(20, 111, 255, 0.2);
+    --ui-shadow-mobile-action-hover: 0 4px 12px rgba(20, 111, 255, 0.3);
+    --ui-shadow-mobile-customer: 0 6px 16px rgba(20, 111, 255, 0.35);
+    --ui-shadow-mobile-pressed: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --ui-shadow-mobile-nav: 0 4px 10px rgba(0, 0, 0, 0.08);
+    --ui-shadow-mobile-nav-active: 0 6px 14px rgba(0, 0, 0, 0.15);
+    --ui-shadow-card-form-subtle: 0 2px 4px rgba(0, 0, 0, 0.03);
+    --ui-shadow-card-bin-error:
+        0 1px 3px rgba(250, 68, 68, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    --ui-shadow-card-bin-success:
+        0 1px 3px rgba(25, 190, 107, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    --ui-shadow-card-bin-danger: 0 1px 2px rgba(170, 36, 36, 0.22);
+    --ui-shadow-card-tooltip: 0 1px 3px rgba(15, 23, 42, 0.16);
+    --ui-shadow-card-focus-on-dark: 0 0 0 2px rgba(255, 255, 255, 0.18);
+    --ui-shadow-card-visual:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.34),
+        0 10px 32px rgba(15, 23, 42, 0.18);
+    --ui-outline-primary: 2px solid color-mix(in srgb, var(--ui-color-primary) 24%, transparent);
+    --ui-opacity-control-disabled: var(--ui-opacity-disabled);
+    --ui-layer-page: 10;
+    --ui-layer-header: 99;
+    --ui-layer-overlay: 999;
+    --ui-layer-tooltip: 1000;
+    --ui-gradient-warning: linear-gradient(
+        135deg,
+        var(--ui-color-orange-300) 0%,
+        var(--ui-color-orange-500) 100%
+    );
+    --ui-gradient-warning-wide: linear-gradient(
+        107deg,
+        var(--ui-color-orange-300) 0%,
+        var(--ui-color-orange-500) 111%
+    );
+    --ui-gradient-error: linear-gradient(
+        135deg,
+        var(--ui-color-red-400) 0%,
+        #f53f3f 100%
+    );
+    --ui-shadow-warning-soft: 0 2px 4px color-mix(in srgb, var(--ui-color-orange-500) 20%, transparent);
+    --ui-shadow-error-soft: 0 2px 4px color-mix(in srgb, var(--ui-color-red-400) 20%, transparent);
+    --ui-motion-control: 200ms;
+    --ui-motion-normal: 250ms;
+    --ui-motion-slow: 300ms;
+    --ui-motion-slower: 400ms;
+    --ui-motion-enter: 500ms;
+    --ui-motion-loading: 1000ms;
+    --ui-motion-emphasis: 3600ms;
+    --ui-ease-linear: linear;
+    --ui-ease-standard: ease-in-out;
+    --ui-ease-enter: ease-out;
+    --ui-ease-soft: ease;
+    --ui-ease-emphasized: cubic-bezier(0.4, 0, 0.2, 1);
+    --ui-ease-spring: cubic-bezier(0.25, 0.8, 0.25, 1);
+
+    // Component
+    --ui-page-gap: var(--ui-space-12);
+    --ui-page-padding: var(--ui-space-16);
+    --ui-card-gap: var(--ui-space-16);
+    --ui-card-padding: var(--ui-space-16);
+    --ui-card-background: var(--ui-color-surface);
+    --ui-card-radius: var(--ui-radius-lg);
+    --ui-card-radius-panel: var(--ui-radius-2xl);
+    --ui-tabs-gap: var(--ui-space-12);
+    --ui-tabs-background: var(--ui-color-surface);
+    --ui-tabs-border-color: var(--ui-color-border-subtle);
+    --ui-form-item-gap: var(--ui-space-4);
+    --ui-form-helper-color: var(--ui-color-text-secondary);
+    --ui-form-helper-font-size: var(--ui-font-size-xs);
+    --ui-input-background: var(--ui-color-control-background);
+    --ui-input-addon-background: var(--ui-color-surface-muted);
+    --ui-input-error-background: var(--ui-color-surface-danger-soft);
+    --ui-input-border-color: var(--ui-color-control-border);
+    --ui-input-border-color-hover: var(--ui-color-control-border-hover);
+    --ui-input-border-color-focus: var(--ui-color-control-border-focus);
+    --ui-input-focus-shadow: var(--ui-control-focus-shadow);
+    --ui-input-text-color: var(--ui-color-control-text);
+    --ui-input-text-muted-color: var(--ui-color-control-text-muted);
+    --ui-input-text-disabled-color: var(--ui-color-control-text-disabled);
+    --ui-input-error-border-color: var(--ui-color-border-error);
+    --ui-input-error-border-color-focus: var(--ui-color-border-error-strong);
+    --ui-ip-input-border-color-interactive: var(--ui-color-border-interactive);
+    --ui-ip-input-border: var(--ui-border-width) var(--ui-border-style) var(--ui-color-divider);
+    --ui-input-radius: var(--ui-radius-sm);
+    --ui-dialog-padding: var(--ui-space-16);
+    --ui-dialog-footer-gap: var(--ui-space-8);
+    --ui-upload-content-gap: var(--ui-space-16);
+    --ui-select-option-gap: var(--ui-space-8);
+    --ui-select-option-image-size: var(--ui-font-size-3xl);
+    --ui-cta-background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--ui-color-primary) 82%, var(--ui-color-surface)),
+        var(--ui-color-primary)
+    );
+    --ui-cta-radius: var(--ui-radius-lg);
+    --ui-cta-shadow: 0 12px 30px color-mix(in srgb, var(--ui-color-primary) 22%, transparent);
+    --ui-cta-shadow-hover: 0 16px 36px color-mix(in srgb, var(--ui-color-primary) 30%, transparent);
+    --ui-cta-shine-background: linear-gradient(
+        90deg,
+        transparent,
+        color-mix(in srgb, var(--ui-color-surface) 72%, transparent),
+        transparent
+    );
+    --ui-cta-shine-duration: var(--ui-motion-emphasis);
+    --ui-cta-transition-duration: var(--ui-motion-normal);
+    --ui-feature-icon-background:
+        radial-gradient(
+            circle at 24% 20%,
+            color-mix(in srgb, var(--ui-color-surface) 58%, transparent) 0 16%,
+            transparent 40%
+        ),
+        linear-gradient(
+            145deg,
+            var(--ui-feature-icon-bg-strong) 0%,
+            var(--ui-feature-icon-bg-soft) 100%
+        );
+    --ui-feature-icon-highlight-background: linear-gradient(
+        120deg,
+        color-mix(in srgb, var(--ui-color-surface) 42%, transparent),
+        transparent
+    );
+    --ui-status-active-background: linear-gradient(
+        135deg,
+        #6f95f5 0%,
+        #4775e8 42%,
+        var(--ui-color-primary) 100%
+    );
+    --ui-status-scroll-shadow: var(--ui-shadow-primary-soft);
+    --ui-tabs-sticky-layer: var(--ui-layer-overlay);
+    --ui-card-tag-background: linear-gradient(
+        165deg,
+        var(--ui-color-surface) 80%,
+        var(--ui-color-blue-50) 100%
+    );
+    --ui-card-tag-active-background: linear-gradient(
+        165deg,
+        var(--ui-color-blue-50) 0%,
+        var(--ui-color-blue-100) 100%
+    );
+    --ui-card-tag-disabled-background: linear-gradient(
+        165deg,
+        var(--ui-color-neutral-50) 80%,
+        var(--ui-color-neutral-200) 100%
+    );
+    --ui-card-tag-border: var(--ui-border-width) var(--ui-border-style) var(--ui-color-border-muted);
+    --ui-card-tag-disabled-border-color: var(--ui-color-neutral-225);
+    --ui-card-tag-compact-background: var(--ui-color-surface);
+    --ui-card-tag-compact-active-background: var(--ui-color-surface-selected-strong);
+    --ui-card-tag-compact-disabled-background: var(--ui-color-surface-disabled);
+    --ui-card-tag-compact-disabled-border-color: var(--ui-color-border-disabled);
+    --ui-card-tag-radius: var(--ui-radius-6);
+    --ui-card-tag-shadow-hover: var(--ui-shadow-neutral-card);
+    --ui-card-tag-shadow-active: var(--ui-shadow-primary-card);
+    --ui-card-tag-disabled-opacity: var(--ui-opacity-muted);
+    --ui-loading-spin-duration: var(--ui-motion-loading);
+    --ui-loader-spin-duration: 2000ms;
+    --ui-loader-dash-duration: 1500ms;
+    --ui-loader-dots-duration: 1400ms;
+    --ui-loader-rect-duration: 1200ms;
+    --ui-page-float-enter-duration: var(--ui-motion-enter);
+    --ui-page-float-transition-duration: var(--ui-motion-slower);
+    --ui-page-float-action-duration: var(--ui-motion-slow);
+    --ui-control-transition-duration: var(--ui-motion-control);
+    --ui-card-private-loading-duration: 800ms;
+    --ui-express-route-loading-duration: 900ms;
+
+    // Legacy aliases: keep existing callers compatible during migration
+    --primary-color: var(--ui-color-primary);
+    --error-color: var(--ui-color-error);
+    --grey-color: var(--ui-color-text-muted);
+    --text-color: var(--ui-color-text);
+    --white-color: var(--ui-color-surface);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --ui-motion-control: 0ms;
+        --ui-motion-normal: 0ms;
+        --ui-motion-slow: 0ms;
+        --ui-motion-slower: 0ms;
+        --ui-motion-enter: 0ms;
+    }
+}
+
+// Input
+@input-placeholder-color: rgba(@subsidiary-color, 0.5);
+
+.ivu-table-body .ivu-table-row .td-btn {
+    display: none;
+}
+.ivu-table-body .ivu-table-row .td-btn.show, .ivu-table-body .ivu-table-row:hover .td-btn {
+    display: block !important;
+}
+
+.ivu-large-swith {
+    width: 72px;
+    height: 32px;
+    line-height: 30px;
+    border-radius: 32px;
+}
+.ivu-large-swith.ivu-switch:after {
+    left: 3px;
+    top: 3px;
+    width: 24px;
+    height: 24px;
+}
+.ivu-large-swith.ivu-switch-checked:after {
+    left: 42px;
+}
+.ivu-large-swith .ivu-switch-inner {
+    left: 32px;
+    font-size: 14px;
+}
+.ivu-large-swith.ivu-switch-checked .ivu-switch-inner {
+    left: 8px;
+}

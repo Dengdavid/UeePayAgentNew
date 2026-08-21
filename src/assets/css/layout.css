@@ -1,0 +1,96 @@
+.ui-layout {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.ui-header {
+  width: 100%;
+  box-shadow: var(--ui-shadow-header);
+  background: var(--ui-color-surface-overlay-soft);
+  backdrop-filter: blur(100px);
+  z-index: var(--ui-layer-header);
+  position: relative;
+}
+.ui-header .ui-header-content {
+  display: flex;
+  align-items: center;
+  height: var(--ui-size-56);
+}
+.ui-header .logo {
+  flex-shrink: 0;
+  margin-right: 70px;
+  padding: 14px 0;
+  cursor: pointer;
+}
+.ui-header .logo img {
+  display: block;
+  width: auto;
+  height:var(--ui-size-26);
+}
+.ui-header .ui-navigator {
+  flex: 1;
+  display: flex;
+  min-width: 1px;
+}
+.ui-header .ui-navigator a {
+  padding: var(--ui-padding-0-10);
+  font-size: 15px;
+  color: var(--ui-color-text-muted);
+  text-decoration: none;
+  line-height: 36px;
+}
+.ui-header .ui-navigator a + a {
+  margin-left: 20px;
+}
+.ui-header .ui-navigator a:hover {
+  color: var(--primary-color);
+}
+.ui-header .ui-navigator a.active {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+.ui-header .language {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: var(--ui-color-neutral-550);
+}
+.ui-header .language .iconfont {
+  margin-right: 8px;
+  font-size: 16px;
+  color: var(--primary-color);
+}
+.ui-header .language a {
+  color: var(--ui-color-neutral-550);
+  font-size: 14px;
+  cursor: pointer;
+}
+.ui-header .language a.active,
+.ui-header .language a:hover {
+  color: var(--primary-color);
+}
+.ui-header .language .spacer {
+  margin: var(--ui-margin-0-8);
+  width: var(--ui-size-1);
+  height: var(--ui-size-12);
+  background-color: #999;
+}
+
+.ui-notice-bar {
+  left: 0;
+  width: 100%;
+  height: var(--ui-size-48);
+  color: var(--ui-color-error-strong);
+  background: var(--ui-color-surface-danger-soft);
+  z-index: 198;
+}
+.ui-notice-bar .text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ui-notice-bar .ui-notice-content,
+.ui-notice-placeholder {
+  height: var(--ui-size-48);
+}

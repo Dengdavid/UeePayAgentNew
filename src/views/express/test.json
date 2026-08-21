@@ -1,0 +1,1129 @@
+{
+    "code": 1,
+    "msg": "success",
+    "data": {
+        "common": [
+            {
+                "fieldName": "transferType",
+                "fieldType": "select",
+                "fieldLabel": "E",
+                "fieldTitle": "转账类型",
+                "fieldUserType": "common",
+                "fieldDescription": "指定交易的转账类型",
+                "required": true,
+                "selectValues": [
+                    {
+                        "value": "个人对个人",
+                        "valueId": "3"
+                    }
+                ],
+                "sorting": 30
+            },
+            {
+                "fieldName": "payoutMethod",
+                "fieldType": "select",
+                "fieldLabel": "E",
+                "fieldTitle": "支付方式",
+                "fieldUserType": "common",
+                "fieldDescription": "指定交易的支付方式",
+                "required": true,
+                "selectValues": [
+                    {
+                        "value": "银行转账",
+                        "valueId": "1"
+                    }
+                ],
+                "sorting": 31
+            },
+            {
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderSourceOfFund",
+                "fieldType": "select",
+                "fieldLabel": "E",
+                "fieldTitle": "资金来源",
+                "selectValues": [
+                    {
+                        "value": "工资",
+                        "valueId": "1"
+                    },
+                    {
+                        "value": "保险费",
+                        "valueId": "2"
+                    },
+                    {
+                        "value": "储蓄",
+                        "valueId": "3"
+                    },
+                    {
+                        "value": "投资回报",
+                        "valueId": "4"
+                    },
+                    {
+                        "value": "财产销售",
+                        "valueId": "5"
+                    },
+                    {
+                        "value": "企业收益",
+                        "valueId": "6"
+                    }
+                ],
+                "fieldUserType": "common",
+                "fieldDescription": "说明本次交易资金的来源"
+            },
+            {
+                "sorting": 0,
+                "required": true,
+                "fieldName": "purposeOfRemittance",
+                "fieldType": "select",
+                "fieldLabel": "E",
+                "fieldTitle": "汇款目的",
+                "selectValues": [
+                    {
+                        "value": "家庭维持",
+                        "valueId": "1"
+                    },
+                    {
+                        "value": "储蓄",
+                        "valueId": "2"
+                    },
+                    {
+                        "value": "工资汇款",
+                        "valueId": "3"
+                    },
+                    {
+                        "value": "购买房产",
+                        "valueId": "4"
+                    },
+                    {
+                        "value": "购买商品/服务",
+                        "valueId": "5"
+                    },
+                    {
+                        "value": "医疗费用",
+                        "valueId": "6"
+                    },
+                    {
+                        "value": "学费",
+                        "valueId": "7"
+                    },
+                    {
+                        "value": "租金",
+                        "valueId": "8"
+                    },
+                    {
+                        "value": "其他账单",
+                        "valueId": "9"
+                    },
+                    {
+                        "value": "税款",
+                        "valueId": "11"
+                    },
+                    {
+                        "value": "保险金",
+                        "valueId": "12"
+                    },
+                    {
+                        "value": "贷款还款",
+                        "valueId": "13"
+                    }
+                ],
+                "fieldUserType": "common",
+                "fieldDescription": "说明进行金融交易或汇款的原因"
+            },
+            {
+                "regex": "^[0-9]*\\.[0-9]{2}$",
+                "sorting": 0,
+                "required": true,
+                "fieldName": "transferAmount",
+                "fieldType": "input",
+                "fieldLabel": "E",
+                "fieldTitle": "支付金额",
+                "fieldUserType": "common",
+                "fieldDescription": "本次交易接收的金额"
+            },
+            {
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderBeneficiaryRelationship",
+                "fieldType": "select",
+                "fieldLabel": "E",
+                "fieldTitle": "收款人关系",
+                "selectValues": [
+                    {
+                        "value": "家人",
+                        "valueId": "1"
+                    },
+                    {
+                        "value": "朋友",
+                        "valueId": "2"
+                    },
+                    {
+                        "value": "本人",
+                        "valueId": "3"
+                    },
+                    {
+                        "value": "员工",
+                        "valueId": "4"
+                    },
+                    {
+                        "value": "商户",
+                        "valueId": "5"
+                    },
+                    {
+                        "value": "其他",
+                        "valueId": "6"
+                    }
+                ],
+                "fieldUserType": "common",
+                "fieldDescription": "说明发送者与接收者之间的关系"
+            }
+        ],
+        "sender": [
+            {
+                "max": 30,
+                "min": 1,
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderFirstName",
+                "fieldType": "input",
+                "fieldLabel": "A",
+                "fieldTitle": "名",
+                "fieldUserType": "sender",
+                "fieldDescription": "输入发送者的名"
+            },
+            {
+                "max": 30,
+                "min": 1,
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderLastName",
+                "fieldType": "input",
+                "fieldLabel": "A",
+                "fieldTitle": "姓",
+                "fieldUserType": "sender",
+                "fieldDescription": "输入发送者的姓"
+            },
+            {
+                "max": 60,
+                "min": 1,
+                "regex": "^[A-Za-z0-9 .,-]+$",
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderAddress",
+                "fieldType": "input",
+                "fieldLabel": "A",
+                "fieldTitle": "地址",
+                "fieldUserType": "sender",
+                "fieldDescription": "提供发送者的个人或住宅详细信息"
+            },
+            {
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderCountry",
+                "fieldType": "select",
+                "fieldLabel": "A",
+                "fieldTitle": "国家",
+                "selectValues": [
+                    {
+                        "value": "澳大利亚",
+                        "valueId": "AUS"
+                    },
+                    {
+                        "value": "孟加拉国",
+                        "valueId": "BGD"
+                    },
+                    {
+                        "value": "柬埔寨",
+                        "valueId": "KHM"
+                    },
+                    {
+                        "value": "中国香港",
+                        "valueId": "HKG"
+                    },
+                    {
+                        "value": "印度",
+                        "valueId": "IND"
+                    },
+                    {
+                        "value": "印度尼西亚",
+                        "valueId": "IDN"
+                    },
+                    {
+                        "value": "日本",
+                        "valueId": "JPN"
+                    },
+                    {
+                        "value": "马来西亚",
+                        "valueId": "MYS"
+                    },
+                    {
+                        "value": "缅甸",
+                        "valueId": "MMR"
+                    },
+                    {
+                        "value": "巴基斯坦",
+                        "valueId": "PAK"
+                    },
+                    {
+                        "value": "菲律宾",
+                        "valueId": "PHL"
+                    },
+                    {
+                        "value": "新加坡",
+                        "valueId": "SGP"
+                    },
+                    {
+                        "value": "韩国",
+                        "valueId": "KOR"
+                    },
+                    {
+                        "value": "中国台湾",
+                        "valueId": "TWN"
+                    },
+                    {
+                        "value": "泰国",
+                        "valueId": "THA"
+                    },
+                    {
+                        "value": "越南",
+                        "valueId": "VNM"
+                    },
+                    {
+                        "value": "英国",
+                        "valueId": "GBR"
+                    },
+                    {
+                        "value": "美国",
+                        "valueId": "USA"
+                    },
+                    {
+                        "value": "欧洲",
+                        "valueId": "EUR"
+                    },
+                    {
+                        "value": "阿拉伯联合酋长国",
+                        "valueId": "ARE"
+                    },
+                    {
+                        "value": "阿根廷",
+                        "valueId": "ARG"
+                    },
+                    {
+                        "value": "阿塞拜疆",
+                        "valueId": "AZE"
+                    },
+                    {
+                        "value": "白俄罗斯",
+                        "valueId": "BLR"
+                    },
+                    {
+                        "value": "巴西",
+                        "valueId": "BRA"
+                    },
+                    {
+                        "value": "文莱",
+                        "valueId": "BRN"
+                    },
+                    {
+                        "value": "加拿大",
+                        "valueId": "CAN"
+                    },
+                    {
+                        "value": "智利",
+                        "valueId": "CHL"
+                    },
+                    {
+                        "value": "古巴",
+                        "valueId": "CUB"
+                    },
+                    {
+                        "value": "丹麦",
+                        "valueId": "DNK"
+                    },
+                    {
+                        "value": "埃及",
+                        "valueId": "EGY"
+                    },
+                    {
+                        "value": "以色列",
+                        "valueId": "ISR"
+                    },
+                    {
+                        "value": "墨西哥",
+                        "valueId": "MEX"
+                    },
+                    {
+                        "value": "蒙古",
+                        "valueId": "MNG"
+                    },
+                    {
+                        "value": "摩洛哥",
+                        "valueId": "MAR"
+                    },
+                    {
+                        "value": "波兰",
+                        "valueId": "POL"
+                    },
+                    {
+                        "value": "沙特阿拉伯",
+                        "valueId": "SAU"
+                    },
+                    {
+                        "value": "南非",
+                        "valueId": "ZAF"
+                    },
+                    {
+                        "value": "瑞典",
+                        "valueId": "SWE"
+                    },
+                    {
+                        "value": "瑞士",
+                        "valueId": "CHE"
+                    },
+                    {
+                        "value": "土耳其",
+                        "valueId": "TUR"
+                    },
+                    {
+                        "value": "乌克兰",
+                        "valueId": "UKR"
+                    },
+                    {
+                        "value": "俄罗斯",
+                        "valueId": "RUS"
+                    },
+                    {
+                        "value": "法国",
+                        "valueId": "FRA"
+                    },
+                    {
+                        "value": "伊朗",
+                        "valueId": "IRN"
+                    },
+                    {
+                        "value": "刚果民主共和国",
+                        "valueId": "COD"
+                    },
+                    {
+                        "value": "安道尔",
+                        "valueId": "AND"
+                    },
+                    {
+                        "value": "老挝",
+                        "valueId": "LAO"
+                    },
+                    {
+                        "value": "中国澳门",
+                        "valueId": "MAC"
+                    },
+                    {
+                        "value": "马尔代夫",
+                        "valueId": "MDV"
+                    },
+                    {
+                        "value": "巴勒斯坦",
+                        "valueId": "PSE"
+                    },
+                    {
+                        "value": "荷兰",
+                        "valueId": "NLD"
+                    },
+                    {
+                        "value": "德国",
+                        "valueId": "DEU"
+                    },
+                    {
+                        "value": "意大利",
+                        "valueId": "ITA"
+                    }
+                ],
+                "fieldUserType": "sender",
+                "fieldDescription": "提供发送者所在的国家"
+            },
+            {
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderIdType",
+                "fieldType": "select",
+                "fieldLabel": "A",
+                "fieldTitle": "证件类型",
+                "selectValues": [
+                    {
+                        "value": "护照",
+                        "valueId": "1"
+                    },
+                    {
+                        "value": "公司注册文件",
+                        "valueId": "3"
+                    },
+                    {
+                        "value": "其他",
+                        "valueId": "4"
+                    },
+                    {
+                        "value": "工作许可证",
+                        "valueId": "5"
+                    }
+                ],
+                "fieldUserType": "sender",
+                "fieldDescription": "指定发送者的证件类型"
+            },
+            {
+                "max": 20,
+                "min": 1,
+                "regex": "^[A-Za-z0-9]+$",
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderIdNumber",
+                "fieldType": "input",
+                "fieldLabel": "A",
+                "fieldTitle": "证件号码",
+                "fieldUserType": "sender",
+                "fieldDescription": "提供发送者的身份证明号码"
+            },
+            {
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderNationality",
+                "fieldType": "select",
+                "fieldLabel": "A",
+                "fieldTitle": "国籍",
+                "selectValues": [
+                    {
+                        "value": "澳大利亚",
+                        "valueId": "AUS"
+                    },
+                    {
+                        "value": "孟加拉国",
+                        "valueId": "BGD"
+                    },
+                    {
+                        "value": "柬埔寨",
+                        "valueId": "KHM"
+                    },
+                    {
+                        "value": "中国",
+                        "valueId": "CHN"
+                    },
+                    {
+                        "value": "中国香港",
+                        "valueId": "HKG"
+                    },
+                    {
+                        "value": "印度",
+                        "valueId": "IND"
+                    },
+                    {
+                        "value": "印度尼西亚",
+                        "valueId": "IDN"
+                    },
+                    {
+                        "value": "日本",
+                        "valueId": "JPN"
+                    },
+                    {
+                        "value": "马来西亚",
+                        "valueId": "MYS"
+                    },
+                    {
+                        "value": "缅甸",
+                        "valueId": "MMR"
+                    },
+                    {
+                        "value": "巴基斯坦",
+                        "valueId": "PAK"
+                    },
+                    {
+                        "value": "菲律宾",
+                        "valueId": "PHL"
+                    },
+                    {
+                        "value": "新加坡",
+                        "valueId": "SGP"
+                    },
+                    {
+                        "value": "韩国",
+                        "valueId": "KOR"
+                    },
+                    {
+                        "value": "中国台湾",
+                        "valueId": "TWN"
+                    },
+                    {
+                        "value": "泰国",
+                        "valueId": "THA"
+                    },
+                    {
+                        "value": "越南",
+                        "valueId": "VNM"
+                    },
+                    {
+                        "value": "英国",
+                        "valueId": "GBR"
+                    },
+                    {
+                        "value": "美国",
+                        "valueId": "USA"
+                    },
+                    {
+                        "value": "欧洲",
+                        "valueId": "EUR"
+                    },
+                    {
+                        "value": "阿拉伯联合酋长国",
+                        "valueId": "ARE"
+                    },
+                    {
+                        "value": "阿根廷",
+                        "valueId": "ARG"
+                    },
+                    {
+                        "value": "阿塞拜疆",
+                        "valueId": "AZE"
+                    },
+                    {
+                        "value": "白俄罗斯",
+                        "valueId": "BLR"
+                    },
+                    {
+                        "value": "巴西",
+                        "valueId": "BRA"
+                    },
+                    {
+                        "value": "文莱",
+                        "valueId": "BRN"
+                    },
+                    {
+                        "value": "加拿大",
+                        "valueId": "CAN"
+                    },
+                    {
+                        "value": "智利",
+                        "valueId": "CHL"
+                    },
+                    {
+                        "value": "古巴",
+                        "valueId": "CUB"
+                    },
+                    {
+                        "value": "丹麦",
+                        "valueId": "DNK"
+                    },
+                    {
+                        "value": "埃及",
+                        "valueId": "EGY"
+                    },
+                    {
+                        "value": "以色列",
+                        "valueId": "ISR"
+                    },
+                    {
+                        "value": "墨西哥",
+                        "valueId": "MEX"
+                    },
+                    {
+                        "value": "蒙古",
+                        "valueId": "MNG"
+                    },
+                    {
+                        "value": "摩洛哥",
+                        "valueId": "MAR"
+                    },
+                    {
+                        "value": "波兰",
+                        "valueId": "POL"
+                    },
+                    {
+                        "value": "沙特阿拉伯",
+                        "valueId": "SAU"
+                    },
+                    {
+                        "value": "南非",
+                        "valueId": "ZAF"
+                    },
+                    {
+                        "value": "瑞典",
+                        "valueId": "SWE"
+                    },
+                    {
+                        "value": "瑞士",
+                        "valueId": "CHE"
+                    },
+                    {
+                        "value": "土耳其",
+                        "valueId": "TUR"
+                    },
+                    {
+                        "value": "乌克兰",
+                        "valueId": "UKR"
+                    },
+                    {
+                        "value": "俄罗斯",
+                        "valueId": "RUS"
+                    },
+                    {
+                        "value": "法国",
+                        "valueId": "FRA"
+                    },
+                    {
+                        "value": "伊朗",
+                        "valueId": "IRN"
+                    },
+                    {
+                        "value": "刚果民主共和国",
+                        "valueId": "COD"
+                    },
+                    {
+                        "value": "安道尔",
+                        "valueId": "AND"
+                    },
+                    {
+                        "value": "老挝",
+                        "valueId": "LAO"
+                    },
+                    {
+                        "value": "中国澳门",
+                        "valueId": "MAC"
+                    },
+                    {
+                        "value": "马尔代夫",
+                        "valueId": "MDV"
+                    },
+                    {
+                        "value": "巴勒斯坦",
+                        "valueId": "PSE"
+                    },
+                    {
+                        "value": "荷兰",
+                        "valueId": "NLD"
+                    },
+                    {
+                        "value": "德国",
+                        "valueId": "DEU"
+                    },
+                    {
+                        "value": "意大利",
+                        "valueId": "ITA"
+                    }
+                ],
+                "fieldUserType": "sender",
+                "fieldDescription": "指定发送者的国籍或公民身份"
+            },
+            {
+                "max": 13,
+                "min": 1,
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderMobileNumber",
+                "fieldType": "input",
+                "fieldLabel": "B",
+                "fieldTitle": "手机号码",
+                "fieldUserType": "sender",
+                "fieldDescription": "输入发送者的手机号码"
+            },
+            {
+                "regex": "^\\d{4}\\-(0[1-9]|1[012])\\-(0[1-9]|[12][0-9]|3[01])$",
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderDateOfBirth",
+                "fieldType": "date",
+                "fieldLabel": "C",
+                "fieldTitle": "出生日期",
+                "fieldUserType": "sender",
+                "fieldDescription": "输入发送者的出生日期"
+            },
+            {
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderGender",
+                "fieldType": "select",
+                "fieldLabel": "A",
+                "fieldTitle": "性别",
+                "selectValues": [
+                    {
+                        "value": "男",
+                        "valueId": "M"
+                    },
+                    {
+                        "value": "女",
+                        "valueId": "F"
+                    }
+                ],
+                "fieldUserType": "sender",
+                "fieldDescription": "指定发送者的性别"
+            },
+            {
+                "sorting": 0,
+                "required": true,
+                "fieldName": "senderIdIssueCountry",
+                "fieldType": "select",
+                "fieldLabel": "A",
+                "fieldTitle": "证件签发国",
+                "selectValues": [
+                    {
+                        "value": "澳大利亚",
+                        "valueId": "AUS"
+                    },
+                    {
+                        "value": "孟加拉国",
+                        "valueId": "BGD"
+                    },
+                    {
+                        "value": "柬埔寨",
+                        "valueId": "KHM"
+                    },
+                    {
+                        "value": "中国",
+                        "valueId": "CHN"
+                    },
+                    {
+                        "value": "中国香港",
+                        "valueId": "HKG"
+                    },
+                    {
+                        "value": "印度",
+                        "valueId": "IND"
+                    },
+                    {
+                        "value": "印度尼西亚",
+                        "valueId": "IDN"
+                    },
+                    {
+                        "value": "日本",
+                        "valueId": "JPN"
+                    },
+                    {
+                        "value": "马来西亚",
+                        "valueId": "MYS"
+                    },
+                    {
+                        "value": "缅甸",
+                        "valueId": "MMR"
+                    },
+                    {
+                        "value": "巴基斯坦",
+                        "valueId": "PAK"
+                    },
+                    {
+                        "value": "菲律宾",
+                        "valueId": "PHL"
+                    },
+                    {
+                        "value": "新加坡",
+                        "valueId": "SGP"
+                    },
+                    {
+                        "value": "韩国",
+                        "valueId": "KOR"
+                    },
+                    {
+                        "value": "中国台湾",
+                        "valueId": "TWN"
+                    },
+                    {
+                        "value": "泰国",
+                        "valueId": "THA"
+                    },
+                    {
+                        "value": "越南",
+                        "valueId": "VNM"
+                    },
+                    {
+                        "value": "英国",
+                        "valueId": "GBR"
+                    },
+                    {
+                        "value": "美国",
+                        "valueId": "USA"
+                    },
+                    {
+                        "value": "欧洲",
+                        "valueId": "EUR"
+                    },
+                    {
+                        "value": "阿拉伯联合酋长国",
+                        "valueId": "ARE"
+                    },
+                    {
+                        "value": "阿根廷",
+                        "valueId": "ARG"
+                    },
+                    {
+                        "value": "阿塞拜疆",
+                        "valueId": "AZE"
+                    },
+                    {
+                        "value": "白俄罗斯",
+                        "valueId": "BLR"
+                    },
+                    {
+                        "value": "巴西",
+                        "valueId": "BRA"
+                    },
+                    {
+                        "value": "文莱",
+                        "valueId": "BRN"
+                    },
+                    {
+                        "value": "加拿大",
+                        "valueId": "CAN"
+                    },
+                    {
+                        "value": "智利",
+                        "valueId": "CHL"
+                    },
+                    {
+                        "value": "古巴",
+                        "valueId": "CUB"
+                    },
+                    {
+                        "value": "丹麦",
+                        "valueId": "DNK"
+                    },
+                    {
+                        "value": "埃及",
+                        "valueId": "EGY"
+                    },
+                    {
+                        "value": "以色列",
+                        "valueId": "ISR"
+                    },
+                    {
+                        "value": "墨西哥",
+                        "valueId": "MEX"
+                    },
+                    {
+                        "value": "蒙古",
+                        "valueId": "MNG"
+                    },
+                    {
+                        "value": "摩洛哥",
+                        "valueId": "MAR"
+                    },
+                    {
+                        "value": "波兰",
+                        "valueId": "POL"
+                    },
+                    {
+                        "value": "沙特阿拉伯",
+                        "valueId": "SAU"
+                    },
+                    {
+                        "value": "南非",
+                        "valueId": "ZAF"
+                    },
+                    {
+                        "value": "瑞典",
+                        "valueId": "SWE"
+                    },
+                    {
+                        "value": "瑞士",
+                        "valueId": "CHE"
+                    },
+                    {
+                        "value": "土耳其",
+                        "valueId": "TUR"
+                    },
+                    {
+                        "value": "乌克兰",
+                        "valueId": "UKR"
+                    },
+                    {
+                        "value": "俄罗斯",
+                        "valueId": "RUS"
+                    },
+                    {
+                        "value": "法国",
+                        "valueId": "FRA"
+                    },
+                    {
+                        "value": "伊朗",
+                        "valueId": "IRN"
+                    },
+                    {
+                        "value": "刚果民主共和国",
+                        "valueId": "COD"
+                    },
+                    {
+                        "value": "安道尔",
+                        "valueId": "AND"
+                    },
+                    {
+                        "value": "老挝",
+                        "valueId": "LAO"
+                    },
+                    {
+                        "value": "中国澳门",
+                        "valueId": "MAC"
+                    },
+                    {
+                        "value": "马尔代夫",
+                        "valueId": "MDV"
+                    },
+                    {
+                        "value": "巴勒斯坦",
+                        "valueId": "PSE"
+                    },
+                    {
+                        "value": "荷兰",
+                        "valueId": "NLD"
+                    },
+                    {
+                        "value": "德国",
+                        "valueId": "DEU"
+                    },
+                    {
+                        "value": "意大利",
+                        "valueId": "ITA"
+                    }
+                ],
+                "fieldUserType": "sender",
+                "fieldDescription": "输入发送者身份证明文件的签发国家"
+            }
+        ],
+        "receiver": [
+            {
+                "sorting": 3,
+                "required": true,
+                "fieldName": "receiverGender",
+                "fieldType": "select",
+                "fieldLabel": "A",
+                "fieldTitle": "性别",
+                "selectValues": [
+                    {
+                        "value": "男",
+                        "valueId": "M"
+                    },
+                    {
+                        "value": "女",
+                        "valueId": "F"
+                    }
+                ],
+                "fieldUserType": "receiver",
+                "fieldDescription": "指定接收者的性别"
+            },
+            {
+                "max": 50,
+                "regex":"^[A-Za-z0-9]+$",
+                "sorting": 10,
+                "required": true,
+                "fieldName": "receiverNativeLastName",
+                "fieldType": "input",
+                "fieldLabel": "A",
+                "fieldTitle": "本地姓氏",
+                "fieldUserType": "receiver",
+                "fieldDescription": "输入接收者的本地姓氏"
+            },
+            {
+                "max": 50,
+                "regex":"^[A-Za-z0-9]+$",
+                "sorting": 11,
+                "required": true,
+                "fieldName": "receiverNativeFirstName",
+                "fieldType": "input",
+                "fieldLabel": "A",
+                "fieldTitle": "本地名字",
+                "fieldUserType": "receiver",
+                "fieldDescription": "输入接收者的本地名字"
+            },
+            {
+                "max": 13,
+                "min": 1,
+                "sorting": 15,
+                "required": true,
+                "fieldName": "receiverMobileNumber",
+                "fieldType": "input",
+                "fieldLabel": "B",
+                "fieldTitle": "手机号码",
+                "fieldUserType": "receiver",
+                "fieldDescription": "输入接收者的手机号码"
+            },
+            {
+                "sorting": 16,
+                "required": true,
+                "fieldName": "receiverIdType",
+                "fieldType": "select",
+                "fieldLabel": "C",
+                "fieldTitle": "证件类型",
+                "selectValues": [
+                    {
+                        "value": "身份证",
+                        "valueId": "2"
+                    }
+                ],
+                "fieldUserType": "receiver",
+                "fieldDescription": "指定接收者的证件类型"
+            },
+            {
+                "max": 18,
+                "min": 3,
+                "regex": "^[A-Za-z0-9]+$",
+                "sorting": 17,
+                "required": true,
+                "fieldName": "receiverIdNumber",
+                "fieldType": "input",
+                "fieldLabel": "C",
+                "fieldTitle": "证件号码",
+                "fieldUserType": "receiver",
+                "fieldDescription": "提供接收者的身份证明号码"
+            },
+            {
+                "max": 30,
+                "min": 6,
+                "regex": "^[A-Za-z0-9]+$",
+                "sorting": 23,
+                "required": true,
+                "fieldName": "receiverBankAccountNumber",
+                "fieldType": "input",
+                "fieldLabel": "E",
+                "fieldTitle": "银行账号",
+                "fieldUserType": "receiver",
+                "fieldDescription": "输入接收者的银行账号"
+            },
+            {
+                "sorting": 29,
+                "required": true,
+                "fieldName": "payoutCurrency",
+                "fieldType": "input",
+                "fieldLabel": "E",
+                "fieldTitle": "支付币种",
+                "fixedValue": "CNY",
+                "fieldUserType": "receiver",
+                "fieldDescription": "指定支付金额的币种"
+            },
+            {
+                "sorting": 30,
+                "required": true,
+                "fieldName": "transferType",
+                "fieldType": "select",
+                "fieldLabel": "E",
+                "fieldTitle": "转账类型",
+                "selectValues": [
+                    {
+                        "value": "身份证",
+                        "valueId": "3"
+                    }
+                ],
+                "fieldUserType": "receiver",
+                "fieldDescription": "指定交易的转账类型"
+            },
+            {
+                "sorting": 31,
+                "required": true,
+                "fieldName": "payoutMethod",
+                "fieldType": "select",
+                "fieldLabel": "E",
+                "fieldTitle": "支付方式",
+                "selectValues": [
+                    {
+                        "value": "身份证",
+                        "valueId": "1"
+                    }
+                ],
+                "fieldUserType": "receiver",
+                "fieldDescription": "指定交易的支付方式"
+            }
+        ]
+    }
+}

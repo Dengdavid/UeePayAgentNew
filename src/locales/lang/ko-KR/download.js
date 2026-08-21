@@ -1,0 +1,1 @@
+export default { taskName: '작업 이름', status: '상태', completed: '완료', failed: '실패', pending: '처리 중', processing: '처리 중', cancelled: '취소됨', count: '다운로드 수', createdAt: '생성일', action: '다운로드', success: '다운로드 성공' }

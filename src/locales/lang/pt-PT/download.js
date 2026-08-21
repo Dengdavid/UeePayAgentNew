@@ -1,0 +1,1 @@
+export default { taskName: 'Nome da tarefa', status: 'Estado', completed: 'Concluído', failed: 'falhou', pending: 'Processamento', processing: 'A processar', cancelled: 'Cancelado', count: 'Transferências', createdAt: 'Criado em', action: 'Transferir', success: 'Transferido com sucesso' }

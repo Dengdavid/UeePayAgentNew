@@ -1,0 +1,1 @@
+export default { taskName: 'Nom de la tâche', status: 'État', completed: 'Achevé', failed: 'échoué', pending: 'Traitement', processing: 'En cours', cancelled: 'Annulé', count: 'Téléchargements', createdAt: 'Création à', action: 'Télécharger', success: 'Téléchargement réussi' }

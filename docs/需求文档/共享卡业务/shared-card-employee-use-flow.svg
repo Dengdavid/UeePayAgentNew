@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1600 1480" style="display:block;max-width:1600px;height:auto" role="img" aria-labelledby="title desc">
+  <title id="title">员工团队账号使用共享卡流程</title>
+  <desc id="desc">员工通过团队账号查看本人共享卡、完成二次验证、进行交易、接收三维验证，并在异常或账号失效时冻结卡片的流程。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L12,6 L0,12 z" fill="#536278" />
+    </marker>
+    <style>
+      .title { font: 700 30px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #162033; }
+      .lane-title { font: 700 20px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #162033; text-anchor: middle; }
+      .label { font: 600 17px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1d2a3d; text-anchor: middle; }
+      .small { font: 500 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #536278; text-anchor: middle; }
+      .edge { fill: none; stroke: #536278; stroke-width: 3; marker-end: url(#arrow); }
+      .edge-label { font: 600 15px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #39475c; }
+      .process { fill: #eef4ff; stroke: #2f6bff; stroke-width: 2.5; rx: 14; }
+      .success { fill: #ecf9f1; stroke: #219653; stroke-width: 2.5; rx: 14; }
+      .decision { fill: #fff7e8; stroke: #e59a16; stroke-width: 2.5; }
+      .risk { fill: #fff1f0; stroke: #dc4c4c; stroke-width: 2.5; rx: 14; }
+      .hold { fill: #fff9df; stroke: #d8a800; stroke-width: 2.5; rx: 14; }
+      .lane { fill: none; stroke: #d9e0ea; stroke-width: 2; stroke-dasharray: 8 7; rx: 18; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1480" fill="#ffffff" />
+  <text class="title" x="800" y="48" text-anchor="middle">员工团队账号使用共享卡流程</text>
+
+  <rect class="process" x="590" y="76" width="420" height="66" />
+  <text class="label" x="800" y="108">员工登录现有团队账号</text>
+  <text class="small" x="800" y="132">Team account sign-in</text>
+
+  <path class="edge" d="M800 142 L800 178" />
+  <polygon class="decision" points="800,178 970,238 800,298 630,238" />
+  <text class="label" x="800" y="232">账号、企业和卡片归属有效</text>
+  <text class="small" x="800" y="258">Server-side ownership check</text>
+
+  <path class="edge" d="M630 238 L465 238" />
+  <text class="edge-label" x="530" y="221">否</text>
+  <rect class="risk" x="70" y="197" width="395" height="82" />
+  <text class="label" x="268" y="230">拒绝访问，不暴露卡片是否存在</text>
+  <text class="small" x="268" y="258">Invalid, suspended or unauthorised account</text>
+
+  <path class="edge" d="M800 298 L800 338" />
+  <text class="edge-label" x="820" y="324">是</text>
+  <rect class="process" x="575" y="338" width="450" height="72" />
+  <text class="label" x="800" y="370">进入“我的共享卡”</text>
+  <text class="small" x="800" y="397">只返回本人卡片、额度、交易和通知</text>
+
+  <path class="edge" d="M800 410 L800 452" />
+  <polygon class="decision" points="800,452 940,504 800,556 660,504" />
+  <text class="label" x="800" y="500">是否已分配共享卡</text>
+  <text class="small" x="800" y="526">Card assigned?</text>
+
+  <path class="edge" d="M660 504 L485 504" />
+  <text class="edge-label" x="540" y="487">否</text>
+  <rect class="hold" x="95" y="464" width="390" height="80" />
+  <text class="label" x="290" y="497">显示暂无卡片</text>
+  <text class="small" x="290" y="525">联系企业管理员，不允许员工自行开卡</text>
+
+  <path class="edge" d="M800 556 L800 598" />
+  <text class="edge-label" x="820" y="582">是</text>
+  <rect class="success" x="565" y="598" width="470" height="76" />
+  <text class="label" x="800" y="630">展示脱敏卡号、状态、额度和本人交易</text>
+  <text class="small" x="800" y="658">不展示企业余额和其他员工卡片</text>
+
+  <path class="edge" d="M800 674 L800 712" />
+  <polygon class="decision" points="800,712 950,766 800,820 650,766" />
+  <text class="label" x="800" y="762">员工选择操作</text>
+  <text class="small" x="800" y="788">Employee action</text>
+
+  <rect class="lane" x="40" y="850" width="490" height="580" />
+  <rect class="lane" x="555" y="850" width="490" height="580" />
+  <rect class="lane" x="1070" y="850" width="490" height="580" />
+  <text class="lane-title" x="285" y="886">查看与交易</text>
+  <text class="lane-title" x="800" y="886">异常交易处理</text>
+  <text class="lane-title" x="1315" y="886">账号失效保护</text>
+
+  <path class="edge" d="M650 766 C505 790 350 815 285 920" />
+  <text class="edge-label" x="478" y="816">查看卡片</text>
+  <rect class="process" x="85" y="920" width="400" height="72" />
+  <text class="label" x="285" y="951">员工主动查看私密信息</text>
+  <text class="small" x="285" y="978">触发统一 2FA</text>
+  <path class="edge" d="M285 992 L285 1030" />
+  <polygon class="decision" points="285,1030 405,1075 285,1120 165,1075" />
+  <text class="label" x="285" y="1072">2FA 是否通过</text>
+  <path class="edge" d="M165 1075 L76 1075" />
+  <text class="edge-label" x="103" y="1058">否</text>
+  <rect class="risk" x="65" y="1140" width="205" height="76" />
+  <text class="label" x="168" y="1171">拒绝展示</text>
+  <text class="small" x="168" y="1198">立即清理临时状态</text>
+  <path class="edge" d="M285 1120 L285 1140" />
+  <text class="edge-label" x="305" y="1134">是</text>
+  <rect class="success" x="280" y="1140" width="225" height="76" />
+  <text class="label" x="393" y="1171">临时显示卡片信息</text>
+  <text class="small" x="393" y="1198">PAN、有效期和 CVV</text>
+  <path class="edge" d="M393 1216 L393 1254" />
+  <rect class="process" x="115" y="1254" width="370" height="86" />
+  <text class="label" x="300" y="1285">员工在商户侧支付</text>
+  <text class="small" x="300" y="1312">需要 3DS 时发送到已验证联系方式</text>
+  <path class="edge" d="M300 1340 L300 1366" />
+  <rect class="success" x="85" y="1366" width="400" height="52" />
+  <text class="label" x="285" y="1398">同步真实交易结果并通知员工和管理员</text>
+
+  <path class="edge" d="M800 820 L800 920" />
+  <text class="edge-label" x="820" y="842">报告异常</text>
+  <rect class="risk" x="600" y="920" width="400" height="72" />
+  <text class="label" x="800" y="951">员工冻结本人卡</text>
+  <text class="small" x="800" y="978">立即阻止新的卡片交易</text>
+  <path class="edge" d="M800 992 L800 1040" />
+  <rect class="process" x="600" y="1040" width="400" height="82" />
+  <text class="label" x="800" y="1072">提交异常交易报告</text>
+  <text class="small" x="800" y="1099">报告不等于已受理争议或保证退款</text>
+  <path class="edge" d="M800 1122 L800 1170" />
+  <rect class="hold" x="600" y="1170" width="400" height="82" />
+  <text class="label" x="800" y="1202">管理员或运营核实</text>
+  <text class="small" x="800" y="1229">必要时补充证据并转为正式争议</text>
+  <path class="edge" d="M800 1252 L800 1300" />
+  <rect class="success" x="600" y="1300" width="400" height="82" />
+  <text class="label" x="800" y="1332">同步处理状态</text>
+  <text class="small" x="800" y="1359">是否解冻由管理员另行决定</text>
+
+  <path class="edge" d="M950 766 C1095 790 1250 815 1315 920" />
+  <text class="edge-label" x="1110" y="816">账号状态事件</text>
+  <rect class="risk" x="1115" y="920" width="400" height="82" />
+  <text class="label" x="1315" y="952">团队账号暂停、移除或离职</text>
+  <text class="small" x="1315" y="979">Team account disabled</text>
+  <path class="edge" d="M1315 1002 L1315 1050" />
+  <rect class="hold" x="1115" y="1050" width="400" height="82" />
+  <text class="label" x="1315" y="1082">撤销卡片查看和 3DS 权限</text>
+  <text class="small" x="1315" y="1109">禁止再次获取私密信息</text>
+  <path class="edge" d="M1315 1132 L1315 1180" />
+  <rect class="risk" x="1115" y="1180" width="400" height="82" />
+  <text class="label" x="1315" y="1212">自动冻结该员工全部共享卡</text>
+  <text class="small" x="1315" y="1239">保留退款、争议和历史交易处理</text>
+  <path class="edge" d="M1315 1262 L1315 1310" />
+  <rect class="process" x="1115" y="1310" width="400" height="82" />
+  <text class="label" x="1315" y="1342">通知企业管理员处理销卡</text>
+  <text class="small" x="1315" y="1369">卡片不可转交其他员工</text>
+</svg>

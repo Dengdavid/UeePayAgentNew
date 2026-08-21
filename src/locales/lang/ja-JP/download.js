@@ -1,0 +1,1 @@
+export default { taskName: 'タスク名', status: 'ステータス', completed: '完了済み', failed: '失敗', pending: '処理中', processing: '処理中', cancelled: 'キャンセル', count: 'ダウンロード回数', createdAt: '作成日時', action: 'ダウンロード', success: 'ダウンロード成功' }

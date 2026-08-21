@@ -1,0 +1,1 @@
+export default { taskName: 'Görev Adı', status: 'Durum', completed: 'Tamamlandı', failed: 'Başarısız', pending: 'İşleme', processing: 'İşleniyor', cancelled: 'İptal edildi', count: 'İndirmeler', createdAt: 'Oluşturulduğunda', action: 'İndir', success: 'Başarıyla indirildi' }

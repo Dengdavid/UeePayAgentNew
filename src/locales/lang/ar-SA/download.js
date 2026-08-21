@@ -1,0 +1,1 @@
+export default { taskName: 'اسم المهمة', status: 'الحالة', completed: 'مكتمل', failed: 'فشل', pending: 'المعالجة', processing: 'جاري المعالجة', cancelled: 'ألغيت', count: 'مرات التنزيل', createdAt: 'تاريخ الإنشاء', action: 'تنزيل', success: 'تم التنزيل بنجاح' }

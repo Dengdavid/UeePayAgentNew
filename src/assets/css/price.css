@@ -1,0 +1,106 @@
+.price-page {
+  padding-top: 120px;
+  min-height: calc(100vh - 160px);
+  background: linear-gradient(to bottom, #e3e7ff, #fcfcfc);
+}
+.price-page h2 {
+  font-size: 60px;
+  text-align: center;
+}
+.price-page .sub-h2 {
+  margin-top: 20px;
+  font-size: 18px;
+  line-height: 30px;
+  text-align: center;
+  color: #3d3d3d;
+}
+.price-wrap {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 60px;
+  min-height: 420px;
+}
+.price-cell {
+  padding: 40px 30px 20px;
+  width: var(--ui-size-280);
+  border-radius: var(--ui-radius-3xl);
+  border: 1px solid #c3d3fc;
+  background-color: var(--ui-color-surface);
+}
+.price-cell .title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: normal;
+}
+.price-cell:nth-child(2) .title {
+  color: #e59e73;
+}
+.price-cell:nth-child(3) .title {
+  color: #d19e73;
+}
+.price-cell:nth-child(4) .title {
+  color: #d9b944;
+}
+.price-cell .title .vip {
+  display: flex;
+  align-items: center;
+  padding: var(--ui-padding-0-6);
+  height: 100%;
+  color: var(--ui-color-gold-300);
+  font-size: 12px;
+  border-radius: var(--ui-radius-3);
+  background-color: var(--text-color);
+}
+.price-cell .price {
+  display: flex;
+  align-items: baseline;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  height: var(--ui-size-48);
+  line-height: 48px;
+  font-size: 32px;
+  font-weight: bold;
+}
+.price-cell .price .unit {
+  margin-right: 6px;
+  font-size: 24px;
+}
+.price-cell .list {
+  margin-top: 40px;
+  list-style: none;
+}
+.price-cell .list li {
+  display: flex;
+}
+.price-cell .list li + li {
+  margin-top: 15px;
+}
+.price-cell .list .label {
+  position: relative;
+  width: var(--ui-size-64);
+  text-align: justify;
+  text-align-last: justify;
+  color: var(--ui-color-neutral-550);
+}
+.price-cell .list .label::after {
+  position: absolute;
+  display: block;
+  content: '：';
+  top: 0;
+  left: 104%;
+}
+.price-cell .list .value {
+  margin-left: 56px;
+}
+.price-cell.current .title {
+  color: #cccbcb;
+}
+
+.price-illustrate {
+  margin-top: 20px;
+  line-height: 24px;
+  color: var(--ui-color-neutral-550);
+}

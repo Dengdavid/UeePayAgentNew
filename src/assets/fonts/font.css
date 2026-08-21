@@ -1,0 +1,19 @@
+@font-face {
+    font-family: 'CreditCard';
+    src: url('./creditcard.ttf') format('truetype'),
+    url("./creditcard.woff2") format("woff2"),
+    url("./creditcard.woff") format("woff");
+    font-style: normal;
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Telegrama';
+    src: url('./telegrama.ttf') format('truetype'),
+    url("./telegrama.woff2") format("woff2"),
+    url("./telegrama.woff") format("woff");
+    font-style: normal;
+    font-weight: normal;
+    font-display: swap;
+}

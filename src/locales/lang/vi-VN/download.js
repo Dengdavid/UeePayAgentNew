@@ -1,0 +1,1 @@
+export default { taskName: 'Tên nhiệm vụ', status: 'Trạng thái', completed: 'Hoàn thành', failed: 'bị lỗi', pending: 'Đang xử lý', processing: 'Đang xử lý', cancelled: 'Đã hủy', count: 'Lượt tải', createdAt: 'Tạo', action: 'Tải xuống', success: 'Tải xuống thành công' }

@@ -1,0 +1,15 @@
+export default {
+  description: 'Manage API keys, callback URLs, and access whitelists required for API integration', configureOrder: 'Configure the security public key first, then set up IP whitelist, callback URL, and communication key', itemCount: '{count} items',
+  status: { securityItems: 'Security Items', callbacks: 'Callback Notifications', ipRestriction: 'IP Restriction', on: 'On', off: 'Off', configured: 'Configured', notConfigured: 'Not Configured' },
+  sectionTitle: 'API Security Configuration', change: 'Change', set: 'Set', reset: 'Reset', save: 'Save',
+  publicKey: {
+    label: 'Security Public Key', configuredDesc: 'Use the corresponding private key to decrypt complete card information', unconfiguredDesc: 'Configure an encryption public key before retrieving complete card information', encryptionTip: 'Encryption uses 1024bit RSA/NONE/OAEPWithSHA1AndMGF1Padding', onlineExample: 'Online Example',
+    field: 'Public Key', placeholder: 'Enter the RSA public key used to encrypt sensitive card information', notice: 'Complete card information will be encrypted using this public key. Use the corresponding private key for decryption', method: 'Encryption: 1024bit RSA/NONE/OAEPWithSHA1AndMGF1Padding.', masked: 'The current public key is masked. Clear it and enter the complete public key to make changes.', title: 'Configure Security Public Key', success: 'Updated successfully',
+  },
+  ipWhitelist: { label: 'IP Whitelist', configuredDesc: 'Only whitelisted IP addresses can access the API', unconfiguredDesc: 'Restrict server outbound IP addresses to reduce API exposure risks', tip: 'Only whitelisted IP addresses can access the API after configuration', duplicate: 'Duplicate entry found: {ip}', title: 'Edit IP Whitelist', success: 'IP whitelist updated successfully', failed: 'Unable to update the IP whitelist' },
+  webhook: { label: 'Webhook URL', desc: 'Used to receive Webhook callback notifications', tip: 'Enter a publicly accessible server address. Select the protocol below and do not include it again.', title: 'Configure Webhook', success: 'Saved successfully' },
+  authorization: {
+    label: 'API Secret Key', configuredDesc: 'Used for server-side request signing and API communication', unconfiguredDesc: 'Used for API authentication and communication', securityRequired: 'Bind and activate an <span class="text-smg">email address</span> or <span class="text-smg">Google Authenticator</span> in the <span class="text-smg">Security Center</span> before continuing.',
+    resetConfirm: 'Reset the API secret key? The previous key will become invalid immediately, and API requests using it will fail. Update your server configuration at the same time.', generateConfirm: 'Are you sure to generate the API secret key? Once generated, it will be saved to your server configuration and used for API request signing and communication', resetSuccess: 'Reset successfully', setSuccess: 'Configured successfully', saveNotice: 'Store your new API secret key securely', viewTitle: 'View API Secret Key', copy: 'Copy', copied: 'Secret copied to the clipboard',
+  },
+}

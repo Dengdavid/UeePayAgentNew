@@ -1,0 +1,15 @@
+export default {
+  description: 'Quản lý thông tin, địa chỉ Mạng gọi ngược, và danh sách truy cập cần thiết cho yêu cầu API.', configureOrder: 'Cấu hình phím công cộng bảo mật trước, tiếp theo là sổ địa chỉ IP, địa chỉ URL gọi ngược và mật liên lạc.', itemCount: '{count}mục',
+  status: { securityItems: 'Mục bảo mật', callbacks: 'Thông báo trả lời', ipRestriction: 'Hạn chế IP', on: 'Vào', off: 'Tắt', configured: 'Đã thiết lập', notConfigured: 'Chưa cấu hình' },
+  sectionTitle: 'Cấu hình thiết lập mạngName', change: 'Ôn lại', set: 'cài đặt', reset: 'cài lại', save: 'Lưu',
+  publicKey: {
+    label: 'Khóa công khai bảo mật', configuredDesc: 'Dùng khóa riêng tương ứng để giải mã thông tin thẻ đầy đủ', unconfiguredDesc: 'Cấu hình khóa công khai mã hóa trước khi lấy thông tin đầy đủ về thẻ', encryptionTip: 'Mã hóa sử dụng 1024bit RSA/NONE/OAEPWithSHA1AndMGF1Padding', onlineExample: 'Ví dụ trực tuyến',
+    field: 'Khóa công khai', placeholder: 'Nhập khóa công khai RSA dùng để mã hóa thông tin thẻ nhạy cảm', notice: 'Thông tin thẻ đầy đủ sẽ được mã hóa bằng khóa công khai này. Dùng khóa riêng tương ứng để giải mã.', method: 'Mã hóa: 1024bit RSA/NONE/OAEPWithSHA1AndMGF1Padding.', masked: 'Khóa công khai hiện tại đang được che. Hãy xóa và nhập khóa công khai đầy đủ để thay đổi.', title: 'Cấu hình khóa công khai bảo mật', success: 'Sửa đổi thành công',
+  },
+  ipWhitelist: { label: 'Danh sách IP được phép', configuredDesc: 'Chỉ các địa chỉ IP trong danh sách cho phép mới có thể truy cập API', unconfiguredDesc: 'Nên giới hạn IP đầu ra của máy chủ để giảm rủi ro lộ API', tip: 'Sau khi cấu hình, chỉ các địa chỉ IP trong danh sách cho phép mới có thể truy cập API.', duplicate: 'Tìm mục nhập trùng:{ip}', title: 'Chỉnh sửa danh sách IP được phép', success: 'Đã cập nhật danh sách IP được phép', failed: 'Sửa đổi không thành công' },
+  webhook: { label: 'địa chỉ gọi lại', desc: 'Nhận thông báo gọi lại Webhook', tip: 'Hãy nhập một địa chỉ máy phục vụ có thể truy cập công khai. Chọn giao thức bên dưới và không bao gồm nó lần nữa.', title: 'Cấu hình Trình nền MạngName', success: 'Đã lưu thành công' },
+  authorization: {
+    label: 'phím giao tiếp', configuredDesc: 'Dùng để ký yêu cầu phía máy chủ và giao tiếp API', unconfiguredDesc: 'Dùng để giao tiếp API', securityRequired: 'Buộc và kích hoạt a<span class="text-smg">Địa chỉ thư</span>hay<span class="text-smg">Trình xác thực Google</span>trong<span class="text-smg">Trung tâm bảo mật</span>trước khi tiếp tục.',
+    resetConfirm: 'Đặt lại bí mật liên lạc? Bí mật trước sẽ trở thành không hợp lệ ngay lập tức, và yêu cầu API sử dụng nó sẽ thất bại. Cập nhật cấu hình máy phục vụ cùng một lúc.', generateConfirm: 'Tạo ra một bí mật liên lạc? Cấu hình bí mật mới trên máy phục vụ của bạn để yêu cầu ký và giao tiếp bên ngoài.', resetSuccess: 'Đặt lại thành công', setSuccess: 'Thiết lập thành công', saveNotice: 'Giữ bí mật liên lạc mới của bạn một cách an toàn', viewTitle: 'Xem giao tiếp Bí mật', copy: 'Sao chép', copied: 'Đã sao chép khóa vào bảng nhớ tạm',
+  },
+}

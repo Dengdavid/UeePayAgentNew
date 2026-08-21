@@ -1,0 +1,1 @@
+export default { taskName: 'Nama Tugas', status: 'Status', completed: 'Selesai', failed: 'gagal', pending: 'Proses', processing: 'Memproses', cancelled: 'Dibatalkan', count: 'Unduhan', createdAt: 'Dibuat Pada', action: 'Unduh', success: 'Berhasil diunduh' }

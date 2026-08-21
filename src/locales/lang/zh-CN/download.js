@@ -1,0 +1,1 @@
+export default { taskName: '任务名称', status: '状态', completed: '已完成', failed: '已失败', pending: '处理中', processing: '进行中', cancelled: '已取消', count: '下载次数', createdAt: '创建时间', action: '下载', success: '下载成功' }

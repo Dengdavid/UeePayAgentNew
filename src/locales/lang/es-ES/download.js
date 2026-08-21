@@ -1,0 +1,1 @@
+export default { taskName: 'Nombre de la tarea', status: 'Estado', completed: 'Completado', failed: 'fracasado', pending: 'Procesamiento', processing: 'Procesando', cancelled: 'Cancelado', count: 'Descargas', createdAt: 'Creado en', action: 'Descargar', success: 'Descarga exitosa' }

@@ -1,0 +1,8 @@
+export default {
+  title: 'Hesap yükleme', selectCurrency: 'Para birimini seçin', selectNetwork: 'Ağ seçin', instructionPrefix: 'QR kodunu dijital başlangıç cüzdanınız veya değişim hesabınızla tarayın veya aşağıdaki adresi tekrar şarj etmek için kopyalayın', instructionSuffix: 'Cüzdan:',
+  reloadFailed: 'Yükleme başarısız oldu, yeniden edinin', walletAddress: 'cüzdan adresi', copy: 'kopyala', supportedCurrencies: 'Paranın doğru olduğunu doğrulayın (USDT ve USDC destekleniyor). Bu adrese başka bir para göndermek, fonların kalıcı kaybıyla sonuçlanacaktır.',
+  exchangeFee: 'Dijital-asset-to-USD dönüşüm oranı piyasa koşulları ile ayarlanıyor. A {fee}% ücreti uygulanır, en az {minFee} {currency}.',
+  complianceNotice: 'Dijital başlangıç transferleri 20 ağ onayı ve risk kontrol incelemesi gerektirir. Her zamanki kredi süresi yaklaşık 2 dakikadır. Yüksek riskli olarak tespit edilen transferler kredilendirilemez ve gözden sonra iade edilecektir.',
+  privateWalletPrefix: 'Bir değişim yerine özel bir cüzdandan transferler için, kullanın', energyRental: 'Enerji Kiralama', privateWalletSuffix: 'transfer maliyetlerini% 70\'den fazla azaltın.', records: 'Şarj kaydı', sync: 'Emekli değil mi? Şimdi sen', syncSuccess: 'Senkronize şarj başarılı', createFailed: 'Yeni adres oluşturulamadı', createSuccess: 'Yeni adres başarıyla oluşturuldu',
+  warning: { title: 'Şarj ipuçları', reminder: 'Sıcak hatırlatma', minimum: 'Lütfen tek bir işlemde 10 {currency}\'den az yatırmayın, aksi takdirde para hesabınıza aktarılmayacaktır.', verifyAddress: 'Pano virüsleriyle oynanmasını önlemek için lütfen şarj cüzdanı adresini dikkatlice kontrol ettiğinizden emin olun.', currency: 'Para birimini yeniden yükle:', network: 'Ağı şarj edin:', confirm: 'Yeniden yüklemeyi onayla' },
+}

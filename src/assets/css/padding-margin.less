@@ -1,0 +1,94 @@
+@spacing-base-size: 1px;
+
+// ==============================
+// 生成 .m-2, .m-4, ..., .m-60 等（仅偶数）
+// ==============================
+
+// 递归生成单个 type（m / p）
+.generate-spacing(@typeKey, @type, @i) when (@i =< 60) {
+  // 全方向
+  .@{typeKey}-@{i} {
+    @{type}: (@i * @spacing-base-size) !important;
+  }
+
+  // x: left + right
+  .@{typeKey}-x-@{i} {
+    @{type}-left: (@i * @spacing-base-size) !important;
+    @{type}-right: (@i * @spacing-base-size) !important;
+  }
+
+  // y: top + bottom
+  .@{typeKey}-y-@{i} {
+    @{type}-top: (@i * @spacing-base-size) !important;
+    @{type}-bottom: (@i * @spacing-base-size) !important;
+  }
+
+  // 单方向
+  .@{typeKey}-t-@{i} {
+    @{type}-top: (@i * @spacing-base-size) !important;
+  }
+  .@{typeKey}-r-@{i} {
+    @{type}-right: (@i * @spacing-base-size) !important;
+  }
+  .@{typeKey}-b-@{i} {
+    @{type}-bottom: (@i * @spacing-base-size) !important;
+  }
+  .@{typeKey}-l-@{i} {
+    @{type}-left: (@i * @spacing-base-size) !important;
+  }
+
+  // 递归：+2，只处理偶数
+  .generate-spacing(@typeKey, @type, (@i + 2));
+}
+
+// 终止条件（可选，但建议加上防无限递归）
+.generate-spacing(@typeKey, @type, @i) when (@i > 60) {
+}
+
+// 启动：从 2 开始（第一个偶数）
+.generate-spacing(m, margin, 2);
+.generate-spacing(p, padding, 2);
+
+// ==============================
+// 生成 .list-t-0 到 .list-t-60（全量，含 0 和奇数）
+// ==============================
+
+.generate-list(@dirKey, @dir, @i) when (@i =< 60) {
+  .list-@{dirKey}-@{i} {
+    > * {
+      margin: 0 !important;
+      &:not(:last-child) {
+        margin-@{dir}: (@i * @spacing-base-size) !important;
+      }
+    }
+  }
+  .generate-list(@dirKey, @dir, (@i + 1));
+}
+.generate-list(@dirKey, @dir, @i) when (@i > 60) {
+}
+
+// 四个方向
+.generate-list(t, top, 0);
+.generate-list(r, right, 0);
+.generate-list(b, bottom, 0);
+.generate-list(l, left, 0);
+
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+.flex-end {
+  display: flex;
+  align-items: center;
+}
+.flex-center-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-column-center-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}

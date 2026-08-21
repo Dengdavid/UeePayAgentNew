@@ -1,0 +1,1 @@
+export default { taskName: 'ชื่องาน', status: 'สถานะ', completed: 'เสร็จสมบูรณ์แล้ว', failed: 'ล้มเหลว', pending: 'กําลังประมวลผล', processing: 'กำลังประมวลผล', cancelled: 'ยกเลิก', count: 'จำนวนดาวน์โหลด', createdAt: 'สร้างเมื่อ', action: 'ดาวน์โหลด', success: 'ดาวน์โหลดสำเร็จ' }

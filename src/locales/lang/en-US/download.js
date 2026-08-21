@@ -1,0 +1,1 @@
+export default { taskName: 'Task Name', status: 'Status', completed: 'Completed', failed: 'Failed', pending: 'Pending', processing: 'Processing', cancelled: 'Cancelled', count: 'Download Count', createdAt: 'Created Time', action: 'Download', success: 'Downloaded successfully' }

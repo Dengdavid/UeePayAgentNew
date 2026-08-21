@@ -1,0 +1,122 @@
+.account-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: var(--ui-padding-16-20);
+  background: #f3f6ff;
+  .card-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    flex: auto;
+    .btn{
+      padding: 0;
+    }
+    h4 {
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 24px;
+      .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        margin-left: 8px;
+        width: var(--ui-size-16);
+        height: var(--ui-size-16);
+        border-radius: var(--ui-radius-circle);
+        border: 1px solid #d4dbe7;
+        color: var(--grey-color);
+      }
+    }
+    .content {
+      display: flex;
+      align-items: baseline;
+      margin-top: 8px;
+      line-height: 34px;
+      gap: 4px;
+      .value {
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .unit {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .btn {
+        margin-left: 8px;
+      }
+    }
+    .btn {
+      display: flex;
+      align-items: center;
+
+      .spacer {
+        width: var(--ui-size-1);
+        height: var(--ui-size-12);
+        background: #d8d8d8;
+      }
+    }
+  }
+  .card-spacer {
+    margin: 0 30px;
+    width: var(--ui-size-1);
+    height: var(--ui-size-40);
+    background: #ebebeb;
+  }
+  .card-btns {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 140px;
+    min-width: 100px;
+    > * {
+      margin: 0 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      &:not(:last-child) {
+        margin-bottom: 8px !important;
+      }
+    }
+    .ivu-btn {
+      width: 100%;
+    }
+  }
+}
+.ivu-tabs{
+  overflow: initial !important;
+}
+.card-tab {
+  margin-top: 10px;
+  .ivu-tabs-nav-wrap {
+    padding: 0 20px;
+    font-size: 14px;
+  }
+}
+.card-tab-content {
+  padding: 4px 20px 20px;
+}
+
+.edit-text-cell {
+  display: flex;
+  align-items: center;
+}
+.edit-text-cell .text {
+  flex: 1;
+  flex-wrap: wrap;
+}
+.edit-text-cell .ivu-icon {
+  margin-left: 10px;
+  cursor: pointer;
+}
+.physical-btn {
+  background: var(--ui-gradient-warning-wide);
+  border: none;
+}
+.physical-btn:hover {
+  color: var(--ui-color-text-inverse);
+  opacity: 0.8;
+}

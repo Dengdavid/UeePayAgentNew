@@ -1,0 +1,190 @@
+.agreement-scroll {
+  width: 100%;
+  margin: 0;
+  padding: var(--ui-space-4) var(--ui-space-12) var(--ui-space-24);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-md);
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+  overscroll-behavior: contain;
+
+  h1,
+  h2,
+  h3 {
+    color: var(--ui-color-text);
+    font-weight: var(--ui-font-weight-semibold);
+  }
+
+  h1 {
+    margin: 0;
+    padding-bottom: var(--ui-space-12);
+    border-bottom: var(--ui-border-default);
+    font-size: var(--ui-font-size-3xl);
+    line-height: var(--ui-line-height-2xl);
+    text-align: center;
+  }
+
+  h2 {
+    margin: var(--ui-space-24) 0 var(--ui-space-10);
+    padding-bottom: var(--ui-space-8);
+    border-bottom: var(--ui-border-subtle);
+    font-size: var(--ui-font-size-xl);
+    line-height: var(--ui-line-height-xl);
+  }
+
+  h3 {
+    margin: var(--ui-space-16) 0 var(--ui-space-6);
+    font-size: var(--ui-font-size-lg);
+    line-height: var(--ui-line-height-xl);
+  }
+
+  p {
+    margin: 0 0 var(--ui-space-10);
+  }
+
+  ul,
+  ol {
+    margin: 0 0 var(--ui-space-12);
+    padding-left: var(--ui-space-24);
+  }
+
+  li {
+    padding-left: var(--ui-space-4);
+  }
+
+  li + li {
+    margin-top: var(--ui-space-4);
+  }
+
+  strong {
+    color: var(--ui-color-text);
+    font-weight: var(--ui-font-weight-semibold);
+  }
+
+  .update-date {
+    margin: var(--ui-space-6) 0 var(--ui-space-20);
+    color: var(--ui-color-text-muted);
+    font-size: var(--ui-font-size-xs);
+    line-height: var(--ui-line-height-md);
+    text-align: center;
+  }
+
+  .notice,
+  .highlight {
+    margin: var(--ui-space-16) 0 var(--ui-space-20);
+    padding: var(--ui-space-16);
+    border: var(--ui-border-subtle);
+    border-left: var(--ui-border-primary-emphasis);
+    border-radius: var(--ui-radius-sm);
+    background: color-mix(in srgb, var(--ui-color-primary) 5%, var(--ui-color-surface));
+  }
+
+  .notice p:last-child,
+  .highlight p:last-child {
+    margin-bottom: 0;
+  }
+
+  .underline {
+    text-decoration-line: underline;
+    text-decoration-color: var(--ui-color-border-interactive);
+    text-decoration-thickness: var(--ui-border-width);
+    text-underline-offset: var(--ui-space-4);
+  }
+
+  table {
+    display: table;
+    width: 100%;
+    margin: var(--ui-space-12) 0 var(--ui-space-20);
+    border: var(--ui-border-default);
+    border-radius: var(--ui-radius-sm);
+    border-collapse: collapse;
+    table-layout: auto;
+    background: var(--ui-color-surface);
+  }
+
+  tbody {
+    display: table-row-group;
+  }
+
+  th,
+  td {
+    padding: var(--ui-space-6) var(--ui-space-10);
+    border-bottom: var(--ui-border-subtle);
+    line-height: 1.5;
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+
+  th {
+    color: var(--ui-color-text);
+    font-weight: var(--ui-font-weight-semibold);
+    white-space: nowrap;
+    background: var(--ui-color-surface-muted);
+  }
+
+  td:first-child {
+    white-space: nowrap;
+  }
+
+  th + th,
+  td + td {
+    border-left: var(--ui-border-subtle);
+  }
+
+  tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .footer {
+    margin-top: var(--ui-space-24);
+    padding-top: var(--ui-space-16);
+    border-top: var(--ui-border-default);
+    color: var(--ui-color-text-muted);
+    font-size: var(--ui-font-size-xs);
+    line-height: var(--ui-line-height-md);
+    text-align: center;
+  }
+
+  .footer p {
+    margin: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .agreement-scroll {
+    padding: var(--ui-space-4) 0 var(--ui-space-24);
+    font-size: var(--ui-font-size-md);
+    line-height: 1.7;
+
+    h1 {
+      padding-bottom: var(--ui-space-10);
+      font-size: var(--ui-font-size-2xl);
+      line-height: var(--ui-line-height-xl);
+    }
+
+    h2 {
+      margin-top: var(--ui-space-20);
+      font-size: var(--ui-font-size-lg);
+    }
+
+    h3 {
+      margin-top: var(--ui-space-16);
+    }
+
+    .notice,
+    .highlight {
+      padding: var(--ui-space-12);
+    }
+
+    th,
+    td {
+      padding: var(--ui-space-6) var(--ui-space-8);
+    }
+
+    th,
+    td:first-child {
+      white-space: normal;
+    }
+  }
+}

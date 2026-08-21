@@ -1,0 +1,15 @@
+export default {
+  description: 'Kelola kredensial, callback URL, dan allowlist akses diperlukan untuk permintaan API.', configureOrder: 'Konfigurasikan kunci publik keamanan pertama, diikuti oleh allowlist IP, URL callback, dan rahasia komunikasi.', itemCount: '{count}butir',
+  status: { securityItems: 'Item Keamanan', callbacks: 'Pemberitahuan Callback', ipRestriction: 'Pembatasan IP', on: 'Hidup', off: 'Mati', configured: 'Sudah disetel', notConfigured: 'Tidak Dikonfigurasi' },
+  sectionTitle: 'Konfigurasi Keamanan API', change: 'Merevisi', set: 'mendirikan', reset: 'mengatur ulang', save: 'Simpan',
+  publicKey: {
+    label: 'Kunci publik keamanan', configuredDesc: 'Gunakan kunci privat yang sesuai untuk mendekripsi informasi kartu lengkap', unconfiguredDesc: 'Atur kunci publik enkripsi sebelum mengambil informasi kartu lengkap', encryptionTip: 'Enkripsi menggunakan 1024bit RSA/NONE/OAEPWithSHA1AndMGF1Padding', onlineExample: 'Contoh daring',
+    field: 'Kunci Publik', placeholder: 'Masukkan kunci publik RSA yang dipakai untuk mengenkripsi informasi kartu sensitif', notice: 'Informasi kartu lengkap akan dienkripsi dengan kunci publik ini. Gunakan kunci privat yang sesuai untuk mendekripsinya.', method: 'Enkripsi: 1024bit RSA/NONE/OAEPWithSHA1AndMGF1Padding.', masked: 'Kunci publik saat ini disamarkan. Hapus nilainya lalu masukkan kunci publik lengkap untuk mengubahnya.', title: 'Konfigurasikan kunci publik keamanan', success: 'Modifikasi berhasil',
+  },
+  ipWhitelist: { label: 'Daftar IP yang diizinkan', configuredDesc: 'Hanya alamat IP yang terdaftar yang dapat mengakses API', unconfiguredDesc: 'Batasi alamat IP server keluar untuk mengurangi risiko paparan API', tip: 'Setelah konfigurasi, hanya alamat IP yang terdaftar yang dapat mengakses API.', duplicate: 'Entri ganda ditemukan: {ip}', title: 'Ubah daftar IP yang diizinkan', success: 'allowlist IP diperbarui dengan sukses', failed: 'Modifikasi gagal' },
+  webhook: { label: 'alamat panggilan balik', desc: 'Menerima pemberitahuan callback Webhook', tip: 'Masukkan alamat server yang dapat diakses publik. Pilih protokol di bawah ini dan jangan sertakan lagi.', title: 'Atur Webhook', success: 'Berhasil disimpan' },
+  authorization: {
+    label: 'Kunci komunikasi', configuredDesc: 'Digunakan untuk menandatangani permintaan di sisi server dan komunikasi API', unconfiguredDesc: 'Digunakan untuk komunikasi API', securityRequired: 'Ikat dan aktifkan<span class="text-smg">alamat email</span>atau<span class="text-smg">Otentikasi Google</span>di<span class="text-smg">Pusat Keamanan</span>sebelum melanjutkan.',
+    resetConfirm: 'Atur ulang rahasia komunikasi? Rahasia sebelumnya akan segera menjadi tidak valid, dan permintaan API akan menggunakannya akan gagal. Perbarui konfigurasi server Anda pada saat yang sama.', generateConfirm: 'Membuat rahasia komunikasi? Atur rahasia baru pada server Anda untuk penandatanganan permintaan API dan komunikasi.', resetSuccess: 'Reset berhasil', setSuccess: 'Penyiapan berhasil', saveNotice: 'Simpan rahasia komunikasimu secara aman.', viewTitle: 'Tilik Komunikasi Rahasia', copy: 'Salin', copied: 'Kunci disalin ke clipboard',
+  },
+}

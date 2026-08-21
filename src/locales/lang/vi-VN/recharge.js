@@ -1,0 +1,8 @@
+export default {
+  title: 'Nạp tiền tài khoản', selectCurrency: 'Chọn loại tiền tệ', selectNetwork: 'Chọn mạng', instructionPrefix: 'Quét mã QR với ví số của bạn hoặc tài khoản trao đổi, hoặc sao chép địa chỉ bên dưới để nạp lại', instructionSuffix: 'ví:',
+  reloadFailed: 'Tải không thành công, yêu cầu lại', walletAddress: 'địa chỉ ví', copy: 'Sao chép', supportedCurrencies: 'Xác nhận rằng tiền tệ là đúng (USDT và USDC được hỗ trợ). Việc gửi bất cứ loại tiền tệ nào khác cho địa chỉ này sẽ dẫn đến việc mất đi vốn.',
+  exchangeFee: 'Tốc độ chuyển đổi giữa các công ty kỹ thuật số và Mỹ được điều chỉnh với điều kiện thị trường. A{fee}% lệ phí áp dụng, phụ thuộc vào phí tối thiểu của{minFee} {currency}.',
+  complianceNotice: 'Chuyển tài sản số cần 20 xác nhận mạng và kiểm tra kiểm soát rủi ro. Thời gian ghi có thông thường khoảng 2 phút. Giao dịch được xác định có rủi ro cao sẽ không được ghi có và sẽ bị đóng băng, hoàn trả sau khi xem xét.',
+  privateWalletPrefix: 'Để chuyển tiền từ ví riêng thay vì trao đổi, hãy sử dụng', energyRental: 'Tiền thuê năng lượng', privateWalletSuffix: 'để giảm chi phí chuyển nhượng hơn 70%.', records: 'Kỷ lục nạp tiền', sync: 'Chưa tính tiền lại à? Đồng bộ rồi', syncSuccess: 'Nạp tiền đồng bộ thành công', createFailed: 'Không tạo được địa chỉ mới', createSuccess: 'Địa chỉ mới được tạo thành công',
+  warning: { title: 'Mẹo nạp tiền', reminder: 'Lời nhắc ấm áp', minimum: 'Vui lòng không gửi ít hơn 10 {currency} trong một giao dịch, nếu không tiền sẽ không được ghi có vào tài khoản của bạn.', verifyAddress: 'Hãy nhớ kiểm tra cẩn thận địa chỉ ví nạp tiền để tránh bị vi-rút clipboard giả mạo.', currency: 'Nạp tiền tệ:', network: 'Mạng lưới nạp tiền:', confirm: 'Xác nhận nạp tiền' },
+}
