@@ -205,7 +205,7 @@ const columns = ref([
   },
   {
     title: t('card.index.cardholder.email'),
-    width: 180,
+    minWidth: 180,
     key: 'email',
   },
   {

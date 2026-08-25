@@ -6,9 +6,7 @@
 
 .ui-header {
   width: 100%;
-  box-shadow: var(--ui-shadow-header);
-  background: var(--ui-color-surface-overlay-soft);
-  backdrop-filter: blur(100px);
+  background: #e3e7f5;
   z-index: var(--ui-layer-header);
   position: relative;
 }

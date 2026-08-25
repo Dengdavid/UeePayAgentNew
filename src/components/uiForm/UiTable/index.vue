@@ -198,12 +198,15 @@ const getColumnSize = (item, title, key) => {
   return Math.max(Number(item[key]) || 0, titleWidth, optionsColumnWidth)
 }
 const columns = computed(() => {
-  const theadArr = props.thead.map(item => {
+  const theadArr = props.thead.map((item, index) => {
     const title = `${item.label}${item?.unit ? ` (${item?.unit})` : ''}`
     const autoWidth = item.autoWidth !== false
+    const isLastBusinessColumn = index === props.thead.length - 1
     const width = autoWidth ? undefined : getColumnSize(item, title, 'width')
     const minWidth = autoWidth ? getAutoColumnWidth(item, title) : getColumnSize(item, title, 'minWidth')
-    const maxWidth = autoWidth ? Number(item.maxWidth) || AUTO_COLUMN_MAX_WIDTH : item.maxWidth
+    const maxWidth = autoWidth
+      ? (isLastBusinessColumn ? undefined : Number(item.maxWidth) || AUTO_COLUMN_MAX_WIDTH)
+      : item.maxWidth
     const obj={
       key:item.prop,
       title,

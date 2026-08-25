@@ -17,7 +17,12 @@ const deepFreeze = (value) => {
 
 // 当前 API origin，不包含业务前缀 /api；手动切换环境时直接修改此处地址。
 export const activeApiTarget = 'https://staging.ueepay.com'
-
+//代理商站点地址
+export const domainURL = 'www.yanghua.cc'
+//
+export const baseURL = '/agent'
+//
+export const tokenName = 'tokenAgent'
 export const systemConfig = deepFreeze({
   site: {
     // 中文站点名称。

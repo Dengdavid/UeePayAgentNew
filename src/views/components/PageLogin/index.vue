@@ -3,26 +3,10 @@
     <div class="pageLogin-preferences">
       <GlobalPreferences />
     </div>
-    <section class="pageLogin-visual">
-      <LightDotRise
-        class="pageLogin-starlight"
-        :count="22"
-        :simultaneous="2"
-        :speed="1.1"
-        :size="3"
-        :spread="220"
-        :start-top="70"
-        :start-range="6"
-      />
+    <section class="pageLogin-visual" :style="{
+      backgroundImage:bgKey && configDatas?.[bgKey]?`url(${configDatas?.[bgKey]})`:''
+    }">
       <LogoBox class="pageLogin-logo" />
-      <div class="pageLogin-slogan">
-        <h2>
-          <span>{{ $t('pageLogin.hero.global') }}</span>{{ $t('pageLogin.hero.wordSeparator') }}{{ $t('pageLogin.hero.cardServices') }}
-          <br />{{ $t('pageLogin.hero.crossBorder') }}{{ $t('pageLogin.hero.wordSeparator') }}<span>{{ $t('pageLogin.hero.payments') }}</span>
-        </h2>
-        <p>{{ $t('pageLogin.hero.description') }}</p>
-      </div>
-      <p class="pageLogin-tagline">{{ $t('pageLogin.hero.tagline') }}</p>
     </section>
     <main class="pageLogin-content">
       <div class="pageLogin-box">
@@ -31,6 +15,9 @@
         </div>
         <div class="pageLogin-form">
           <slot />
+        </div>
+        <div class="pageLogin-service" v-if="customerUrl">
+          <p>若有疑问，请<a class="m-l-4" :href="customerUrl" target="_blank">{{ $t('withdrawal.customerService') }}</a>，我们将尽快回复</p>
         </div>
       </div>
     </main>
@@ -42,15 +29,18 @@ import { onMounted } from 'vue'
 import { useRouteQuery } from '@/utils/route.js'
 import { t } from '@/utils/index.js'
 import GlobalPreferences from '@/components/layout/GlobalPreferences.vue'
-import LightDotRise from './LightDotRise.vue'
 import LogoBox from '@/views/components/LogoBox/index.vue'
-
+import { useAppStoreRefs } from '@/utils/store.js'
+const {configDatas,customerUrl} = useAppStoreRefs()
 const query = useRouteQuery()
 
 defineProps({
   title: {
     type: String,
     default: () => t('pageLogin.defaultTitle')
+  },
+  bgKey:{
+    type: String,
   }
 })
 
@@ -68,7 +58,7 @@ onMounted(() => {
   width: 100%;
   min-height: 100vh;
   display: grid;
-  grid-template-columns: minmax(0, 62%) minmax(0, 38%);
+  grid-template-columns: minmax(0, 68%) minmax(0, 32%);
   overflow: hidden;
   background: #fff;
 
@@ -86,9 +76,9 @@ onMounted(() => {
     z-index: 1;
     display: flex;
     flex-direction: column;
-    padding: 42px 56px 48px;
+    padding: 42px 42px 48px;
     overflow: hidden;
-    background: #f7f7fc url('@/assets/images/login_visual_v4.jpg') no-repeat top center;
+    background: #f7f7fc url('@/assets/images/login_corridor_bg.DlP5km8p.webp') no-repeat top center;
     background-size: cover;
     isolation: isolate;
 
@@ -154,7 +144,11 @@ onMounted(() => {
       display: flex;
       flex-direction: column;
       gap: 32px;
-
+      .pageLogin-service{
+        text-align: center;
+        border-top: 1px #eee solid;
+        padding-top: 32px;
+      }
       .pageLogin-title {
         text-align: center;
 

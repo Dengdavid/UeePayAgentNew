@@ -10,6 +10,8 @@ import { watch } from 'vue'
 import Cookies from 'js-cookie'
 import { t } from '@/utils/index.js'
 import { locale } from '@/locales/set.js'
+import { useUserStore } from '@/store/user.js'
+import { tokenName } from "@systemConfig";
 const routeNames = (arr) => {
   const _arr = []
   arr.map((item) => {
@@ -44,16 +46,11 @@ const errorRoutesName = routeNames(errorRoutes)
 
 const updateDocumentTitle = (route) => {
   const routeTitle = route.meta?.titleKey ? t(route.meta.titleKey) : route.meta?.title
-  const siteName = t('route.siteName')
-  window.document.title = routeTitle ? `${routeTitle} | ${siteName}` : siteName
+  window.document.title = routeTitle || ''
 }
 
 router.beforeEach(async (to, from, next) => {
-  const token = Cookies.get('token')
-  if (to.path === '/certify' && !token) {
-    next({ name: 'home' })
-    return false
-  }
+  const token = Cookies.get(tokenName)
   if (whiteRouteNames.indexOf(to.name) === -1) {
     // 不在白名单内
     if (token) {
@@ -62,17 +59,18 @@ router.beforeEach(async (to, from, next) => {
         next({ name: 'home' })
         return false
       }
-    } else {
-      if (loginUnableRouteNames.indexOf(to.name) === -1) {
-        localStorage.setItem('TOROUTENAME',to.name)
+    } else if (loginUnableRouteNames.indexOf(to.name) === -1) {
         next({ name: 'login'})
         return false
       }
+  }
+  if (to.matched.some((record) => record.meta.requiresAdmin)) {
+    const userStore = useUserStore()
+    if (!Object.prototype.hasOwnProperty.call(userStore.user, 'is_admin')) {
+      await userStore.getUserInfo()
     }
-  } else {
-    if (to.name === 'card' && !token) {
-      localStorage.setItem('TOROUTENAME',to.name)
-      next({ name: 'login'})
+    if (!userStore.user.is_admin) {
+      next({ name: 'error_404', replace: true })
       return false
     }
   }

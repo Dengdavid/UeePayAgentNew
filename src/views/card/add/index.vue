@@ -248,7 +248,7 @@ const useBins = computed(() => {
     return true
   })
 })
-const binLeight = 2 * 5
+const binLeight = 16
 
 // 场景推荐组件回传的匹配卡段范围。
 const showBinIds=ref([])
@@ -275,10 +275,10 @@ const availableBins = computed(() => {
   return useBins.value.filter((item) => showBinIds.value.includes(item.id))
 })
 
-// 当前筛选结果中默认两行以外、处于折叠状态的卡段数量。
+// 当前筛选结果中默认展示数量以外、处于折叠状态的卡段数量。
 const collapsedBinCount = computed(() => Math.max(availableBins.value.length - binLeight, 0))
 
-// 默认只展示两行卡段，用户可手动展开。
+// 默认展示 16 个卡段，用户可手动展开。
 const showBins = computed(() => {
   const arr=availableBins.value
   if (arr.length === 0) return []
@@ -603,7 +603,7 @@ onMounted(() => {
   }
 
   &.card-tags-2{
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   @media screen and (max-width: 768px) {

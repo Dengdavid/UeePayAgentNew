@@ -1,58 +1,15 @@
 <template>
   <nav class="ui-header">
-    <div class="ui-header-content w1200">
-      <LogoBox class="logo"/>
+    <div class="ui-header-content">
       <div ref="navigatorRef" class="ui-navigator">
-        <a
-          href="javascript:;"
-          v-for="item in visibleMenus"
-          :key="item.name"
-          :class="{ active: activeMenu === item.name }"
-          @click="handleGo(item)"
-          >{{ item.meta.titleKey ? $t(item.meta.titleKey) : item.meta.title }}</a
+        <button
+          class="menu-collapse-trigger"
+          type="button"
+          :title="$t('route.menu')"
+          @click="$emit('toggle-menu-collapse')"
         >
-        <Dropdown
-          v-if="overflowMenus.length"
-          class="navigator-more"
-          placement="bottom-end"
-          trigger="hover"
-          transfer
-        >
-          <button
-            type="button"
-            class="navigator-more-trigger"
-            :class="{ active: overflowMenus.some(item => activeMenu === item.name) }"
-          >
-            <span>{{ $t('button.more') }}</span>
-            <Icon type="ios-arrow-down" :size="14" />
-          </button>
-          <template #list>
-            <DropdownMenu>
-              <DropdownItem
-                v-for="item in overflowMenus"
-                :key="item.name"
-                :disabled="item.meta.disabled"
-                @click.stop="handleGo(item)"
-              >
-                {{ item.meta.titleKey ? $t(item.meta.titleKey) : item.meta.title }}
-              </DropdownItem>
-            </DropdownMenu>
-          </template>
-        </Dropdown>
-        <div ref="navigatorMeasureRef" class="navigator-measure" aria-hidden="true">
-          <span
-            v-for="item in menus"
-            :key="item.name"
-            class="navigator-measure-item"
-            data-menu-measure
-          >
-            {{ item.meta.titleKey ? $t(item.meta.titleKey) : item.meta.title }}
-          </span>
-          <span ref="moreMeasureRef" class="navigator-measure-item navigator-measure-more">
-            <span>{{ $t('button.more') }}</span>
-            <Icon type="ios-arrow-down" :size="14" />
-          </span>
-        </div>
+          <Icon :type="menuCollapsed ? 'ios-arrow-forward' : 'ios-arrow-back'" :size="18" />
+        </button>
       </div>
       <div
         v-if="customerUrl"
@@ -99,8 +56,6 @@
       <MessageBox :disabled="false"/>
       <div class="spacer" v-if="isLogin"></div>
       <GlobalPreferences :authenticated="isLogin" />
-      <div class="spacer"></div>
-      <a class="link" @click="handleGoPage('help')">{{ $t('header.helpCenter') }}</a>
       <div class="user-action">
         <Dropdown v-if="isLogin" :transfer="false" placement="bottom-end">
           <router-link class="user" :to="{ name: 'ucenter_index' }">
@@ -145,7 +100,7 @@
 
                   <div class="account-membership">
                     <div class="account-membership-head">
-                      <div class="vip" @click="handleGoPage('pricing')">
+                      <div class="vip" :title="userGroup.title" @click="handleGoPage('pricing')">
                         <Icon custom="iconfont icon-vip" :size="13"></Icon>
                         <span>{{ userGroup.title }}</span>
                       </div>
@@ -174,9 +129,7 @@
                     :title="accountMenuTitle(item)"
                     @click="handleGoPage(item.name)"
                   >
-                    <span class="account-menu-icon" :style="item.meta.menuIconStyle">
-                      <Icon :type="item.meta.menuIcon" :size="22" />
-                    </span>
+                    <span class="account-menu-icon iconfont" :style="item.meta.menuIconStyle" :class="item.meta?.menuIcon || 'icon-CRMEB-xiadanjianshu-mianxing'"></span>
                     <span v-if="item.meta.menuTagKey" class="account-menu-tag">
                       {{ $t(item.meta.menuTagKey) }}
                     </span>
@@ -218,13 +171,17 @@ import { ucenterRoutes, whiteRoutes } from '@/router/router.js'
 import { useAppStore } from '@/store/app.js'
 import { useUserStore } from '@/store/user.js'
 import { storeToRefs } from 'pinia'
-import { Message } from 'view-ui-plus'
 import { copyText } from '@/utils/dataInfo.js'
 import { message } from '@/utils/message.js'
 import { clearBrowserCache } from '@/utils/preferences.js'
 import { toRoute, useRoute } from '@/utils/route.js'
 import { t } from '@/utils/index.js'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
+
+defineProps({
+  menuCollapsed: Boolean,
+})
+defineEmits(['toggle-menu-collapse'])
 
 const route = useRoute()
 
@@ -233,67 +190,10 @@ const { isLogin, user, userGroup, unreadNum, menuPermissions } = storeToRefs(use
 const appStore = useAppStore()
 const { customerUrl } = storeToRefs(appStore)
 const menus = ref(whiteRoutes.filter((item) => !item.meta.hidden))
-const navigatorRef = ref(null)
-const navigatorMeasureRef = ref(null)
-const moreMeasureRef = ref(null)
-const visibleMenuCount = ref(menus.value.length)
 
-const visibleMenus = computed(() => menus.value.slice(0, visibleMenuCount.value))
-const overflowMenus = computed(() => menus.value.slice(visibleMenuCount.value))
-
-let navigatorResizeObserver = null
-let navigatorResizeFrame = 0
-
-const measureNavigator = () => {
-  navigatorResizeFrame = 0
-  const navigator = navigatorRef.value
-  const measure = navigatorMeasureRef.value
-  const moreMeasure = moreMeasureRef.value
-  if (!navigator || !measure || !moreMeasure) return
-
-  const itemWidths = [...measure.querySelectorAll('[data-menu-measure]')]
-    .map(item => Math.ceil(item.getBoundingClientRect().width))
-  const availableWidth = Math.floor(navigator.clientWidth)
-  const gap = 8
-  const totalWidth = itemWidths.reduce((total, width) => total + width, 0)
-    + Math.max(itemWidths.length - 1, 0) * gap
-
-  if (totalWidth <= availableWidth) {
-    visibleMenuCount.value = itemWidths.length
-    return
-  }
-
-  let usedWidth = Math.ceil(moreMeasure.getBoundingClientRect().width)
-  let count = 0
-  for (const width of itemWidths) {
-    const nextWidth = usedWidth + gap + width
-    if (nextWidth > availableWidth) break
-    usedWidth = nextWidth
-    count += 1
-  }
-  visibleMenuCount.value = count
-}
-
-const scheduleNavigatorMeasure = () => {
-  if (navigatorResizeFrame) window.cancelAnimationFrame(navigatorResizeFrame)
-  navigatorResizeFrame = window.requestAnimationFrame(measureNavigator)
-}
-
-onMounted(async () => {
-  await nextTick()
-  scheduleNavigatorMeasure()
-  if (typeof ResizeObserver !== 'undefined') {
-    navigatorResizeObserver = new ResizeObserver(scheduleNavigatorMeasure)
-    navigatorResizeObserver.observe(navigatorRef.value)
-    navigatorResizeObserver.observe(navigatorMeasureRef.value)
-  }
-  document.fonts?.ready.then(scheduleNavigatorMeasure).catch(() => {})
+onMounted(() => {
 })
 
-onBeforeUnmount(() => {
-  navigatorResizeObserver?.disconnect()
-  if (navigatorResizeFrame) window.cancelAnimationFrame(navigatorResizeFrame)
-})
 
 watch(
   () => [
@@ -315,7 +215,7 @@ const accountName = computed(() => user.value.nickname || user.value.username ||
 const accountMenus = computed(() => ucenterRoutes.children.filter(
   item => !item.meta?.hidden,
 ))
-const accountMenuTitle = item => t(
+const accountMenuTitle = (item) => t(
   item.meta.menuTitleKey || item.meta.titleKey,
 ) || item.meta.title
 const showAccountMenu = (item) => {
@@ -374,13 +274,40 @@ const handleLogout = async function () {
 </script>
 
 <style scoped>
+.ui-header{
+  padding: 0 16px;
+  position: relative;
+  z-index: 2;
+}
 .ui-header-content .logo {
   margin-right: 32px;
 }
 .ui-navigator {
-  position: relative;
-  gap: 8px;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+.menu-collapse-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #647386;
+  background: #f1f4f7;
+  cursor: pointer;
+  transition: color .16s ease, background-color .16s ease, transform .16s ease;
+}
+.menu-collapse-trigger:hover {
+  color: #fff;
+  background: var(--ui-color-primary);
+}
+.menu-collapse-trigger:active {
+  transform: scale(.96);
 }
 .ui-navigator a {
   flex: 0 0 auto;
@@ -640,8 +567,8 @@ const handleLogout = async function () {
 .user-drop-menu .vip {
   display: flex;
   align-items: center;
-  flex: 0 1 auto;
-  max-width: 154px;
+  flex: 1;
+  min-width: 0;
   padding: 0;
   min-height: 24px;
   color: color-mix(in srgb, var(--ui-color-warning) 62%, var(--white-color));
@@ -737,6 +664,7 @@ const handleLogout = async function () {
   color: var(--white-color);
   border-radius: var(--ui-radius-2xl);
   box-shadow: 0 4px 10px color-mix(in srgb, var(--text-color) 9%, transparent);
+  font-size:18px;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;

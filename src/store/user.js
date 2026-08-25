@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { userApi } from '@/api/index.js'
 import { useCardStore } from '@/store/card.js'
+import { tokenName } from "@systemConfig";
 import {
     DEFAULT_COUNTRY,
     DEFAULT_TIMEZONE,
@@ -69,7 +70,7 @@ export const useUserStore = defineStore("userStore", {
             useCardStore().init();
         },
         async login(token) {
-            Cookies.set('token', token);
+            Cookies.set(tokenName, token);
             await this.init();
         },
         async syncPreferences() {
@@ -109,7 +110,7 @@ export const useUserStore = defineStore("userStore", {
             this.isLogin = false;
             this.user = {};
             this.menuPermissions = {};
-            Cookies.remove('token')
+            Cookies.remove(tokenName)
         },
         showModal() {
             this.showLoginModal = true;

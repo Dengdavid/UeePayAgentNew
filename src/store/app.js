@@ -32,12 +32,10 @@ export const useAppStore = defineStore('appStore', {
   },
   actions: {
     async init() {
-      // 获取客服地址
-      this.getCustomerUrl()
-      // 获取公告内容
+      // 获取代理商公告
       this.getNotice()
-      // 获取公告内容
-      this.getConfig()
+      // 获取配置信息
+      await this.getConfig()
     },
     // 获取配置信息
     getConfig() {
@@ -45,25 +43,13 @@ export const useAppStore = defineStore('appStore', {
         .getConfig()
         .then((res) => {
           this.configDatas = res || {}
+          this.customerUrl=res.customer_link
         })
         .catch(() => {
           // err
         })
     },
-    // 客服地址
-    getCustomerUrl() {
-      publicApi
-        .getCustomerUrl()
-        .then((res) => {
-          if (res) {
-            this.customerUrl = res
-          }
-        })
-        .catch(() => {
-          // err
-        })
-    },
-    // 获取公告
+    // 获取代理商公告
     getNotice() {
       publicApi
         .notice()

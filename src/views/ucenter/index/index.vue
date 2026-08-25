@@ -60,26 +60,6 @@ const countsList = computed(()=>{
       ]
     },
     {
-      label: t('dashboard.invitationCommission'),
-      prop:"total_amount",
-      type:"money",
-      style:{
-        background:"#f6faf5",
-      },
-      btns:[
-        {
-          label:(data)=>t('dashboard.invitedUsers', { count: data?.deposit_number || 0 }),
-        },
-        {
-          label: t('dashboard.inviteNow'),
-          type:"default",
-          click:()=>{
-            toRoute('ucenter_invite')
-          },
-        },
-      ]
-    },
-    {
       label: t('dashboard.availableCardSlots'),
       prop:"available_capacity",
       decimals:0,

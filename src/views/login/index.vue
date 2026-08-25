@@ -1,5 +1,5 @@
 <template>
-   <PageLogin :title="$t('login.title')">
+   <PageLogin :title="$t('login.title')" bgKey="login_background">
     <Form ref="formRef" :model="form" :rules="rules" label-position="top" autocomplete="on" @keyup.enter="handleLogin">
       <FormItem prop="nickname" >
         <FormInput v-model="form.nickname" name="username" autocomplete="username" size="large" :placeholder="$t('login.placeholder.account')" >
@@ -26,12 +26,6 @@
             <a @click="toRoute('forgot-password')">{{ $t('login.action.forgotPassword') }}</a>
           </div>
         </div>
-        <div class="notice list-b-12">
-          <h4 class="title">⚠️ {{ $t('login.notice.title') }}</h4>
-          <ul class="list-b-6">
-            <li v-for="notice in notices">{{`🔸 ${notice}`}}</li>
-          </ul>
-        </div>
       </div>
     </Form>
    </PageLogin>
@@ -42,7 +36,7 @@ import { computed, onMounted, ref } from 'vue'
 import { postApi } from '@/utils/api.js'
 import { t } from '@/utils/index.js'
 import { message } from '@/utils/message.js'
-import { goBack,toRoute } from '@/utils/route.js'
+import { toRoute } from '@/utils/route.js'
 import PageLogin from '@/views/components/PageLogin/index.vue'
 import { useUserStore } from '@/store/user.js'
 import { useAppStore } from '@/store/app.js'
@@ -78,7 +72,7 @@ const handleLogin=()=>{
         message(t('login.message.success'))
         await userStore.login(res.token);
         appStore.init();
-        goBack()
+        await toRoute('home', {}, 'query', { replace: true })
       })
       .catch((err) => {
         message(err?.msg || err || t('login.message.failed'),'error')

@@ -1,5 +1,5 @@
 <template>
-   <PageLogin :title="$t('register.title')">
+   <PageLogin :title="$t('register.title')" bgKey="register_background">
     <Form ref="formRef" :model="form" :rules="rules" label-position="top">
       <FormItem prop="nickname" >
         <FormInput v-model="form.nickname" size="large" :placeholder="$t('register.placeholder.account')" maxlength="20">

@@ -1,19 +1,17 @@
 <template>
   <Spin fix>
     <div class="app-loading" role="status" :aria-label="$t('appLoading.label')">
-      <div class="app-loading__logo">
-        <img src="@/assets/images/logo.png" :alt="siteConfig.nameEn" />
-      </div>
       <div class="app-loading__progress" aria-hidden="true">
         <span></span>
       </div>
-      <p class="app-loading__text">{{title || $t('appLoading.label') }}</p>
+      <p class="app-loading__text">{{$t('appLoading.label') }}</p>
     </div>
   </Spin>
 </template>
 
 <script setup>
-import { siteConfig } from '@/config/site.js'
+import { useAppStoreRefs } from '@/utils/store.js'
+const {configDatas} = useAppStoreRefs()
 const props = defineProps({
   title:''
 })

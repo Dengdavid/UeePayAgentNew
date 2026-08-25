@@ -19,6 +19,7 @@ const data=reactive({
       label: t('download.taskName'),
       prop:'title',
       minWidth:320,
+      autoWidth:false,
       wapType:'title'
     },
     {

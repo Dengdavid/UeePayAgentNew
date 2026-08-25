@@ -1,4 +1,9 @@
 import common from './common.js'
+import setting from './setting.js'
+import menuManagement from './menu-management.js'
+import userManagement from './user-management.js'
+import groupManagement from './group-management.js'
+import marketing from './marketing.js'
 import certify from './certify.js'
 import counts from './counts.js'
 import cardDetail from './card/detail.js'
@@ -32,6 +37,11 @@ export default {
   ...common,
   ...express,
   ...help,
+  setting,
+  menuManagement,
+  userManagement,
+  groupManagement,
+  marketing,
   certify,
   counts,
   twoFactorAuth,

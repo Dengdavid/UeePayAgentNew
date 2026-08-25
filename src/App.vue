@@ -1,43 +1,53 @@
 <template>
-  <UILoading :title="$t('appLoading.welcome')" v-if="pageLoading"/>
+  <UILoading  v-if="pageLoading"/>
   <LayoutApp v-else-if="showHeader && isPhone" />
   <div
     v-else-if="showHeader"
     class="app"
+    :class="{ 'is-menu-collapsed': isMenuCollapsed }"
     :style="{ '--sticky-header-height': showNotice && notice ? '96px' : '56px' }"
   >
-    <div class="sticky-header">
-      <LayoutHeader />
-      <div v-if="showNotice && notice" class="ui-bar">
-        <div class="w1200">
-          <div class="app-notice-content">
-            <NoticeMarquee :text="notice" />
-            <a class="app-notice-detail" @click="showNoticeDetail">
-              {{ $t('header.notice.detail') }}
-            </a>
+    <div class="app-menu">
+      <LayoutMenu
+        :collapsed="isMenuCollapsed"
+      />
+    </div>
+    <div class="app-main">
+      <div class="sticky-header">
+        <LayoutHeader
+          :menu-collapsed="isMenuCollapsed"
+          @toggle-menu-collapse="toggleMenuCollapse"
+        />
+        <div v-if="showNotice && notice" class="ui-bar">
+          <div class="w1200">
+            <div class="app-notice-content">
+              <NoticeMarquee :text="notice" />
+              <a class="app-notice-detail" @click="showNoticeDetail">
+                {{ $t('header.notice.detail') }}
+              </a>
+            </div>
+            <Icon
+              type="md-close-circle"
+              size="16"
+              color="#fcc"
+              class="ui-pointer ui-flex-shrink ml-20"
+              :aria-label="$t('header.notice.close')"
+              @click="closeNotice"
+            />
           </div>
-          <Icon
-            type="md-close-circle"
-            size="16"
-            color="#fcc"
-            class="ui-pointer ui-flex-shrink ml-20"
-            :aria-label="$t('header.notice.close')"
-            @click="closeNotice"
-          />
         </div>
       </div>
+      <div class="ui-main">
+        <router-view :key="route.matched[0]?.name || route.path" />
+      </div>
     </div>
-    <div class="ui-main">
-      <router-view :key="route.matched[0]?.name || route.path" />
-    </div>
-    <LayoutFooter />
   </div>
   <router-view v-else :key="route.name || route.path" />
 </template>
 
 <script setup>
-import LayoutFooter from '@/components/layout/LayoutFooter.vue'
 import LayoutHeader from '@/components/layout/LayoutHeader.vue'
+import LayoutMenu from '@/components/layout/LayoutMenu.vue'
 import NoticeMarquee from '@/components/layout/NoticeMarquee.vue'
 import LayoutApp from '@/components/wap/layout/LayoutApp.vue'
 import { errorRoutes, loginUnableRoutes } from '@/router/router.js'
@@ -46,8 +56,9 @@ import { useAppStore, useAppStoreRefs, useUserStore } from '@/utils/store.js'
 import { isPhone } from '@/utils/device.js'
 import Cookies from 'js-cookie'
 import { Modal } from 'view-ui-plus'
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { tokenName } from "@systemConfig";
 
 const route = useRoute()
 const userStore = useUserStore()
@@ -59,15 +70,31 @@ const errorRoutesNames = new Set(errorRoutes.map((item) => item.name))
 
 const showNotice = ref(true)
 const pageLoading = ref(true)
+const isMenuManuallyCollapsed = ref(false)
+const isNarrowViewport = ref(false)
+const isMenuCollapsed = computed(() => isMenuManuallyCollapsed.value)
 const showHeader = computed(() => {
   if (!route.name) return false
+  if (route.meta.standalone) return false
   return (
     !loginUnableRouteNames.has(route.name) &&
     !errorRoutesNames.has(route.name)
   )
 })
 
-const showNoticeDetail = function () {
+const syncViewport = () => {
+  const nextIsNarrow = window.innerWidth < 1400
+  if (nextIsNarrow && !isNarrowViewport.value) {
+    isMenuManuallyCollapsed.value = true
+  }
+  isNarrowViewport.value = nextIsNarrow
+}
+
+const toggleMenuCollapse = () => {
+  isMenuManuallyCollapsed.value = !isMenuManuallyCollapsed.value
+}
+
+const showNoticeDetail = () => {
   Modal.info({
     title: t('header.notice.title'),
     width: 800,
@@ -75,13 +102,17 @@ const showNoticeDetail = function () {
     okText: t('button.confirm'),
   })
 }
-const closeNotice = function () {
+
+const closeNotice = () => {
   showNotice.value = false
 }
 
+
 onMounted(async () => {
+  syncViewport()
+  window.addEventListener('resize', syncViewport)
   try {
-    const token = Cookies.get('token')
+    const token = Cookies.get(tokenName)
     if (token) {
       await userStore.init()
     }
@@ -90,6 +121,10 @@ onMounted(async () => {
     await nextTick()
     pageLoading.value = false
   }
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', syncViewport)
 })
 </script>
 
@@ -104,12 +139,28 @@ onMounted(async () => {
   position: sticky;
   top: 0;
   z-index: 1000;
+  flex-shrink: 0;
 }
 </style>
 <style lang="less">
 @import '@/assets/css/com.less';
 .app{
+  .sticky-header{
+    width: 100%;
+  }
+
   .ui-bar{
+    min-height: var(--ui-size-40);
+    padding: 0 var(--ui-space-16);
+    color: var(--ui-color-error-strong);
+    background: var(--ui-color-surface-danger-soft);
+
+    .w1200{
+      min-height: var(--ui-size-40);
+      display: flex;
+      align-items: center;
+    }
+
     .app-notice-content{
       min-width: 0;
       flex: 1;

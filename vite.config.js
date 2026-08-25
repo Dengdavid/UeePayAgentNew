@@ -10,13 +10,13 @@ export default defineConfig({
   server: {
     open: true, // 是否设置开启自动打开浏览器
     host: "0.0.0.0",
-    port: 5174,
+    port: 5176,
     proxy: {
       "/ipapi": {
         target: "https://ipapi.co",
         changeOrigin: true,
       },
-      "/api": {
+      "/agent": {
         target: activeApiTarget,
         changeOrigin: true,
       },
@@ -25,6 +25,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@systemConfig": path.resolve(__dirname, "./system.config.js"),
     },
     extensions: [".js", ".vue", ".json", ".less", ".css"],
   },

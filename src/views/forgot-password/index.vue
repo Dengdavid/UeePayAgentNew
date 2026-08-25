@@ -1,5 +1,5 @@
 <template>
-   <PageLogin :title="$t('forgotPassword.title')">
+   <PageLogin :title="$t('forgotPassword.title')" bgKey="find_pwd_background">
     <Form ref="formRef" :model="form" :rules="rules" label-position="top"  @keyup.enter="handleResetPassword">
       <FormItem prop="email" >
         <FormEmail size="large" :data="form" dataName="email" :placeholder="$t('forgotPassword.placeholder.email')" @on-change="form.code=''">

@@ -1,0 +1,27 @@
+export default {
+      dataOverview: '数据概况',
+      cardTotal: '卡片总数(张)',
+      cardBalance: '卡片余额($)',
+      memberBalance: '会员余额($)',
+      cardFrozen: '冻结卡片(张)',
+      cardCancelled: '注销卡片(张)',
+      cardData: '卡片数据',
+      memberTotal: '会员总数(人)',
+      memberData: '会员数据',
+      revenueEstimate: '收入预估',
+      consumptionTrend: '消费趋势',
+      newCardCount: '新增开卡数',
+      newUserCount: '新增用户数',
+      transactionCount: '交易笔数',
+      transactionAmount: '交易总额 $',
+      types: {
+        create_amount: '卡片激活费',
+        card_depost_amount: '卡片转入费',
+        account_depost_amount: '账户充值费',
+        auth_amount: '交易手续费',
+        foreign_amount: '跨境手续费',
+        buy_group_amount: '会员服务费',
+        invite_amount: '邀请返佣',
+        total: '收入总金额',
+      }
+    }

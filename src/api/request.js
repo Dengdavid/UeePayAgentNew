@@ -1,11 +1,11 @@
 import { createRequestClient } from './request/client.js'
-
+import { baseURL } from "@systemConfig";
 // 请求层的可调参数统一在此维护，内部模块只通过参数注入读取配置。
 export const REQUEST_CONFIG = {
   // Axios 实例基础配置。
   axios: {
     // 所有业务接口的统一请求前缀。
-    baseURL: '/api',
+    baseURL: baseURL,
     // 单次请求超时时间，单位为毫秒。
     timeout: 60000,
   },

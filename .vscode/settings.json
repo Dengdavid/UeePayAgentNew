@@ -1,0 +1,75 @@
+{
+  // ================== i18n-ally (国际化插件) ==================
+  "i18n-ally.localesPaths": ["src/locales/lang"], // 语言包根路径
+  "i18n-ally.keystyle": "nested", // 键值风格：嵌套模式
+  "i18n-ally.displayLanguage": "zh-CN", // 编辑器显示的语言
+  "i18n-ally.sourceLanguage": "en-US", // 源语言（用于参考）
+  "i18n-ally.enabledFrameworks": ["vue", "vue-i18n"], // 启用的框架
+  "i18n-ally.framework": "vue-i18n", // 强制指定框架类型为 vue-i18n
+  "i18n-ally.enabledParsers": ["js"], // 解析器：支持 .js 文件
+  "i18n-ally.extract.autoOpen": true, // 提取 key 时自动打开对话框
+  "i18n-ally.extract.replace": true, // 提取后自动替换
+  "i18n-ally.extract.prefix": "", // 提取前缀
+  "i18n-ally.extract.replaceWith": "t('{key}')", // 自动替换的模板格式
+
+  // 👇 强烈建议加（提升体验）
+  "i18n-ally.sortKeys": true, // 自动排序 Key
+  "i18n-ally.namespace": false, // 由各语言 index.js 提供完整运行时 Key，不再按文件路径生成命名空间
+  "i18n-ally.pathMatcher": "{locale}/index.js", // 只扫描语言聚合入口，避免分模块文件重复加载和根 Key 覆盖
+
+  // 设置默认格式化工具为 Prettier
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // 启用保存时自动格式化代码
+  "editor.formatOnSave": false,
+
+  // 启用保存时自动修复 ESLint 错误
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  },
+
+  // 对 Vue 文件使用 Volar 插件进行格式化
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+
+  // 针对 JavaScript 和 TypeScript 使用 Prettier 进行格式化
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // 针对 JSON 文件使用 Prettier 格式化
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // 针对 HTML 文件使用 Prettier 格式化
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // 自动移除尾部空格
+  "files.trimTrailingWhitespace": true,
+
+  // 保存时插入换行符
+  "files.insertFinalNewline": true,
+
+  // 设置缩进为 2 个空格，并禁用自动检测缩进
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+
+  // 禁用 Vetur，启用 Volar 进行 Vue 类型检查
+  "vetur.validation.template": false,
+  "volar.enableTypeScriptPlugin": true,
+
+  // 启用 Volar 的模板类型检查（Vue 3 项目中的 JS 文件）
+  "vue.languageFeatures.enable": true,
+
+  // 启用格式化时对粘贴内容进行自动格式化
+  "editor.formatOnPaste": false
+
+
+}
