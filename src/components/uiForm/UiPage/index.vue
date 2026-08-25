@@ -36,7 +36,7 @@
           @click="countsShow=!countsShow"
         >{{ pageRightTitle }}</Button>
         <PageActions :data="data?.btns" :statusValue="statusValue" v-if="(data?.searchThead?.length===0 || !data?.searchThead) && !isSelect && !isPhone"/>
-        <div class="ui-page-thead-arefresh"  v-if="data?.thead.length>0">
+        <div class="ui-page-thead-arefresh"  v-if="data?.thead?.length>0">
           <Button type="default" icon="md-sync" :loading="loading" @click="search">{{ $t('button.refresh') }}</Button>
         </div>
       </div>
@@ -307,8 +307,8 @@ const theadShow=computed(()=>{
   if(props.isSelect || props.isMx){
     return false
   }
-  if(props.data?.btns?.length>0){
-    return true
+  if(props.data?.btns?.length>0 && props.data?.searchThead?.length===0){
+    return false
   }
   if(props.isNotTitle && !isPhone){
     return false

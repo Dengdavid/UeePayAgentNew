@@ -69,8 +69,6 @@ const props = defineProps({
    .manage-main{
       flex: 1;
       overflow: hidden;
-      padding:12px;
-      background: #fafafa;
       position: relative;
    }
 }
