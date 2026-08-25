@@ -2,7 +2,7 @@
   <UiPage
     ref="pageRef"
     isAuto
-    isNotTitle
+    isBack
     :page-right-title="$t('header.preferences.currentSettings')"
   >
     <section class="country-list" :aria-label="$t('header.preferences.countryList')">

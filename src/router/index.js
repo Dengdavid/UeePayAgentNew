@@ -24,9 +24,9 @@ const routeNames = (arr) => {
   return _arr
 }
 
-const whiteRouteNames = routeNames([...whiteRoutes, ...errorRoutes]);
+const whiteRouteNames = new Set(routeNames([...whiteRoutes, ...errorRoutes]));
 
-const loginUnableRouteNames = loginUnableRoutes.map(item => item.name);
+const loginUnableRouteNames = new Set(loginUnableRoutes.map(item => item.name));
 
 const router = createRouter({
   history: createWebHistory(),
@@ -42,40 +42,36 @@ const router = createRouter({
     return false
   },
 })
-const errorRoutesName = routeNames(errorRoutes)
-
 const updateDocumentTitle = (route) => {
   const routeTitle = route.meta?.titleKey ? t(route.meta.titleKey) : route.meta?.title
   window.document.title = routeTitle || ''
 }
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to) => {
   const token = Cookies.get(tokenName)
-  if (whiteRouteNames.indexOf(to.name) === -1) {
-    // 不在白名单内
-    if (token) {
-      // 已登录不能访问登录、注册等页面
-      if (loginUnableRouteNames.indexOf(to.name) !== -1) {
-        next({ name: 'home' })
-        return false
-      }
-    } else if (loginUnableRouteNames.indexOf(to.name) === -1) {
-        next({ name: 'login'})
-        return false
-      }
+  const isWhiteRoute = whiteRouteNames.has(to.name)
+  const isLoginUnableRoute = loginUnableRouteNames.has(to.name)
+
+  if (!isWhiteRoute && token && isLoginUnableRoute) {
+    return { name: 'home' }
   }
+
+  if (!isWhiteRoute && !token && !isLoginUnableRoute) {
+    return { name: 'login' }
+  }
+
   if (to.matched.some((record) => record.meta.requiresAdmin)) {
     const userStore = useUserStore()
     if (!Object.prototype.hasOwnProperty.call(userStore.user, 'is_admin')) {
       await userStore.getUserInfo()
     }
     if (!userStore.user.is_admin) {
-      next({ name: 'error_404', replace: true })
-      return false
+      return { name: 'error_404', replace: true }
     }
   }
+
   updateDocumentTitle(to)
-  next()
+  return true
 })
 
 watch(locale, () => {

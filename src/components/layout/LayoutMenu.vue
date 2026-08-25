@@ -90,7 +90,7 @@
     <div v-if="user.is_admin" class="admin-footer">
       <div class="admin-info account-menu-item" @click="handleGoPage('marketing')">
         <span class="iconfont icon-shezhi"></span>
-        <span>管理后台</span>
+        <span>{{ $t('menu.manage') }}</span>
       </div>
     </div>
   </nav>

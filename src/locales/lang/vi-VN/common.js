@@ -79,6 +79,7 @@ export default {
   },
   menu:{
     certify:'Xác minh danh tính',
+    manage: 'Trang quản trị',
     recommended: 'Phổ biến',
     marketingData: 'dữ liệu tiếp thị',
     cardManage: 'Quản lý thẻ',

@@ -79,6 +79,7 @@ export default {
   },
   menu:{
     certify:'التحقق من الهوية',
+    manage: 'لوحة الإدارة',
     recommended: 'الأكثر شيوعًا',
     marketingData: 'بيانات التسويق',
     cardManage: 'إدارة البطاقة',

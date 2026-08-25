@@ -86,7 +86,6 @@ const ACTION_GAP = 16
 const ACTION_LIST_HORIZONTAL_OFFSET = 12
 const ACTION_MORE_ICON_SPACE = 18
 const COLUMN_HORIZONTAL_SPACE = 36
-const AUTO_COLUMN_MAX_WIDTH = 300
 
 const measureTitleWidth = (title) => {
   const text = String(title || '')
@@ -189,7 +188,8 @@ const getAutoColumnWidth = (item, title) => {
     Number(item.width) || 0,
     Number(item.minWidth) || 0,
   )
-  return Math.min(contentWidth, Number(item.maxWidth) || AUTO_COLUMN_MAX_WIDTH)
+  const maxWidth = Number(item.maxWidth) || 0
+  return maxWidth ? Math.min(contentWidth, maxWidth) : contentWidth
 }
 const getColumnSize = (item, title, key) => {
   const titleWidth = measureTitleWidth(title) + COLUMN_HORIZONTAL_SPACE
@@ -198,15 +198,12 @@ const getColumnSize = (item, title, key) => {
   return Math.max(Number(item[key]) || 0, titleWidth, optionsColumnWidth)
 }
 const columns = computed(() => {
-  const theadArr = props.thead.map((item, index) => {
+  const theadArr = props.thead.map(item => {
     const title = `${item.label}${item?.unit ? ` (${item?.unit})` : ''}`
     const autoWidth = item.autoWidth !== false
-    const isLastBusinessColumn = index === props.thead.length - 1
     const width = autoWidth ? undefined : getColumnSize(item, title, 'width')
     const minWidth = autoWidth ? getAutoColumnWidth(item, title) : getColumnSize(item, title, 'minWidth')
-    const maxWidth = autoWidth
-      ? (isLastBusinessColumn ? undefined : Number(item.maxWidth) || AUTO_COLUMN_MAX_WIDTH)
-      : item.maxWidth
+    const maxWidth = item.maxWidth
     const obj={
       key:item.prop,
       title,

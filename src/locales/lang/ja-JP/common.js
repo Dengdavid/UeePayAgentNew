@@ -79,6 +79,7 @@ export default {
   },
   menu:{
     certify:'本人確認',
+    manage: '管理画面',
     recommended: 'おすすめ',
     marketingData: 'マーケティングデータ',
     cardManage: 'カード管理',

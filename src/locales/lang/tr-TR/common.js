@@ -79,6 +79,7 @@ export default {
   },
   menu:{
     certify:'Kimlik Doğrulama',
+    manage: 'Yönetim Paneli',
     recommended: 'Popüler',
     marketingData: 'pazarlama verileri',
     cardManage: 'Kart yönetimi',

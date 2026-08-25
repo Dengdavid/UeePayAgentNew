@@ -289,6 +289,7 @@ export const ucenterRoutes = {
       meta: {
         title: "账户充值",
         titleKey: "route.accountRecharge",
+        direct: "ucenter_finance",
         menuIcon: "md-card",
         hidden: !isPhone,
         menuIconStyle: menuIconStyles.green,

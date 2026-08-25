@@ -79,6 +79,7 @@ export default {
   },
   menu: {
     certify: 'Identity Verification',
+    manage: 'Admin Panel',
     recommended: 'Hot',
     marketingData: 'Marketing Data',
     cardManage: 'Card Management',

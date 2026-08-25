@@ -79,6 +79,7 @@ export default {
   },
   menu:{
     certify:'실명 인증',
+    manage: '관리자 페이지',
     recommended: '인기',
     marketingData: '마케팅 데이터',
     cardManage: '카드 관리',

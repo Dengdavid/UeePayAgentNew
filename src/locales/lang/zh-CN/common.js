@@ -79,6 +79,7 @@ export default {
   },
   menu:{
     certify:'实名认证',
+    manage: '管理后台',
     recommended: '推荐',
     marketingData: '营销数据',
     cardManage: '卡片管理',

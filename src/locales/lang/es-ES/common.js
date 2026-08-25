@@ -79,6 +79,7 @@ export default {
   },
   menu:{
     certify:'Verificación de identidad',
+    manage: 'Panel de administración',
     recommended: 'Popular',
     marketingData: 'datos de marketing',
     cardManage: 'Gestión de tarjetas',

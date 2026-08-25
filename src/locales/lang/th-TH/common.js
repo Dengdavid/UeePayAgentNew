@@ -79,6 +79,7 @@ export default {
   },
   menu:{
     certify:'การยืนยันตัวตน',
+    manage: 'แผงผู้ดูแลระบบ',
     recommended: 'ยอดนิยม',
     marketingData: 'ข้อมูลการตลาด',
     cardManage: 'การจัดการบัตร',

@@ -79,6 +79,7 @@ export default {
   },
   menu:{
     certify:'Verifikasi Identitas',
+    manage: 'Panel Admin',
     recommended: 'Populer',
     marketingData: 'data pemasaran',
     cardManage: 'Manajemen kartu',

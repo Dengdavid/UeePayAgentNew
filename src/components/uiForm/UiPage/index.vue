@@ -75,7 +75,7 @@
           </button>
         </div>
         <div class="ui-page-search" v-if="data?.searchThead?.length>0 && !isPhone">
-          <PageSearch :data="data?.searchThead" :pageSearch="pageSearch" @search="search"/>
+          <PageSearch :data="data?.searchThead" :pageSearch="pageSearch" @search="reset"/>
           <PageActions :data="data?.btns" :statusValue="statusValue" v-if="!isSelect"/>
           <Button type="default" icon="md-sync" :loading="loading" @click="search" v-if="data?.searchThead.length>0">{{ $t('button.refresh') }}</Button>
         </div>
