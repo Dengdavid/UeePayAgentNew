@@ -185,6 +185,7 @@ import Decimal from 'decimal.js'
 import { useUserStore } from '@/store/user.js'
 import Aurora from '@/views/home/components/Aurora.vue'
 import { t } from '@/utils'
+import { tokenName } from "@systemConfig";
 const appStore = useAppStore()
 const { customerUrl } = storeToRefs(appStore)
 const userStore = useUserStore()
@@ -195,7 +196,7 @@ const plansGridRef = ref(null)
 const canScrollPlansPrev = ref(false)
 const canScrollPlansNext = ref(false)
 const hasLoginSession = computed(() => (
-  isLogin.value && Boolean(Cookies.get('token')) && Boolean(user.value?.id)
+  isLogin.value && Boolean(Cookies.get(tokenName)) && Boolean(user.value?.id)
 ))
 
 const updatePlansScrollButtons = () => {

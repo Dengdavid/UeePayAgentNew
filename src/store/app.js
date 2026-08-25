@@ -33,7 +33,7 @@ export const useAppStore = defineStore('appStore', {
   actions: {
     async init() {
       // 获取代理商公告
-      this.getNotice()
+      // this.getNotice()
       // 获取配置信息
       await this.getConfig()
     },

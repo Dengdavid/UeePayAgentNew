@@ -2,7 +2,6 @@
   <div
     ref="enterpriseRef"
     class="enterprise"
-    :style="{ '--enterprise-sticky-top': `${stickyTop}px` }"
     v-if="stepData.length"
   >
     <div class="mobile-progress">
@@ -337,7 +336,6 @@ const stepDraftSnapshots = ref({})
 const submitFieldsPending = {}
 const enterpriseRef = ref(null)
 const formRef = ref(null)
-const stickyTop = ref(0)
 const validateRequired = ref(true)
 const fieldValueSnapshots = ref({})
 const currentServerVersion = ref('')
@@ -349,7 +347,6 @@ const recognitionDocumentsCollapsed = ref(true)
 const recognitionActionLoading = ref(false)
 const recognitionDismissedRequestId = ref('')
 const acknowledgedRecognitionRequestId = ref('')
-let stickyFrame = null
 let mobileMedia = null
 let cacheTimer = null
 let cacheEnabled = true
@@ -424,7 +421,6 @@ const toggleRecognitionDocuments = async () => {
     })
   }
   await nextTick()
-  updateStickyTop()
 }
 const documentFileCount = computed(() => {
   let count = 0
@@ -859,23 +855,6 @@ const syncFieldSnapshots = () => {
 }
 
 const isMobileLayout = () => mobileMedia?.matches ?? window.innerWidth <= 768
-
-const updateStickyTop = () => {
-  if (isMobileLayout()) {
-    if (stickyFrame) {
-      cancelAnimationFrame(stickyFrame)
-      stickyFrame = null
-    }
-    stickyTop.value = 0
-    return
-  }
-  if (stickyFrame) return
-  stickyFrame = requestAnimationFrame(() => {
-    const rect = enterpriseRef.value?.getBoundingClientRect()
-    stickyTop.value = Math.max(0, Math.round(rect?.top || 0))
-    stickyFrame = null
-  })
-}
 
 const getCacheKey = () => {
   const certification = props.data?.certification || {}
@@ -1434,7 +1413,6 @@ const backToDocuments = async () => {
   }
   cacheCurrentState()
   await nextTick()
-  updateStickyTop()
   await scrollToStepTop()
 }
 
@@ -1862,7 +1840,6 @@ defineExpose({
 
 watch(() => props.data, () => {
   getInfo()
-  nextTick(updateStickyTop)
 },{
   deep:true,
   immediate:true
@@ -1876,13 +1853,6 @@ watch(stepData, () => {
 
 onMounted(() => {
   mobileMedia = window.matchMedia('(max-width: 768px)')
-  nextTick(updateStickyTop)
-  window.addEventListener('resize', updateStickyTop)
-  if (mobileMedia.addEventListener) {
-    mobileMedia.addEventListener('change', updateStickyTop)
-  } else {
-    mobileMedia.addListener?.(updateStickyTop)
-  }
 })
 
 onBeforeUnmount(() => {
@@ -1893,16 +1863,6 @@ onBeforeUnmount(() => {
     cacheTimer = null
   }
   cacheCurrentState()
-  if (stickyFrame) {
-    cancelAnimationFrame(stickyFrame)
-    stickyFrame = null
-  }
-  window.removeEventListener('resize', updateStickyTop)
-  if (mobileMedia?.removeEventListener) {
-    mobileMedia.removeEventListener('change', updateStickyTop)
-  } else {
-    mobileMedia?.removeListener?.(updateStickyTop)
-  }
 })
 </script>
 
@@ -1917,7 +1877,7 @@ onBeforeUnmount(() => {
   overflow: visible;
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap:16px;
   :deep(.form-select-box-dropdown){
     z-index: calc(var(--ui-layer-tooltip) + 1);
   }
@@ -1926,13 +1886,14 @@ onBeforeUnmount(() => {
     background: #fff;
     border-radius: var(--ui-radius-lg);
     padding: var(--ui-padding-16);
+    border: 1px #eee solid;
   }
   .left{
     width: var(--ui-size-240);
     flex-shrink: 0;
     position: sticky;
-    top: var(--enterprise-sticky-top, 0px);
-    max-height: calc(100vh - var(--enterprise-sticky-top, 0px) - 16px);
+    top: var(--ui-space-16);
+    max-height: calc(100vh - var(--sticky-header-height, 0px) - var(--ui-space-32));
     overflow: auto;
     .thead{
       p{
