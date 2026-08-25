@@ -34,5 +34,6 @@ export default {
       "emailTest": "이메일 테스트",
       "confirmSend": "전송 확인",
       "emailSendSuccess": "이메일이 성공적으로 전송되었습니다",
-      "fieldRequired": "{field}은(는) 비워둘 수 없습니다."
+      "fieldRequired": "{field}은(는) 비워둘 수 없습니다.",
+      "saveSuccess": "저장되었습니다"
     }

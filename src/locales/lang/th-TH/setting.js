@@ -34,5 +34,6 @@ export default {
       "emailTest": "ทดสอบอีเมล",
       "confirmSend": "ยืนยันการส่ง",
       "emailSendSuccess": "ส่งอีเมลสำเร็จ",
-      "fieldRequired": "{field} ไม่สามารถเว้นว่างได้"
+      "fieldRequired": "{field} ไม่สามารถเว้นว่างได้",
+      "saveSuccess": "บันทึกสำเร็จ"
     }

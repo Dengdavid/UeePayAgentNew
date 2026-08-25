@@ -7,4 +7,11 @@ export default {
       icon:'菜单图标',//菜单图标
       url:'菜单地址',//菜单地址
       sort:'排序',//排序
+      addTitle: '新增菜单',
+      editTitle: '编辑菜单',
+      edit: '编辑',
+      enable: '启用',
+      disable: '禁用',
+      deleteConfirm: '确认删除该菜单吗？',
+      operationSuccess: '操作成功',
     }

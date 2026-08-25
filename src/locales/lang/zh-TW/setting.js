@@ -34,5 +34,6 @@ export default {
       "emailTest": "信箱測試",
       "confirmSend": "確認發送",
       "emailSendSuccess": "信箱發送成功",
-      "fieldRequired": "{field}不能為空"
+      "fieldRequired": "{field}不能為空",
+      "saveSuccess": "儲存成功"
     }

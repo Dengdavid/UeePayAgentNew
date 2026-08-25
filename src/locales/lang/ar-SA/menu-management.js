@@ -6,5 +6,12 @@ export default {
       "icon": "رمز القائمة",
       "title": "اسم القائمة",
       "openTypeExternal": "تفتح نافذة جديدة",
-      "status": "الحالة ممكّنة"
+      "status": "الحالة ممكّنة",
+      "addTitle": "إضافة قائمة",
+      "editTitle": "تعديل القائمة",
+      "edit": "تعديل",
+      "enable": "تفعيل",
+      "disable": "تعطيل",
+      "deleteConfirm": "هل أنت متأكد من حذف هذه القائمة؟",
+      "operationSuccess": "تمت العملية بنجاح"
     }

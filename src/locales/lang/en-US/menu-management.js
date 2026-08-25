@@ -7,4 +7,11 @@ export default {
       icon:'Menu Icon',//菜单图标
       url:'Menu URL',//菜单地址
       sort:'Sort',//排序
+      addTitle: 'Add Menu',
+      editTitle: 'Edit Menu',
+      edit: 'Edit',
+      enable: 'Enable',
+      disable: 'Disable',
+      deleteConfirm: 'Are you sure you want to delete this menu?',
+      operationSuccess: 'Operation completed successfully',
     }

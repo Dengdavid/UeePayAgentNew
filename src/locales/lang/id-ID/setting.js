@@ -34,5 +34,6 @@ export default {
       "emailTest": "Tes Email",
       "confirmSend": "Konfirmasi kirim",
       "emailSendSuccess": "Email berhasil dikirim",
-      "fieldRequired": "{field} tidak boleh kosong"
+      "fieldRequired": "{field} tidak boleh kosong",
+      "saveSuccess": "Berhasil disimpan"
     }

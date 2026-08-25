@@ -14,7 +14,7 @@
       <div class="ui-page-thead" :class="{
         borderBottom:route.meta?.isAppDetail && isPhone
       }" v-if="theadShow">
-        <div  class="title">
+        <div  class="title" v-if="!props.isNotTitle">
           <template v-if="isBack || (route.meta?.isAppDetail && isPhone)">
             <div class="back" @click="goBack(fallback)">
                 <Icon type="ios-arrow-back" :size="16" />
@@ -36,6 +36,9 @@
           @click="countsShow=!countsShow"
         >{{ pageRightTitle }}</Button>
         <PageActions :data="data?.btns" :statusValue="statusValue" v-if="(data?.searchThead?.length===0 || !data?.searchThead) && !isSelect && !isPhone"/>
+        <div class="ui-page-thead-arefresh"  v-if="data?.thead.length>0">
+          <Button type="default" icon="md-sync" :loading="loading" @click="search">{{ $t('button.refresh') }}</Button>
+        </div>
       </div>
       <div class="ui-page-tip" v-if="$slots.tip">
         <slot name="tip"></slot>
@@ -304,6 +307,9 @@ const theadShow=computed(()=>{
   if(props.isSelect || props.isMx){
     return false
   }
+  if(props.data?.btns?.length>0){
+    return true
+  }
   if(props.isNotTitle && !isPhone){
     return false
   }
@@ -519,6 +525,11 @@ watch(() => props.data?.status?.length, () => {
           font-weight: var(--ui-font-weight-regular);
         }
       }
+    }
+    .ui-page-thead-arefresh{
+      flex: 1;
+      display: flex;
+      justify-content: end;
     }
   }
   .ui-page-status{

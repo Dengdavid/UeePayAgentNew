@@ -6,5 +6,12 @@ export default {
       "openTypeExternal": "Nova janela é aberta",
       "openTypeInternal": "Abrir no site",
       "status": "Status ativado",
-      "icon": "ícone do menu"
+      "icon": "ícone do menu",
+      "addTitle": "Adicionar menu",
+      "editTitle": "Editar menu",
+      "edit": "Editar",
+      "enable": "Ativar",
+      "disable": "Desativar",
+      "deleteConfirm": "Tem a certeza de que pretende eliminar este menu?",
+      "operationSuccess": "Operação concluída com sucesso"
     }

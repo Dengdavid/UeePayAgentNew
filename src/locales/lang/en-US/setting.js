@@ -35,4 +35,5 @@ export default {
       confirmSend:'Confirm Send',
       emailSendSuccess:'Email sent successfully',
       fieldRequired:'{field} cannot be empty',
+      saveSuccess:'Saved successfully',
     }

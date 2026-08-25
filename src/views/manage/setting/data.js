@@ -29,7 +29,7 @@ const save=()=>{
    loadingButton.value=true
    const form=data.value
    postApi("/user/agentSite/edit",getSavePayload(form)).then(res=>{
-      message(t('common.success'))
+      message(t('setting.saveSuccess'))
       getData()
       appStore.getConfig()
    }).catch(err=>{

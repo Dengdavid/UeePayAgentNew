@@ -1,28 +1,26 @@
 <template>
   <div class="ui-table">
-     <Table :columns="columns" :loading="loading" :height="isSelect?600:''" :data="tbody" :row-key="rowKey">
-        <template #[item.prop||item.key]="{ row, index }" v-for="item in slotKeys" :key="item.prop||item.key">
-          <slot
-            v-if="$slots[item.prop || item.key]"
-            :name="item.prop || item.key"
-            :row="row"
-            :index="index"
-          />
-          <ColumnsItemType v-else :data="item" :row="row" :index="index"/>
-        </template>
-        <template #action="{ row, index }" v-if="actions?.length>0">
-            <template v-if="isSelect">
-              <Button type="text" @click="handleSelect(row,index)">{{ $t('button.select') }}</Button>
-            </template>
-            <TableActions
-              v-else
-              :row="row"
-              :actions="actions"
-              :actions-max="actionsMax"
-              :row-index="index"
-            />
-        </template>
-     </Table>
+    <Table :columns="columns" :loading="loading" :height="isSelect ? 600 : ''" :data="tbody" :row-key="rowKey">
+      <template v-for="item in slotKeys" #[item.prop||item.key]="{ row, index }" :key="item.prop || item.key">
+        <slot
+          v-if="$slots[item.prop || item.key]"
+          :name="item.prop || item.key"
+          :row="row"
+          :index="index"
+        />
+        <ColumnsItemType v-else :data="item" :row="row" />
+      </template>
+      <template v-if="actions.length > 0" #action="{ row, index }">
+        <Button v-if="isSelect" type="text" @click="handleSelect(row, index)">{{ $t('button.select') }}</Button>
+        <TableActions
+          v-else
+          :row="row"
+          :actions="actions"
+          :actions-max="actionsMax"
+          :row-index="index"
+        />
+      </template>
+    </Table>
   </div>
 </template>
 
@@ -31,54 +29,49 @@ import ColumnsItemType from './ColumnsItemType.vue'
 import TableActions from './TableActions.vue'
 import { computed } from 'vue'
 import { t } from '@/utils'
+
 const props = defineProps({
-  thead:{
+  thead: {
     type: Array,
-    default: ()=>[],
+    default: () => [],
   },
-  tbody:{
+  tbody: {
     type: Array,
-    default: ()=>[],
+    default: () => [],
   },
-  actions:{
+  actions: {
     type: Array,
-    default: ()=>[],
+    default: () => [],
   },
-  title:{
+  title: {
     type: String,
   },
-  buttonLoading:{
-    type:Boolean,
-    default: false,
-  },
-  actionsWidth:{
-    type: Number,
-    default:0,
-  },
-  actionsMax:{
-    type: Number,
-    default:1,
-  },
-  loading:{
+  buttonLoading: {
     type: Boolean,
     default: false,
   },
-  isSelect:{
+  actionsWidth: {
+    type: Number,
+    default: 0,
+  },
+  actionsMax: {
+    type: Number,
+    default: 1,
+  },
+  loading: {
     type: Boolean,
     default: false,
   },
-  rowKey:{
+  isSelect: {
+    type: Boolean,
+    default: false,
+  },
+  rowKey: {
     type: String,
     default: 'id',
-  }
+  },
 })
-const slotKeys = computed(() => {
-  return props.thead.filter(item =>isSlot(item))
-})
-const isSlot=(item)=>{
-  return item.type || item?.formType || typeof item?.value==='function'  || typeof item?.click==='function'
-}
-let measureContext
+
 const ACTIONS_MIN_WIDTH = 100
 const ACTION_BUTTON_HORIZONTAL_SPACE = 30
 const ACTION_CELL_HORIZONTAL_SPACE = 36
@@ -87,8 +80,15 @@ const ACTION_LIST_HORIZONTAL_OFFSET = 12
 const ACTION_MORE_ICON_SPACE = 18
 const COLUMN_HORIZONTAL_SPACE = 36
 
-const measureTitleWidth = (title) => {
-  const text = String(title || '')
+let measureContext
+
+const isSlot = item => Boolean(
+  item.type || item.formType || typeof item.value === 'function' || typeof item.click === 'function'
+)
+const slotKeys = computed(() => props.thead.filter(isSlot))
+
+const measureTextWidth = value => {
+  const text = String(value || '')
   if (typeof document !== 'undefined') {
     measureContext ||= document.createElement('canvas').getContext('2d')
     if (measureContext) {
@@ -103,7 +103,7 @@ const getActionValue = (action, key, row) => {
   if (typeof value !== 'function') return value
   return row ? value(row) : ''
 }
-const getVisibleActions = (row) => {
+const getVisibleActions = row => {
   return props.actions.filter(action => {
     if (typeof action.show === 'function') {
       return row ? action.show(row) : true
@@ -142,7 +142,7 @@ const getActionsColumnWidth = () => {
     const displayedActions = getDisplayedActions(row)
     const labels = displayedActions.labels.filter(Boolean)
     const labelsWidth = labels.reduce((width, label) => {
-      return width + measureTitleWidth(label) + ACTION_BUTTON_HORIZONTAL_SPACE
+      return width + measureTextWidth(label) + ACTION_BUTTON_HORIZONTAL_SPACE
     }, 0)
     const gapsWidth = Math.max(labels.length - 1, 0) * ACTION_GAP
     const listOffset = props.isSelect ? 0 : ACTION_LIST_HORIZONTAL_OFFSET
@@ -152,7 +152,7 @@ const getActionsColumnWidth = () => {
       labelsWidth + gapsWidth + ACTION_CELL_HORIZONTAL_SPACE - listOffset + moreIconWidth
     )
   }, 0)
-  const titleWidth = measureTitleWidth(t('button.operation')) + ACTION_CELL_HORIZONTAL_SPACE
+  const titleWidth = measureTextWidth(t('button.operation')) + ACTION_CELL_HORIZONTAL_SPACE
   return Math.ceil(Math.max(
     ACTIONS_MIN_WIDTH,
     Number(props.actionsWidth) || 0,
@@ -165,7 +165,7 @@ const getOptionsColumnWidth = (item) => {
   const optionList = Array.isArray(item.options) ? item.options : Object.values(item.options)
   const labelWidth = optionList.reduce((width, option) => {
     const label = typeof option === 'object' ? option?.label : option
-    return Math.max(width, measureTitleWidth(label))
+    return Math.max(width, measureTextWidth(label))
   }, 0)
   const isDot = (item.type || item.formType) === 'dot'
   return labelWidth ? labelWidth + (isDot ? 52 : COLUMN_HORIZONTAL_SPACE) : 0
@@ -176,13 +176,13 @@ const getRowColumnWidth = (item) => {
     const value = typeof item.value === 'function'
       ? item.value(row)
       : keyParts.reduce((result, key) => result?.[key], row)
-    return Math.max(width, measureTitleWidth(value ?? '-'))
+    return Math.max(width, measureTextWidth(value ?? '-'))
   }, 0)
   return labelWidth ? labelWidth + COLUMN_HORIZONTAL_SPACE : 0
 }
 const getAutoColumnWidth = (item, title) => {
   const contentWidth = Math.max(
-    measureTitleWidth(title) + COLUMN_HORIZONTAL_SPACE,
+    measureTextWidth(title) + COLUMN_HORIZONTAL_SPACE,
     getOptionsColumnWidth(item),
     getRowColumnWidth(item),
     Number(item.width) || 0,
@@ -192,68 +192,60 @@ const getAutoColumnWidth = (item, title) => {
   return maxWidth ? Math.min(contentWidth, maxWidth) : contentWidth
 }
 const getColumnSize = (item, title, key) => {
-  const titleWidth = measureTitleWidth(title) + COLUMN_HORIZONTAL_SPACE
+  const titleWidth = measureTextWidth(title) + COLUMN_HORIZONTAL_SPACE
   const optionsColumnWidth = getOptionsColumnWidth(item)
   if (!item[key]) return key === 'minWidth' && optionsColumnWidth ? Math.max(titleWidth, optionsColumnWidth) : item[key]
   return Math.max(Number(item[key]) || 0, titleWidth, optionsColumnWidth)
 }
 const columns = computed(() => {
-  const theadArr = props.thead.map(item => {
-    const title = `${item.label}${item?.unit ? ` (${item?.unit})` : ''}`
+  const tableColumns = props.thead.map(item => {
+    const title = `${item.label}${item.unit ? ` (${item.unit})` : ''}`
     const autoWidth = item.autoWidth !== false
+    const usesSlot = isSlot(item)
     const width = autoWidth ? undefined : getColumnSize(item, title, 'width')
     const minWidth = autoWidth ? getAutoColumnWidth(item, title) : getColumnSize(item, title, 'minWidth')
-    const maxWidth = item.maxWidth
-    const obj={
-      key:item.prop,
+    const column = {
+      key: item.prop,
       title,
-      width,
-      minWidth,
-      maxWidth,
-      tooltip:true,
-    }
-    if(isSlot(item)){
-      obj.slot=item.prop || item.key
-    }else{
-      const key=item.prop || item.key;
-      const keyParts = key ? key.split('.') : [];
-      obj.render=(h,{row})=>{
-        if(keyParts.length > 0){
-          const rowValue=keyParts.reduce((acc,k)=>acc?acc[k]:null,row)
-          return h('span', {class:rowValue || rowValue===0?'':'ui-text-grey'}, rowValue ?? '-')
-        }else if(typeof item.value==='function'){
-          return item.value(row)
-        }
-        return '-'
-      }
-    }
-    return {
-      ...obj,
+      tooltip: true,
+      ...(usesSlot ? { slot: item.prop || item.key } : {}),
       ...item,
       width,
       minWidth,
-      maxWidth,
     }
+
+    if (usesSlot) return column
+
+    const keyParts = (item.prop || item.key)?.split('.') || []
+    column.render = (h, { row }) => {
+      if (!keyParts.length) return '-'
+      const rowValue = keyParts.reduce((value, key) => value?.[key], row)
+      return h('span', { class: rowValue || rowValue === 0 ? '' : 'ui-text-grey' }, rowValue ?? '-')
+    }
+    return column
   })
-  if(props.actions?.length>0){
-    theadArr.push({
+
+  if (props.actions.length > 0) {
+    tableColumns.push({
       slot: 'action',
-      title:t('button.operation'),
-      width:getActionsColumnWidth(),
-      align:'center',
-      fixed:'right',
+      title: t('button.operation'),
+      width: getActionsColumnWidth(),
+      align: 'center',
+      fixed: 'right',
     })
   }
-  return theadArr
+  return tableColumns
 })
-const emit=defineEmits(['select'])
-const handleSelect=(row,index)=>{
-  emit('select',row,index)
+
+const emit = defineEmits(['select'])
+const handleSelect = (row, index) => {
+  emit('select', row, index)
 }
 </script>
+
 <style lang="less" scoped>
 :deep(.ivu-table-header th .ivu-table-cell),
 :deep(.ivu-table-fixed-header th .ivu-table-cell) {
-	white-space: nowrap;
+  white-space: nowrap;
 }
 </style>

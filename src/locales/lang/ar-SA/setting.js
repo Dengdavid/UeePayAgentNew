@@ -34,5 +34,6 @@ export default {
       "emailTest": "اختبار البريد الإلكتروني",
       "confirmSend": "تأكيد الإرسال",
       "emailSendSuccess": "تم إرسال البريد الإلكتروني بنجاح",
-      "fieldRequired": "لا يمكن أن يكون {field} فارغًا"
+      "fieldRequired": "لا يمكن أن يكون {field} فارغًا",
+      "saveSuccess": "تم الحفظ بنجاح"
     }

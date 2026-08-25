@@ -35,4 +35,5 @@ export default {
       confirmSend:'确认发送',
       emailSendSuccess:'邮箱发送成功',
       fieldRequired:'{field}不能为空',
+      saveSuccess:'保存成功',
     }

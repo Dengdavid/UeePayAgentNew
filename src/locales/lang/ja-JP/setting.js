@@ -34,5 +34,6 @@ export default {
       "emailTest": "メールテスト",
       "confirmSend": "送信を確認",
       "emailSendSuccess": "メールを送信しました",
-      "fieldRequired": "{field}を空にすることはできません"
+      "fieldRequired": "{field}を空にすることはできません",
+      "saveSuccess": "保存しました"
     }

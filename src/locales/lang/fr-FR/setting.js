@@ -34,5 +34,6 @@ export default {
       "emailTest": "Test e-mail",
       "confirmSend": "Confirmer l'envoi",
       "emailSendSuccess": "E-mail envoyé avec succès",
-      "fieldRequired": "{field} ne peut pas être vide"
+      "fieldRequired": "{field} ne peut pas être vide",
+      "saveSuccess": "Enregistré avec succès"
     }

@@ -34,5 +34,6 @@ export default {
       "emailTest": "Kiểm tra email",
       "confirmSend": "Xác nhận gửi",
       "emailSendSuccess": "Gửi email thành công",
-      "fieldRequired": "{field} không được để trống"
+      "fieldRequired": "{field} không được để trống",
+      "saveSuccess": "Lưu thành công"
     }

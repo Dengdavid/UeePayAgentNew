@@ -34,5 +34,6 @@ export default {
       "emailTest": "E-posta Testi",
       "confirmSend": "Göndermeyi onayla",
       "emailSendSuccess": "E-posta başarıyla gönderildi",
-      "fieldRequired": "{field} boş olamaz"
+      "fieldRequired": "{field} boş olamaz",
+      "saveSuccess": "Başarıyla kaydedildi"
     }
