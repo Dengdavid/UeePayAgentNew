@@ -35,5 +35,9 @@ export default {
       "confirmSend": "Xác nhận gửi",
       "emailSendSuccess": "Gửi email thành công",
       "fieldRequired": "{field} không được để trống",
+      "uploadImage": "Tải ảnh lên",
+      "fileDimension": "Kích thước tệp",
+      "uploadFormat": "Định dạng tệp",
+      "uploadSize": "kích thước tập tin",
       "saveSuccess": "Lưu thành công"
     }

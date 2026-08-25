@@ -35,5 +35,9 @@ export default {
       "confirmSend": "ยืนยันการส่ง",
       "emailSendSuccess": "ส่งอีเมลสำเร็จ",
       "fieldRequired": "{field} ไม่สามารถเว้นว่างได้",
+      "uploadImage": "อัพโหลดรูปภาพ",
+      "fileDimension": "ขนาดไฟล์",
+      "uploadFormat": "รูปแบบไฟล์",
+      "uploadSize": "ขนาดไฟล์",
       "saveSuccess": "บันทึกสำเร็จ"
     }

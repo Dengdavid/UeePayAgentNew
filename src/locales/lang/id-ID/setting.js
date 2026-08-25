@@ -35,5 +35,9 @@ export default {
       "confirmSend": "Konfirmasi kirim",
       "emailSendSuccess": "Email berhasil dikirim",
       "fieldRequired": "{field} tidak boleh kosong",
+      "uploadImage": "Unggah gambar",
+      "fileDimension": "Ukuran berkas",
+      "uploadFormat": "Format berkas",
+      "uploadSize": "ukuran file",
       "saveSuccess": "Berhasil disimpan"
     }

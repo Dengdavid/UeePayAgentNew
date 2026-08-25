@@ -35,5 +35,9 @@ export default {
       confirmSend:'确认发送',
       emailSendSuccess:'邮箱发送成功',
       fieldRequired:'{field}不能为空',
+      uploadImage:'上传图片',
+      fileDimension:'文件尺寸',
+      uploadFormat:'文件格式',
+      uploadSize:'文件大小',
       saveSuccess:'保存成功',
     }

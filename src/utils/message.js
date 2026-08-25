@@ -96,9 +96,6 @@ export const confirmInput = (title, modelValue = '', options = {}) => {
           },
           onOnCancel: () => {
             visible.value = false;
-            if (options?.msg) {
-              message(options?.msg, 'error');
-            }
           },
           onOnHidden: () => {
             // 动画结束后，卸载应用并移除 DOM 节点

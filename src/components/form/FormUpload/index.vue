@@ -2,7 +2,7 @@
   <Upload :type="type" name="files" :show-upload-list="false" :headers="headers" :accept="c_accept"
     :on-progress="handleProgress" :on-success="handleSuccess" :on-format-error="handleFormatError"
     :on-exceeded-size="handleMaxSize" :max-size="maxSize" :on-error="handleError" :disabled="loading" :before-upload="handleBeforeUpload"
-    :action="'/api' + props.action" v-bind="$attrs" :style="{
+    :action="baseURL + props.action" v-bind="$attrs" :style="{
       width: sizeNum(width, '100%'),
       height: sizeNum(height, width),
     }">
@@ -10,7 +10,7 @@
       width: sizeNum(width, '100%'),
       height: sizeNum(height, width),
     }" v-if="loading && !isNotProgress">
-      <Progress :percent="progress"></Progress>
+      <Progress class="upload-progress" :percent="progress" hide-info></Progress>
       <span class="text-sm">{{ `${c_typeName}上传中...` }}</span>
     </div>
     <slot :loading="loading" v-else-if="$slots.default"></slot>
@@ -28,6 +28,7 @@ import Cookies from 'js-cookie';
 import { computed, defineProps, getCurrentInstance, ref } from 'vue';
 import { Message } from 'view-ui-plus';
 import { message } from '@/utils/message.js'
+import { tokenName,baseURL } from "@systemConfig";
 const { proxy } = getCurrentInstance()
 const props = defineProps({
   modelValue: {
@@ -77,7 +78,7 @@ const c_typeName = computed(() => {
   return '文件'
 })
 const headers = {
-  token: Cookies.get('token')
+  token: Cookies.get(tokenName)
 }
 const sizeNum = (val, defaultValue) => {
   let v = val ?? defaultValue
@@ -181,8 +182,9 @@ const handleBeforeUpload = (file) => {
   flex-direction: column;
   line-height: 1;
   gap: var(--ui-upload-content-gap);
-  .text-sm{
-    margin-bottom: calc(0px - var(--ui-upload-content-gap));
-  }
+}
+
+.upload-progress{
+  width: calc(100% - var(--ui-space-32));
 }
 </style>

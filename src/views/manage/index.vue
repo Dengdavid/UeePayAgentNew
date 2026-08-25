@@ -68,7 +68,7 @@ const props = defineProps({
    }
    .manage-main{
       flex: 1;
-      overflow: hidden;
+      overflow-x: hidden;
       position: relative;
    }
 }

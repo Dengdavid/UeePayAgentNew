@@ -35,5 +35,9 @@ export default {
       "confirmSend": "送信を確認",
       "emailSendSuccess": "メールを送信しました",
       "fieldRequired": "{field}を空にすることはできません",
+      "uploadImage": "写真をアップロードする",
+      "fileDimension": "ファイルサイズ",
+      "uploadFormat": "ファイル形式",
+      "uploadSize": "ファイルサイズ",
       "saveSuccess": "保存しました"
     }

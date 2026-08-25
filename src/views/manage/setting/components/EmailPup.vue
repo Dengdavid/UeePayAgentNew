@@ -1,5 +1,5 @@
 <template>
-  <FormPupBox :data="pup" :inner="false">
+  <FormPupBox :pup="pup" :inner="false">
     <template #default="{form}">
       <FormEmail v-model="form.smtp_test" size="default" width="100%" :placeholder="t('setting.testRecipientEmailPlaceholder')"></FormEmail>
     </template>

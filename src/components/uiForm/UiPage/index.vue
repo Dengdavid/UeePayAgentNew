@@ -307,10 +307,10 @@ const theadShow=computed(()=>{
   if(props.isSelect || props.isMx){
     return false
   }
-  if(props.data?.btns?.length>0 && props.data?.searchThead?.length===0){
-    return false
-  }
   if(props.isNotTitle && !isPhone){
+    if(props.data?.btns?.length>0 && (!props.data?.searchThead || props.data?.searchThead?.length===0)){
+      return true
+    }
     return false
   }
   return true

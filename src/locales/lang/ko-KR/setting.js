@@ -35,5 +35,9 @@ export default {
       "confirmSend": "전송 확인",
       "emailSendSuccess": "이메일이 성공적으로 전송되었습니다",
       "fieldRequired": "{field}은(는) 비워둘 수 없습니다.",
+      "uploadImage": "사진 업로드",
+      "fileDimension": "파일 크기",
+      "uploadFormat": "파일 형식",
+      "uploadSize": "파일 크기",
       "saveSuccess": "저장되었습니다"
     }

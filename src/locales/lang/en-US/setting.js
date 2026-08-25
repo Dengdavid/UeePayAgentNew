@@ -35,5 +35,9 @@ export default {
       confirmSend:'Confirm Send',
       emailSendSuccess:'Email sent successfully',
       fieldRequired:'{field} cannot be empty',
+      uploadImage:'Upload Image',
+      fileDimension:'File Dimension',
+      uploadFormat:'File Format',
+      uploadSize:'File Size',
       saveSuccess:'Saved successfully',
     }

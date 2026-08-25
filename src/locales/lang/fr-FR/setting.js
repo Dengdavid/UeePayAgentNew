@@ -35,5 +35,9 @@ export default {
       "confirmSend": "Confirmer l'envoi",
       "emailSendSuccess": "E-mail envoyé avec succès",
       "fieldRequired": "{field} ne peut pas être vide",
+      "uploadImage": "Télécharger des photos",
+      "fileDimension": "Taille du fichier",
+      "uploadFormat": "Format de fichier",
+      "uploadSize": "taille du fichier",
       "saveSuccess": "Enregistré avec succès"
     }

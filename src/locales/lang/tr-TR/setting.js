@@ -35,5 +35,9 @@ export default {
       "confirmSend": "Göndermeyi onayla",
       "emailSendSuccess": "E-posta başarıyla gönderildi",
       "fieldRequired": "{field} boş olamaz",
+      "uploadImage": "Resimleri yükle",
+      "fileDimension": "Dosya boyutu",
+      "uploadFormat": "Dosya formatı",
+      "uploadSize": "dosya boyutu",
       "saveSuccess": "Başarıyla kaydedildi"
     }
