@@ -2,14 +2,19 @@
   <nav class="ui-header">
     <div class="ui-header-content">
       <div ref="navigatorRef" class="ui-navigator">
-        <button
-          class="menu-collapse-trigger"
-          type="button"
-          :title="$t('route.menu')"
-          @click="$emit('toggle-menu-collapse')"
+        <Tooltip
+          :content="$t(menuCollapsed ? 'header.expandMenu' : 'header.collapseMenu')"
+          placement="right"
         >
-          <Icon :type="menuCollapsed ? 'ios-arrow-forward' : 'ios-arrow-back'" :size="18" />
-        </button>
+          <button
+            class="menu-collapse-trigger"
+            type="button"
+            :aria-label="$t(menuCollapsed ? 'header.expandMenu' : 'header.collapseMenu')"
+            @click="$emit('toggle-menu-collapse')"
+          >
+            <Icon :type="menuCollapsed ? 'ios-arrow-forward' : 'ios-arrow-back'" :size="18" />
+          </button>
+        </Tooltip>
       </div>
       <div
         v-if="customerUrl"
@@ -52,7 +57,9 @@
         </svg>
         <span class="text">{{ $t('header.recharge') }}</span>
       </div>
-      <div v-if="isLogin || customerUrl" class="spacer"></div>
+      <div v-if="isLogin || customerUrl || hasNotice" class="spacer"></div>
+      <NoticeBox />
+      <div v-if="hasNotice" class="spacer"></div>
       <MessageBox :disabled="false"/>
       <div class="spacer" v-if="isLogin"></div>
       <GlobalPreferences :authenticated="isLogin" />
@@ -164,6 +171,7 @@
 
 <script setup>
 import LogoBox from '@/views/components/LogoBox/index.vue'
+import NoticeBox from '@/components/layout/components/NoticeBox.vue'
 import MessageBox from '@/components/wap/layout/components/MessageBox.vue'
 import GlobalPreferences from '@/components/layout/GlobalPreferences.vue'
 import { userApi } from '@/api'
@@ -188,7 +196,8 @@ const route = useRoute()
 const userStore = useUserStore()
 const { isLogin, user, userGroup, unreadNum, menuPermissions } = storeToRefs(userStore)
 const appStore = useAppStore()
-const { customerUrl } = storeToRefs(appStore)
+const { customerUrl, configDatas } = storeToRefs(appStore)
+const hasNotice = computed(() => Boolean(configDatas.value?.notice))
 const menus = ref(whiteRoutes.filter((item) => !item.meta.hidden))
 
 onMounted(() => {

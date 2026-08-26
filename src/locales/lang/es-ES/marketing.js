@@ -11,6 +11,14 @@ export default {
         "total": "Cantidad total de ingresos",
         "invite_amount": "Invitar reembolso"
       },
+      "descriptions": {
+        "account_depost_amount": "Ingresos por comisiones del agente generados por depósitos de miembros.",
+        "create_amount": "Ingresos por activación del agente generados por tarjetas abiertas por miembros.",
+        "card_depost_amount": "Ingresos por comisiones del agente generados por transferencias a tarjetas, incluidas las realizadas al abrirlas.",
+        "auth_amount": "Ingresos por comisiones de transacción del agente generados por compras con tarjeta.",
+        "foreign_amount": "Ingresos por comisiones transfronterizas del agente generados por compras internacionales.",
+        "buy_group_amount": "Participación del agente en las comisiones de servicio por compras de beneficios de membresía."
+      },
       "newCardCount": "Número de tarjetas nuevas abiertas",
       "memberTotal": "Número total de miembros (persona)",
       "cardTotal": "Número total de cartas (piezas)",

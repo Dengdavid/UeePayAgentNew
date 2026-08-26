@@ -66,7 +66,7 @@ const props = defineProps({
       align-items:baseline;
       gap: 8px;
       h3{
-        font-size: 20px;
+        font-size: 18px;
       }
       sub{
         color: var(--ui-color-text-secondary);

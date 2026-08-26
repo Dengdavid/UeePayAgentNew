@@ -13,6 +13,14 @@ export default {
         "total": "Jumlah total pendapatan",
         "invite_amount": "Undang rabat"
       },
+      "descriptions": {
+        "account_depost_amount": "Pendapatan biaya agen yang dihasilkan dari isi ulang akun anggota.",
+        "create_amount": "Pendapatan biaya aktivasi agen yang dihasilkan dari kartu yang dibuka anggota.",
+        "card_depost_amount": "Pendapatan biaya agen dari transfer ke kartu, termasuk transfer saat membuka kartu.",
+        "auth_amount": "Pendapatan biaya transaksi agen yang dihasilkan dari pembelian dengan kartu anggota.",
+        "foreign_amount": "Pendapatan biaya lintas batas agen yang dihasilkan dari pembelian internasional anggota.",
+        "buy_group_amount": "Bagi hasil biaya layanan agen dari pembelian manfaat keanggotaan."
+      },
       "newUserCount": "Jumlah pengguna baru",
       "memberData": "Data anggota",
       "cardBalance": "Saldo kartu ($)",

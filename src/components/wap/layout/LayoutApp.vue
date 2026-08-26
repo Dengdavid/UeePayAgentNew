@@ -3,13 +3,13 @@
     class="app-phone"
     :style="{
       '--app-phone-sticky-top': route.meta?.isAppDetail
-        ? '8px'
+        ? '0px'
         : showNotice && notice
           ? '94px'
           : '58px'
     }"
   >
-    <div class="app-phone-header" v-if="!route.meta?.isAppDetail">
+    <div v-if="!route.meta?.isAppDetail" class="app-phone-header">
       <LayoutHeader/>
     </div>
     <div v-if="!route.meta?.isAppDetail && showNotice && notice" class="app-phone-notice">
@@ -29,27 +29,23 @@
       </button>
     </div>
     <div class="app-phone-body">
-      <div :class="route.meta?.isApp?'':'wAuto'">
-        <router-view v-if="isShow"></router-view>
+      <div :class="route.meta?.isApp === false ? 'wAuto' : ''">
+        <router-view></router-view>
       </div>
     </div>
-    <LayoutFooter @onBtnClick="onBtnClick" v-if="!route.meta?.isAppDetail"/>
   </div>
 </template>
 <script setup>
 import LayoutHeader from '@/components/wap/layout/LayoutHeader.vue'
-import LayoutFooter from '@/components/wap/layout/LayoutFooter.vue'
 import NoticeMarquee from '@/components/layout/NoticeMarquee.vue'
 import { t } from '@/utils'
 import { useAppStoreRefs } from '@/utils/store.js'
 import { Modal } from 'view-ui-plus'
 import { ref } from 'vue'
-import { useRouter,useRoute } from '@/utils/route.js'
+import { useRoute } from '@/utils/route.js'
 const route = useRoute()
-const router = useRouter()
 const { notice } = useAppStoreRefs()
 
-const isShow = ref(true)
 const showNotice = ref(true)
 
 const showNoticeDetail = () => {
@@ -64,23 +60,6 @@ const showNoticeDetail = () => {
 const closeNotice = () => {
   showNotice.value = false
 }
-
-const onBtnClick = () => {
-  isShow.value = false
-  // 设置兜底定时器：如果是点击相同路由，不会触发 afterEach，需要强制恢复显示
-  setTimeout(() => {
-    if (!isShow.value) {
-      isShow.value = true
-    }
-  }, 300)
-}
-
-// 监听路由加载完成
-router.afterEach(() => {
-  if (!isShow.value) {
-    isShow.value = true
-  }
-})
 </script>
 
 <style scoped lang="less">

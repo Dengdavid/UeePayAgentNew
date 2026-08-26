@@ -54,13 +54,6 @@ const countsList = computed(() => [
     btns: [{ label: t('counts.expandCapacity'), type: 'default', click: () => toRoute('pricing') }],
   },
   {
-    label: t('counts.currentRate'),
-    prop: 'card_depost_fee',
-    type: 'rate',
-    style: { background: '#fff8f2' },
-    btns: [{ label: t('counts.lowerRate'), type: 'default', click: () => toRoute('pricing') }],
-  },
-  {
     label: t('counts.failureRate'),
     prop: 'fail_rate',
     type: 'level_rate',

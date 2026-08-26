@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: 'Layanan pembayaran lintas batas yang melibatkan daratan Cina disediakan oleh lembaga berkualifikasi.',
   },
   header: {
+    expandMenu: 'Perluas menu',
+    collapseMenu: 'Ciutkan menu',
     customerService: 'Layanan pelanggan daring',
     recharge: 'Isi saldo',
     helpCenter: 'Pusat Bantuan',

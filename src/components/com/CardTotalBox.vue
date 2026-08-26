@@ -24,7 +24,10 @@
                 <CountUp :end="Number(item.value ?? 0)" :duration="duration" :decimals="item.decimals ?? 0" ref="count"
             :options="{ useGrouping: false }" v-font="font" />
               </dd>
-              <dt>{{item.label}}</dt>
+              <dt :class="{ 'has-tips': item.tips }">
+                <span>{{item.label}}</span>
+                <UiTips :data="item.tips" :max-width="item.tipsMaxWidth || 280" />
+              </dt>
             </dl>
           </template>
         </FormListBox>
@@ -85,6 +88,11 @@ const props = defineProps({
   dl{
     dt{
       color: var(--ui-color-text-secondary);
+      &.has-tips{
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
     }
   }
   .card-title{

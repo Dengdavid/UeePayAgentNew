@@ -3,6 +3,7 @@
     class="iconTooltip"
     placement="top"
     :content="$t('header.preferences.trigger')"
+    :disabled="tooltipDisabled"
   >
     <button
       type="button"
@@ -44,6 +45,10 @@ defineProps({
     default: false,
   },
   compact: {
+    type: Boolean,
+    default: false,
+  },
+  tooltipDisabled: {
     type: Boolean,
     default: false,
   },

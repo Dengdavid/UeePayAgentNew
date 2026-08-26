@@ -21,6 +21,14 @@ export default {
         "total": "合計所得金額",
         "buy_group_amount": "会員サービス料"
       },
+      "descriptions": {
+        "account_depost_amount": "会員のアカウント入金による代理店手数料収益を集計します。",
+        "create_amount": "会員のカード発行による代理店の有効化手数料収益を集計します。",
+        "card_depost_amount": "カード発行時の入金を含む、会員のカード入金による代理店手数料収益を集計します。",
+        "auth_amount": "会員のカード決済による代理店の取引手数料収益を集計します。",
+        "foreign_amount": "会員の海外カード決済による代理店の海外取引手数料収益を集計します。",
+        "buy_group_amount": "会員プランの購入による代理店のサービス料分配を集計します。"
+      },
       "newUserCount": "新規ユーザー数",
       "transactionCount": "トランザクション数",
       "transactionAmount": "合計取引額 $"

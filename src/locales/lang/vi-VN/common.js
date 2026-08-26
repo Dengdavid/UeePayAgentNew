@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: 'Các dịch vụ thanh toán qua thứ tự liên quan đến đất liền Trung Quốc được hợp pháp cung cấp bởi các tổ chức đối tác có khả năng.',
   },
   header: {
+    expandMenu: 'Mở rộng menu',
+    collapseMenu: 'Thu gọn menu',
     customerService: 'Dịch vụ khách hàng trực tuyến',
     recharge: 'Nạp tiền',
     helpCenter: 'Trung tâm Trợ giúp',

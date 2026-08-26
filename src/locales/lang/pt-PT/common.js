@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: 'Serviços de pagamento transfronteiriços que envolvem serviços de transporte terrestre A China é legalmente fornecida por instituições parceiras qualificadas.',
   },
   header: {
+    expandMenu: 'Expandir menu',
+    collapseMenu: 'Recolher menu',
     customerService: 'Atendimento ao cliente on-line',
     recharge: 'Recarregar',
     helpCenter: 'Centro de Ajuda',

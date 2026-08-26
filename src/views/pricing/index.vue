@@ -26,13 +26,6 @@
                   <em>{{ availableCapacityMeta.suffix }}</em>
                 </strong>
               </div>
-              <div>
-                <span>{{ $t('pricing.currentRate') }}</span>
-                <strong>
-                  <b>{{ currentRateMeta.value }}</b>
-                  <em>{{ currentRateMeta.suffix }}</em>
-                </strong>
-              </div>
             </div>
           </div>
         </aside>
@@ -540,7 +533,7 @@ onBeforeUnmount(() => {
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-top: 0;
 

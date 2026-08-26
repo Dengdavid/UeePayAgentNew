@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: 'Services de paiement transfrontaliers concernant le continent La Chine est légalement fournie par des institutions partenaires qualifiées.',
   },
   header: {
+    expandMenu: 'Développer le menu',
+    collapseMenu: 'Réduire le menu',
     customerService: 'Service client en ligne',
     recharge: 'Recharger',
     helpCenter: 'Centre d\'aide',

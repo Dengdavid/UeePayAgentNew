@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: 'Analand ile sınır ötesi ödeme hizmetleri Çin, nitelikli ortak kurumlar tarafından yasal olarak sağlanır.',
   },
   header: {
+    expandMenu: 'Menüyü genişlet',
+    collapseMenu: 'Menüyü daralt',
     customerService: 'Çevrimiçi müşteri hizmetleri',
     recharge: 'Bakiye yükleme',
     helpCenter: 'Yardım Merkezi',

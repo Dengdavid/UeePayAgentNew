@@ -95,7 +95,7 @@ export default {
     login: '登入',
     register: '註冊',
     forgotPassword: '忘記密碼',
-    home: '控制台',
+    home: '控制臺',
     card: '卡片管理',
     express: '全球速匯',
     pricing: '會員權益',
@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: '涉及中國境內的跨境支付服務由具備資質的合作機構依法提供',
   },
   header: {
+    expandMenu: '展開選單',
+    collapseMenu: '折疊選單',
     customerService: '線上客服',
     recharge: '儲值',
     helpCenter: '幫助中心',

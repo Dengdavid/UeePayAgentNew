@@ -21,6 +21,14 @@ export default {
         "invite_amount": "İndirimi davet et",
         "total": "Toplam gelir miktarı"
       },
+      "descriptions": {
+        "account_depost_amount": "Üye hesap yüklemelerinden elde edilen temsilci ücret geliri.",
+        "create_amount": "Üyelerin açtığı kartlardan elde edilen temsilci aktivasyon ücreti geliri.",
+        "card_depost_amount": "Kart açılışındaki aktarım dâhil, karta para aktarımlarından elde edilen temsilci ücret geliri.",
+        "auth_amount": "Üye kart işlemlerinden elde edilen temsilci işlem ücreti geliri.",
+        "foreign_amount": "Üyelerin uluslararası kart işlemlerinden elde edilen temsilci yurt dışı işlem ücreti geliri.",
+        "buy_group_amount": "Üyelik avantajı satın alımlarından elde edilen temsilci hizmet ücreti gelir payı."
+      },
       "transactionAmount": "Toplam İşlem $",
       "transactionCount": "İşlem sayısı",
       "newUserCount": "Yeni kullanıcı sayısı"

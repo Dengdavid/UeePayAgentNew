@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: '涉及中国境内的跨境支付服务由具备资质的合作机构依法提供',
   },
   header: {
+    expandMenu: '展开菜单',
+    collapseMenu: '折叠菜单',
     customerService: '在线客服',
     recharge: '充值',
     helpCenter: '帮助中心',

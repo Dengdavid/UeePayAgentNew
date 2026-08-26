@@ -19,6 +19,14 @@ export default {
         "buy_group_amount": "회원 서비스 수수료",
         "total": "소득총액"
       },
+      "descriptions": {
+        "account_depost_amount": "회원 계정 충전에서 발생한 에이전트 수수료 수익을 집계합니다.",
+        "create_amount": "회원 카드 개설에서 발생한 에이전트 활성화 수수료 수익을 집계합니다.",
+        "card_depost_amount": "카드 개설 시 입금을 포함한 회원 카드 입금의 에이전트 수수료 수익을 집계합니다.",
+        "auth_amount": "회원 카드 결제에서 발생한 에이전트 거래 수수료 수익을 집계합니다.",
+        "foreign_amount": "회원의 해외 카드 결제에서 발생한 에이전트 해외 거래 수수료 수익을 집계합니다.",
+        "buy_group_amount": "회원의 멤버십 혜택 구매에서 발생한 에이전트 서비스 수수료 배분을 집계합니다."
+      },
       "newCardCount": "신규 오픈 카드 수",
       "transactionCount": "거래수",
       "transactionAmount": "총 거래액 $",

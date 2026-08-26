@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: 'การบริการการชําระหนี้ข้ามฝั่ง ประเทศจีนได้รับการจัดหาตามกฏหมาย จากสถาบันหุ้นส่วนที่มีคุณสมบัติ',
   },
   header: {
+    expandMenu: 'ขยายเมนู',
+    collapseMenu: 'ยุบเมนู',
     customerService: 'บริการลูกค้าออนไลน์',
     recharge: 'เติมเงิน',
     helpCenter: 'ศูนย์ช่วยเหลือ',

@@ -23,5 +23,13 @@ export default {
         "total": "Valor total da renda",
         "buy_group_amount": "Taxa de serviço para membros",
         "invite_amount": "Convidar desconto"
+      },
+      "descriptions": {
+        "account_depost_amount": "Receita de comissões do agente gerada por depósitos de membros.",
+        "create_amount": "Receita de ativação do agente gerada por cartões abertos por membros.",
+        "card_depost_amount": "Receita de comissões do agente gerada por transferências para cartões, incluindo as realizadas na abertura.",
+        "auth_amount": "Receita de comissões de transação do agente gerada por compras com cartão.",
+        "foreign_amount": "Receita de comissões transfronteiriças do agente gerada por compras internacionais.",
+        "buy_group_amount": "Partilha do agente nas taxas de serviço por compras de benefícios de adesão."
       }
     }

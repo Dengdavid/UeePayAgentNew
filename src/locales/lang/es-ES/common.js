@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: 'Servicios transfronterizos de pago en los que intervienen China está legalmente proporcionada por instituciones asociadas cualificadas.',
   },
   header: {
+    expandMenu: 'Expandir menú',
+    collapseMenu: 'Contraer menú',
     customerService: 'Servicio al cliente en línea',
     recharge: 'Recargar',
     helpCenter: 'Centro de ayuda',

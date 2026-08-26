@@ -6,7 +6,14 @@
 
 .ui-header {
   width: 100%;
-  background: #e3e7f5;
+  border-bottom: var(--ui-border-divider);
+  background-color: #e3e7f5;
+  background-image: linear-gradient(
+    108deg,
+    color-mix(in srgb, #e3e7f5 84%, var(--ui-color-surface)) 0%,
+    #e3e7f5 42%,
+    color-mix(in srgb, #e3e7f5 90%, var(--ui-color-primary)) 100%
+  );
   z-index: var(--ui-layer-header);
   position: relative;
 }

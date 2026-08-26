@@ -109,31 +109,37 @@ const memberOverviewList = computed(() => [
 const revenueList = computed(() => [
   {
     label: `${t('marketing.types.account_depost_amount')}($)`,
+    tips: t('marketing.descriptions.account_depost_amount'),
     value: statistics.revenue.account_depost_amount ?? 0,
     decimals: 2,
   },
   {
     label: `${t('marketing.types.create_amount')}($)`,
+    tips: t('marketing.descriptions.create_amount'),
     value: statistics.revenue.create_amount ?? 0,
     decimals: 2,
   },
   {
     label: `${t('marketing.types.card_depost_amount')}($)`,
+    tips: t('marketing.descriptions.card_depost_amount'),
     value: statistics.revenue.card_depost_amount ?? 0,
     decimals: 2,
   },
   {
     label: `${t('marketing.types.auth_amount')}($)`,
+    tips: t('marketing.descriptions.auth_amount'),
     value: statistics.revenue.auth_amount ?? 0,
     decimals: 2,
   },
   {
     label: `${t('marketing.types.foreign_amount')}($)`,
+    tips: t('marketing.descriptions.foreign_amount'),
     value: statistics.revenue.foreign_amount ?? 0,
     decimals: 2,
   },
   {
     label: `${t('marketing.types.buy_group_amount')}($)`,
+    tips: t('marketing.descriptions.buy_group_amount'),
     value: statistics.revenue.buy_group_amount ?? 0,
     decimals: 2,
   },

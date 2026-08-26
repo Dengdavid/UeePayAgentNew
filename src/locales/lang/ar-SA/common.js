@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: 'خدمات الدفع عبر الحدود التي تشمل البر الرئيسي وتتوفر الصين بصورة قانونية من قبل مؤسسات شريكة مؤهلة.',
   },
   header: {
+    expandMenu: 'توسيع القائمة',
+    collapseMenu: 'طي القائمة',
     customerService: 'خدمة العملاء عبر الإنترنت',
     recharge: 'شحن الرصيد',
     helpCenter: 'مركز المساعدة',

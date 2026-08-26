@@ -23,5 +23,13 @@ export default {
         "total": "Tổng số tiền thu nhập",
         "invite_amount": "Mời giảm giá",
         "buy_group_amount": "Phí dịch vụ thành viên"
+      },
+      "descriptions": {
+        "account_depost_amount": "Doanh thu phí đại lý phát sinh từ các khoản nạp vào tài khoản thành viên.",
+        "create_amount": "Doanh thu phí kích hoạt của đại lý phát sinh từ thẻ do thành viên mở.",
+        "card_depost_amount": "Doanh thu phí đại lý từ tiền chuyển vào thẻ, gồm cả lần chuyển khi mở thẻ.",
+        "auth_amount": "Doanh thu phí giao dịch của đại lý phát sinh từ giao dịch thẻ của thành viên.",
+        "foreign_amount": "Doanh thu phí xuyên biên giới của đại lý phát sinh từ giao dịch quốc tế của thành viên.",
+        "buy_group_amount": "Phần chia sẻ phí dịch vụ của đại lý từ việc mua quyền lợi thành viên."
       }
     }

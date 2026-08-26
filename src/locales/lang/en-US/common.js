@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: 'Cross-border payment services involving mainland China are lawfully provided by qualified partner institutions.',
   },
   header: {
+    expandMenu: 'Expand menu',
+    collapseMenu: 'Collapse menu',
     customerService: 'Support',
     recharge: 'Deposit',
     helpCenter: 'Help Center',

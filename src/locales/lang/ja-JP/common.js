@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: '中国本土が関係するクロスボーダー決済サービスは、法令に基づき、必要な資格を有する提携機関が提供します。',
   },
   header: {
+    expandMenu: 'メニューを展開',
+    collapseMenu: 'メニューを折りたたむ',
     customerService: 'オンラインカスタマーサービス',
     recharge: 'チャージ',
     helpCenter: 'ヘルプセンター',

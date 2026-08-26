@@ -1,8 +1,8 @@
 <template>
-   <Tooltip placement="right" class="tip-icon" v-if="data">
+   <Tooltip placement="right" class="tip-icon" :max-width="maxWidth" v-if="data">
       <Icon custom="iconfont icon-question"></Icon>
       <template #content>
-        <div v-html="data"></div>
+        <div class="tip-content" v-html="data"></div>
       </template>
     </Tooltip>
 </template>
@@ -12,6 +12,10 @@ const props = defineProps({
   data: {
     type: String,
     default: ''
+  },
+  maxWidth: {
+    type: [Number, String],
+    default: undefined
   },
 })
 </script>
@@ -26,5 +30,11 @@ const props = defineProps({
       color: var(--primary-color);
     }
   }
+}
+
+.tip-content{
+  line-height: 20px;
+  white-space: normal;
+  word-break: break-word;
 }
 </style>

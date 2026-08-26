@@ -138,6 +138,8 @@ export default {
     crossBorderDisclaimer: '중국 영토와 관련된 국경 간 결제 서비스는 법률에 따라 자격을 갖춘 파트너 기관에서 제공합니다.',
   },
   header: {
+    expandMenu: '메뉴 펼치기',
+    collapseMenu: '메뉴 접기',
     customerService: '온라인 고객 서비스',
     recharge: '충전',
     helpCenter: '도움말 센터',

@@ -14,7 +14,7 @@
       <div class="ui-page-thead" :class="{
         borderBottom:route.meta?.isAppDetail && isPhone
       }" v-if="theadShow">
-        <div  class="title" v-if="!props.isNotTitle">
+        <div  class="title" v-if="!props.isNotTitle || isPhone">
           <template v-if="isBack || (route.meta?.isAppDetail && isPhone)">
             <div class="back" @click="goBack(fallback)">
                 <Icon type="ios-arrow-back" :size="16" />
@@ -36,7 +36,7 @@
           @click="countsShow=!countsShow"
         >{{ pageRightTitle }}</Button>
         <PageActions :data="data?.btns" :statusValue="statusValue" v-if="(data?.searchThead?.length===0 || !data?.searchThead) && !isSelect && !isPhone"/>
-        <div class="ui-page-thead-arefresh"  v-if="data?.thead?.length>0">
+        <div class="ui-page-thead-arefresh"  v-if="data?.thead?.length>0 && !isPhone">
           <Button type="default" icon="md-sync" :loading="loading" @click="search">{{ $t('button.refresh') }}</Button>
         </div>
       </div>
@@ -638,8 +638,9 @@ watch(() => props.data?.status?.length, () => {
     }
     .ui-page-thead{
       height:var(--ui-size-48);
-      padding: 0 var(--ui-space-12);
+      padding: 0 var(--ui-space-8);
       background: var(--ui-color-surface);
+      border-bottom: 1px #eee solid;
       .ui-page-thead-action{
         display: inline-flex;
         flex: 0 1 30%;

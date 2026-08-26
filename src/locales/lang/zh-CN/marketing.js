@@ -23,5 +23,13 @@ export default {
         buy_group_amount: '会员服务费',
         invite_amount: '邀请返佣',
         total: '收入总金额',
+      },
+      descriptions: {
+        account_depost_amount: '统计会员账户充值产生的代理商手续费收入。',
+        create_amount: '统计会员开通卡片产生的代理商激活费收入。',
+        card_depost_amount: '统计会员向卡片转入资金产生的代理商手续费收入，包含开卡时转入。',
+        auth_amount: '统计会员卡片消费产生的代理商交易手续费收入。',
+        foreign_amount: '统计会员跨境消费产生的代理商跨境手续费收入。',
+        buy_group_amount: '统计会员购买会员权益产生的代理商服务费分润。',
       }
     }

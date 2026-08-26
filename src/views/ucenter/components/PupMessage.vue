@@ -86,10 +86,6 @@ import { t } from '@/utils'
       {
         label: t('notificationSettings.email'),
         value:'email'
-      },
-      {
-        label: t('notificationSettings.telegram'),
-        value:'telegram'
       }
     ]
   })
@@ -176,7 +172,7 @@ import { t } from '@/utils'
           default:
             return item
         }
-      })
+      }).filter(item=>item!=='telegram')
     }
   }
   defineExpose({
