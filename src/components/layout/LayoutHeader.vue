@@ -63,6 +63,7 @@
       <MessageBox :disabled="false"/>
       <div class="spacer" v-if="isLogin"></div>
       <GlobalPreferences :authenticated="isLogin" />
+      <div class="spacer" v-if="isLogin"></div>
       <div class="user-action">
         <Dropdown v-if="isLogin" :transfer="false" placement="bottom-end">
           <router-link class="user" :to="{ name: 'ucenter_index' }">
@@ -384,6 +385,9 @@ const handleLogout = async function () {
 }
 .user-action {
   margin-left: 20px;
+}
+.spacer + .user-action {
+  margin-left: 0;
 }
 .login-btns {
   display: grid;
