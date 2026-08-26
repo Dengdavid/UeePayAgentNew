@@ -416,7 +416,7 @@ const handleLogout = async function () {
   margin: var(--ui-margin-0-8);
   width: var(--ui-size-1);
   height: var(--ui-size-12);
-  background-color: #d8d8d8;
+  background-color: var(--ui-color-neutral-350);
 }
 .link {
   color: var(--ui-color-text-muted);

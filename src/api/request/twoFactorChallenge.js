@@ -178,13 +178,24 @@ async function createVerificationComponent(verifyData, requestState) {
         this.visible = false
         destroyVerificationComponent()
 
-        const currentPath = router.currentRoute.value.path
-        const targetPath = '/ucenter/security'
+        const currentRoute = router.currentRoute.value
+        const targetRoute = {
+          name: 'ucenter_security',
+          query: {
+            securityAction: 'bind-google',
+          },
+        }
 
-        if (currentPath === targetPath || currentPath.startsWith(`${targetPath}/`)) {
-          window.location.reload()
+        if (currentRoute.name === targetRoute.name) {
+          router.replace({
+            ...targetRoute,
+            query: {
+              ...currentRoute.query,
+              ...targetRoute.query,
+            },
+          })
         } else {
-          router.push(targetPath)
+          router.push(targetRoute)
         }
       },
 

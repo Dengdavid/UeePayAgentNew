@@ -76,8 +76,8 @@
 </template>
 
 <script setup>
-import { ref,computed,onMounted,reactive } from 'vue'
-import { toRoute } from '@/utils/route.js'
+import { ref,computed,nextTick,onMounted,reactive,watch } from 'vue'
+import { removeQuery, toRoute, useRoute } from '@/utils/route.js'
 import { getApi } from '@/utils/api.js'
 import { message } from '@/utils/message.js'
 import { t } from '@/utils'
@@ -88,7 +88,10 @@ import EmailModal from './components/EmailModal.vue'
 import EmailBindingModal from './components/EmailBindingModal.vue'
 import EmailVerificationModal from './components/EmailVerificationModal.vue'
 import GoogleModal from './components/GoogleModal.vue'
+const GOOGLE_BINDING_ACTION = 'bind-google'
+const route=useRoute()
 const pageRef=ref(null)
+const settingsLoaded=ref(false)
 const status=ref({
   single_login:0,
   iptables:null,
@@ -293,12 +296,43 @@ const setPageLoading = (loading) => {
 }
 const getInfo=()=>{
   setPageLoading(true)
-  getApi('/user/getMySettings').then((res) =>{
+  return getApi('/user/getMySettings').then((res) =>{
     status.value=res
+    settingsLoaded.value=true
   }).finally(()=>{
     setPageLoading(false)
   })
 }
+
+const openGoogleBindingFromRoute = async () => {
+  if (
+    route.query.securityAction !== GOOGLE_BINDING_ACTION ||
+    !settingsLoaded.value
+  ) return
+
+  if(status.value.google_auth_status){
+    await removeQuery('securityAction')
+    return
+  }
+  if(!status.value.email_status){
+    await removeQuery('securityAction')
+    message(t('security.overview.emailRequired'), 'warning')
+    return
+  }
+
+  await nextTick()
+  if(!googleModalRef.value) return
+
+  googleModalRef.value.open()
+  await removeQuery('securityAction')
+}
+
+watch(
+  () => [route.query.securityAction, settingsLoaded.value],
+  openGoogleBindingFromRoute,
+  { immediate:true }
+)
+
 onMounted(()=>{
   getInfo()
 })
