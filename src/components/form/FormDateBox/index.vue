@@ -1040,7 +1040,7 @@ const syncInputPresentation = () => {
     }else{
       input.removeAttribute('title')
     }
-    if(isPhone){
+    if(isPhone.value){
       input.setAttribute('readonly', 'readonly')
       input.setAttribute('inputmode', 'none')
     }

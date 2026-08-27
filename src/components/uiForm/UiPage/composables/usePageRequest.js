@@ -68,7 +68,7 @@ export const usePageRequest = ({ props, isPhone, isCertificationBlocked, scrollT
           ? props.data.dataProcessor(responseData)
           : responseData
         total.value = response?.total || 0
-        if (isPhone && Number(searchData?.page) > 1) {
+        if (isPhone.value && Number(searchData?.page) > 1) {
           tbody.value.push(...data)
         } else {
           tbody.value = data
@@ -101,7 +101,7 @@ export const usePageRequest = ({ props, isPhone, isCertificationBlocked, scrollT
 
   const reset = () => {
     pageData.value.page = 1
-    if (isPhone) {
+    if (isPhone.value) {
       tbody.value = []
       scrollToTop('auto')
     }

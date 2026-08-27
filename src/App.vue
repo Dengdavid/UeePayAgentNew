@@ -52,8 +52,8 @@ import NoticeMarquee from '@/components/layout/NoticeMarquee.vue'
 import LayoutApp from '@/components/wap/layout/LayoutApp.vue'
 import { errorRoutes, loginUnableRoutes } from '@/router/router.js'
 import { t } from '@/utils'
+import { isPhone, updateIsPhone } from '@/utils/device.js'
 import { useAppStore, useAppStoreRefs, useUserStore } from '@/utils/store.js'
-import { isPhone } from '@/utils/device.js'
 import Cookies from 'js-cookie'
 import { Modal } from 'view-ui-plus'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
@@ -83,6 +83,7 @@ const showHeader = computed(() => {
 })
 
 const syncViewport = () => {
+  updateIsPhone()
   const nextIsNarrow = window.innerWidth < 1400
   if (nextIsNarrow && !isNarrowViewport.value) {
     isMenuManuallyCollapsed.value = true
@@ -134,6 +135,7 @@ onBeforeUnmount(() => {
 @import '@/assets/fonts/font.css';
 @import '@/assets/icons/iconfont.css';
 @import '@/assets/fontsnew/iconfont.css';
+@import '@/assets/css/iconfont-runtime.css';
 
 .sticky-header {
   position: sticky;

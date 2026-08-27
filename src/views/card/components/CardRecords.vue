@@ -106,7 +106,7 @@ const data = computed(() => ({
     {
       label: t('card.index.openCardQuickly'),
       icon: 'md-add',
-      hidden:()=>isPhone,
+      hidden:()=>isPhone.value,
       click: () => toRoute('cardAdd'),
     },
   ],

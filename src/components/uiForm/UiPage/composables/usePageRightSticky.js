@@ -28,7 +28,7 @@ export const usePageRightSticky = ({ isPhone }) => {
   }
 
   const updateStickyLayout = () => {
-    if (!pageRef.value || isPhone) return
+    if (!pageRef.value || isPhone.value) return
     scrollContainer ||= pageRef.value.closest('.ui-main')
     viewportHeight.value = scrollContainer?.clientHeight || window.innerHeight
     updatePageRightHeight()

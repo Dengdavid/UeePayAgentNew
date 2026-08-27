@@ -115,10 +115,14 @@ export const clearStoragePreservingPreferences = (values) => {
 
   try {
     const cachedCardholder = storage.getItem('CARDHOLDER')
+    const cachedNoticeConfirmed = storage.getItem('notice_confirmed')
     storage.clear()
     storage.setItem(PREFERENCES_STORAGE_KEY, JSON.stringify(values))
     if (cachedCardholder !== null) {
       storage.setItem('CARDHOLDER', cachedCardholder)
+    }
+    if (cachedNoticeConfirmed !== null) {
+      storage.setItem('notice_confirmed', cachedNoticeConfirmed)
     }
   } catch {
     // 清理失败不应阻断退出登录流程。

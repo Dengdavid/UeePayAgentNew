@@ -1,0 +1,11 @@
+@font-face {
+  font-family: "iconfontRuntime";
+  src: url('../fontsnew/iconfont.woff2') format('woff2'),
+       url('../fontsnew/iconfont.woff') format('woff'),
+       url('../fontsnew/iconfont.ttf') format('truetype');
+  font-display: swap;
+}
+
+.iconfont {
+  font-family: "iconfontRuntime" !important;
+}

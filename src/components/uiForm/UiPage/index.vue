@@ -300,14 +300,14 @@ const drawerTitle=computed(()=>{
   return ''
 })
 const openPageRight=()=>{
-  if (!isPhone || !slots.pageRight) return
+  if (!isPhone.value || !slots.pageRight) return
   countsShow.value=true
 }
 const theadShow=computed(()=>{
   if(props.isSelect || props.isMx){
     return false
   }
-  if(props.isNotTitle && !isPhone){
+  if(props.isNotTitle && !isPhone.value){
     if(props.data?.btns?.length>0 && (!props.data?.searchThead || props.data?.searchThead?.length===0)){
       return true
     }

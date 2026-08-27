@@ -486,7 +486,7 @@
     status: false,
     title: t('card.detail.sceneBox.editConsumptionScene'),
     labelWidth: 120,
-    width:isPhone?Math.max(280,window.innerWidth-24):800,
+    width:isPhone.value?Math.max(280,window.innerWidth-24):800,
     form: {
       type:0,
       config:{

@@ -40,13 +40,14 @@ Base64、URL 编码、哈希或前端加密不会改变数据级别，不能把�
 | Key | 当前内容与用途 | 读写位置 | 生命周期 / 清理 | 结论 |
 | --- | --- | --- | --- | --- |
 | `APP_USER_PREFERENCES` | `{ country, timezone, language }` 界面偏好 | `src/utils/preferences-storage.js`、`src/utils/preferences.js`、`src/locales/set.js` | 用户修改时更新；退出登录清理后立即恢复当前偏好 | 允许；新增字段必须仍是明确登记的非敏感偏好 |
+| `notice_confirmed` | 已确认公告正文的前端哈希，用于避免重复弹出同一公告 | `src/components/layout/components/NoticeBox.vue`、`src/utils/preferences-storage.js` | 确认公告时更新；退出登录清理后恢复；公告内容变化后旧哈希自动失效 | 允许；仅用于公告交互状态，不能承载用户或公告正文数据 |
 | `APP_USER_PREFERENCES_PENDING_SYNC` | 未登录状态下偏好待同步标记，值为 `1` | `src/utils/preferences-storage.js`、`src/views/preferences/country.vue`、`src/store/user.js` | 登录同步成功后删除 | 允许；只保存布尔语义，不得写入用户或接口数据 |
 | `APP_USER_COUNTRY`、`APP_USER_TZ`、`locale` | 旧版偏好键 | `src/utils/preferences-storage.js` | 每次读取或写入新偏好时删除 | 清理专用；不得恢复写入 |
 | `COUNTRYCODE` | `/ipapi/json` 返回的 IP 地区国家代码 | `src/router/settings.js`、`src/views/exception/499/index.vue` | 与 `COUNTRYTIME` 共同按 3 分钟过期；499 返回时删除国家代码 | 受限存量；仅作短期前端判断，不能替代服务端地区限制 |
 | `COUNTRYTIME` | `COUNTRYCODE` 的写入时间戳 | `src/router/settings.js` | 超过 3 分钟视为过期，但当前不会主动删除 | 受限存量；必须与国家代码一起处理，异常值按过期处理 |
 | `TOROUTENAME` | 未登录拦截前的目标命名路由 | `src/router/index.js`、`src/utils/route.js` | 登录或注册成功后由 `goBack()` 一次性读取并删除 | 受限存量；只能保存已存在的非敏感命名路由，不得保存 query、Token 或回跳 URL |
-| `last_selected_currency` | Express 汇款入口选中的完整币种对象 | `src/views/express.vue`、`src/views/express/transfer/index.vue` | 进入汇款表单并恢复后删除 | 待治理；应收敛为恢复交互所需的白名单字段，不能保存完整接口对象 |
-| `transferInfo` | Express 汇款入口的金额、币种和国家 | `src/views/express.vue`、`src/views/express/transfer/index.vue` | 进入汇款表单并恢复后删除 | 待治理；包含汇款意图与金额，不应跨会话持久化 |
+| `last_selected_currency` | 旧版 Express 汇款入口遗留的完整币种对象 | `src/views/express/transfer/index.vue` | 进入汇款表单兼容读取后删除；当前无写入入口 | 待移除；仅用于清理历史缓存，不得恢复写入完整对象 |
+| `transferInfo` | 旧版 Express 汇款入口遗留的金额、币种和国家 | `src/views/express/transfer/index.vue` | 进入汇款表单兼容读取后删除；当前无写入入口 | 待移除；包含汇款意图与金额，仅用于清理历史缓存 |
 | `express_form` | Express 汇款完整表单，包括动态 sender、receiver 和 common 字段 | `src/views/express/transfer/index.vue` | 表单变化时持续覆盖；提交成功后删除；退出登录时由统一清理移除 | 待治理；完整业务表单可能包含 Personal 和金融数据，禁止存入 LocalStorage |
 | `invite_code` | 注册或找回密码流程的邀请码 | `src/views/components/PageLogin/index.vue`、`src/views/register/index.vue`、`src/views/forgot-password/index.vue` | 注册成功后删除；当前无 TTL | 受限存量；只能作为前端预填，服务端必须校验归属和有效性，应补充过期策略 |
 | `CARDHOLDER` | `{ firstName, lastName, phoneCode, phone, email }` 持卡人联系资料 | `src/views/card/add/index.vue`、`src/utils/preferences-storage.js` | 页面填写时持续覆盖；当前退出登录清理后仍被恢复 | 待治理；属于 Personal 数据，且跨退出登录保留，不符合持久化边界 |
@@ -136,13 +137,13 @@ export const getExampleView = () => {
 
 桌面端和移动端退出登录都会调用 `src/utils/preferences.js` 的 `clearBrowserCache()`。当前实际行为是：
 
-1. 暂存 `CARDHOLDER`。
+1. 暂存 `CARDHOLDER` 和 `notice_confirmed`。
 2. 执行 `localStorage.clear()`。
-3. 恢复 `APP_USER_PREFERENCES` 和 `CARDHOLDER`。
+3. 恢复 `APP_USER_PREFERENCES`、`CARDHOLDER` 和 `notice_confirmed`。
 4. 清空 SessionStorage。
 5. 删除当前站点 Cache Storage 中的缓存。
 
-因此，当前函数名称虽然是“清理浏览器缓存”，但并不代表 LocalStorage 中所有数据最终都被删除；用户偏好和 `CARDHOLDER` 会保留。其中 `CARDHOLDER` 的保留行为与 Personal 数据禁止持久化的规范冲突，后续修复时应单独确认产品需求和迁移影响。
+因此，当前函数名称虽然是“清理浏览器缓存”，但并不代表 LocalStorage 中所有数据最终都被删除；用户偏好、`CARDHOLDER` 和 `notice_confirmed` 会保留。其中 `CARDHOLDER` 的保留行为与 Personal 数据禁止持久化的规范冲突，后续修复时应单独确认产品需求和迁移影响。
 
 ### 4.2 禁止无边界清理
 

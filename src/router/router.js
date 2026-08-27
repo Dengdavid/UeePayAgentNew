@@ -322,6 +322,7 @@ export const ucenterRoutes = {
     {
       path: "message",
       name: "ucenter_message",
+      alias: ['/ucenter/message'],
       meta: {
         title: "消息中心",
         titleKey: "route.messageCenter",
@@ -333,6 +334,7 @@ export const ucenterRoutes = {
     {
       path: "download",
       name: "ucenter_download",
+      alias: ['/ucenter/download'],
       meta: {
         title: "下载中心",
         titleKey: "route.downloadCenter",
@@ -355,6 +357,7 @@ export const ucenterRoutes = {
     {
       path: "security",
       name: "ucenter_security",
+      alias: ['/ucenter/security'],
       meta: {
         title: "安全中心",
         titleKey: "route.securityCenter",

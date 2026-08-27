@@ -4,7 +4,7 @@
       background: src ? '' : '#f5f5f5',
       padding: src ? '' : '10px',
     }"
-    :src="src || Logo"
+    :src="src"
     :fit="fit"
     :width="setSize(width)"
     :height="setSize(height, width)"
@@ -21,8 +21,6 @@
 <script setup>
 import { computed, defineProps, ref } from 'vue'
 import { setSize } from '@/utils/plugin.js'
-import Logo from '@/assets/images/logo.png'
-
 const props = defineProps({
   src: {
     type: String,

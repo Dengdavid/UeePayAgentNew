@@ -606,11 +606,20 @@ onMounted(() => {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
-  @media screen and (max-width: 768px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  @media screen and (max-width: 1999px) {
+    &.card-tags-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 1000px) {
     &.card-tags-2 {
       grid-template-columns: minmax(0, 1fr);
     }
+  }
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

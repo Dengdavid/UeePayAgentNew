@@ -46,5 +46,4 @@
 
 ## 典型调用方
 
-- `src/components/layout/LayoutFooter.vue`
 - `src/views/ucenter/security/components/GoogleModal.vue`
