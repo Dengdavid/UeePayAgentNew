@@ -116,7 +116,7 @@ onMounted(async () => {
     if (token) {
       await userStore.init()
     }
-    appStore.init()
+    await appStore.init()
   } finally {
     await nextTick()
     pageLoading.value = false

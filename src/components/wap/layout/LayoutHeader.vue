@@ -14,7 +14,7 @@
       <Icon type="ios-apps" :size="20" />
       <span class="route-title" :title="$t('route.menu')">{{ $t('route.menu') }}</span>
     </button>
-    <button v-else type="button" class="logo" @click="toRoute('home')">
+    <button v-else-if="siteLogo" type="button" class="logo" @click="toRoute('home')">
       <img :src="siteLogo" :alt="siteName" />
     </button>
     <div class="user">
@@ -96,7 +96,7 @@
       >
         <div class="menu-drawer-header">
           <div class="menu-drawer-brand">
-            <span class="menu-drawer-logo">
+            <span v-if="siteLogo" class="menu-drawer-logo">
               <img :src="siteLogo" :alt="siteName" />
             </span>
             <div class="menu-drawer-brand-copy">
@@ -187,7 +187,6 @@ import NoticeBox from '@/components/layout/components/NoticeBox.vue'
 import MessageBox from '@/components/wap/layout/components/MessageBox.vue'
 import GlobalPreferences from '@/components/layout/GlobalPreferences.vue'
 import IconBox from '@/components/com/IconBox.vue'
-import defaultLogo from '@/assets/images/logo.png'
 import dayjs from 'dayjs'
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { toRoute,useRoute } from '@/utils/route.js'
@@ -213,7 +212,7 @@ const drawerStyles = {
   overflow: 'hidden',
 }
 const accountName = computed(() => user.value?.nickname || user.value?.username || t('header.unnamed'))
-const siteLogo = computed(() => agentLogo() || defaultLogo)
+const siteLogo = computed(() => agentLogo())
 const siteName = computed(() => agentName())
 const activeRouteNames = computed(() => {
   const direct = route.meta?.direct
@@ -397,6 +396,7 @@ onMounted(() => {
   .user{
     min-width: 0;
     flex: none;
+    margin-left: auto;
     display: flex;
     align-items: center;
     gap: var(--ui-space-4);

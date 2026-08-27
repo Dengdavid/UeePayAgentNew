@@ -191,8 +191,7 @@ onMounted(() => {
     .pageLogin-visual {
       padding: 32px 44px 36px;
       background-image:
-        linear-gradient(to bottom, #f7f7fc 0, rgba(247, 247, 252, 0.94) 72px, rgba(247, 247, 252, 0) 220px),
-        url('@/assets/images/login_visual_v4.jpg');
+        linear-gradient(to bottom, #f7f7fc 0, rgba(247, 247, 252, 0.94) 72px, rgba(247, 247, 252, 0) 220px);
       background-position: center top, center calc(100% + 72px);
       background-size: 100% 220px, cover;
 

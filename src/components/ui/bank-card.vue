@@ -3,7 +3,6 @@
         <div class="card-face card-front">
             <div class="card-info">
                 <div class="logo">
-                  <img src="@/assets/images/logo.png" />
                 </div>
                 <div class="card-details">
                     <div class="no text" :class="{ 'ui-pointer': !masked }" @click="handlePrivateCopy(card.card_no)">{{ displayCardNo }}</div>

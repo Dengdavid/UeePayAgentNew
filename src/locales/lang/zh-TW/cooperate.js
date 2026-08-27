@@ -2,7 +2,7 @@ export default {
   hero: { titleLine1: '源頭服務商一體化', titleLine2: '全球支付解決方案', subtitle: '覆蓋支付接入、通路增長、風控共享與品牌運營，幫助團隊更輕量地完成全球支付搭建。', consult: '立即咨詢', footerTitle: '讓全球支付能力更快落地到您的業務體系中', footerSubtitle: '支援 API 快速接入，也支援代理商模式啓動運營。', getPlan: '獲取合作方案' },
   nav: { api: 'API接入', apiDesc: '適合開發團隊與平台型客戶', agent: '代理商分銷', agentDesc: '適合通路、商務與運營團隊', recommended: '推薦' },
   api: {
-    title: '全面開放 · 高效集成', subtitle: '豐富靈活的開放能力與便捷的開發體驗，為多幣種虛擬卡業務提供深度集成方案。', stepsTitle: '標準步驟 · 快速集成', stepsSubtitle: '從接入準備到正式上線，提供清晰的開發指引與技術支援，協助您的系統穩定集成優易付支付能力。',
+    title: '全面開放 · 高效集成', subtitle: '豐富靈活的開放能力與便捷的開發體驗，為多幣種虛擬卡業務提供深度集成方案。', stepsTitle: '標準步驟 · 快速集成', stepsSubtitle: '從接入準備到正式上線，提供清晰的開發指引與技術支援，協助您的系統穩定集成支付能力。',
     features: [
       { label: '日誌追蹤檢索', tag: '工具', desc: '可快捷回溯伺服器端、客戶端 API 調用的異常日誌，便於問題排查。' },
       { label: '週期資料報表', tag: '功能', desc: '根據歷史資料週期性提供分析報告，為運營決策提供參考。' },

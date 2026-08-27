@@ -38,8 +38,8 @@ export const useAppStore = defineStore('appStore', {
       await this.getConfig()
     },
     // 获取配置信息
-    getConfig() {
-      publicApi
+    async getConfig() {
+      await publicApi
         .getConfig()
         .then((res) => {
           this.configDatas = res || {}

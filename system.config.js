@@ -26,20 +26,20 @@ export const tokenName = 'tokenAgent'
 export const systemConfig = deepFreeze({
   site: {
     // 中文站点名称。
-    nameZh: '优易付',
+    nameZh: '',
     // 英文站点名称。
-    nameEn: 'UeePay',
+    nameEn: '',
     // 官网域名（不含协议）。
-    website: 'www.ueepay.com',
+    website: '',
     // 站点主域名。
-    domain: 'ueepay.com',
+    domain: '',
     // 页脚展示的商务联系邮箱。
-    businessEmail: 'root@ueepay.com',
+    businessEmail: '',
     // 用户协议和隐私政策使用的隐私联系邮箱。
-    privacyEmail: 'privacy@ueepay.com',
+    privacyEmail: '',
     // 在线客服默认地址；为空时等待服务端接口返回地址。
     customerServiceUrl: '',
     // 页脚展示的官网 Telegram 频道地址。
-    officialChannelUrl: 'https://t.me/UeePayCom',
+    officialChannelUrl: '',
   },
 })

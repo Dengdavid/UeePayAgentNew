@@ -20,6 +20,7 @@ import { DEFAULT_LOCALE, normalizeLocale } from '@/locales/set.js'
 import Cookies from 'js-cookie'
 
 let timer = null;
+let userInfoRequest = null;
 
 const getPreferencesPayload = (result) => (
     result?.preferences ||
@@ -116,11 +117,20 @@ export const useUserStore = defineStore("userStore", {
             this.showLoginModal = true;
         },
         async getUserInfo() {
-            await userApi.getUserInfo().then(res => {
-                this.user = res || {};
-            }).catch(() => {
-                // err
-            })
+            if (userInfoRequest) return userInfoRequest;
+
+            userInfoRequest = userApi.getUserInfo()
+                .then(res => {
+                    this.user = res || {};
+                })
+                .catch(() => {
+                    // err
+                })
+                .finally(() => {
+                    userInfoRequest = null;
+                });
+
+            return userInfoRequest;
         },
         async getMenuPermissions() {
             await userApi.getSecuritySettings().then(res => {

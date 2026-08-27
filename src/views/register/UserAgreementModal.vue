@@ -4,7 +4,8 @@
   </div>
 </template>
 <script setup>
-import { siteConfig } from '@/config/site.js'
+import { computed } from 'vue'
+import { agentData } from '@/utils/agent.js'
 
 const htmlEntities = {
   '&': '&amp;',
@@ -14,14 +15,23 @@ const htmlEntities = {
   "'": '&#039;',
 }
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => htmlEntities[char])
-const legalParams = {
-  nameZh: escapeHtml(siteConfig.nameZh),
-  nameEn: escapeHtml(siteConfig.nameEn),
-  website: escapeHtml(siteConfig.website),
-  privacyEmail: escapeHtml(siteConfig.privacyEmail),
-  domain: escapeHtml(siteConfig.domain),
-  year: new Date().getFullYear(),
-}
+const legalParams = computed(() => {
+  const config = agentData()
+  const siteName = escapeHtml(config.site_name)
+  const siteDomain = config.site_domain ?? ''
+  const website = config.site_protocol && siteDomain
+    ? `${config.site_protocol}://${siteDomain}`
+    : siteDomain
+
+  return {
+    nameZh: siteName,
+    nameEn: siteName,
+    website: escapeHtml(website),
+    privacyEmail: escapeHtml(config.email),
+    domain: escapeHtml(siteDomain),
+    year: new Date().getFullYear(),
+  }
+})
 
 const emit = defineEmits(['read-complete'])
 let hasEmittedReadComplete = false

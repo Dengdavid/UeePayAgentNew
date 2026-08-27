@@ -1,8 +1,8 @@
-# UeePayFrontend
+# UeePayAgent
 
-优易付（UeePay）用户端、官网与用户中心前端项目。
+优易付（UeePay）代理商端白标站点前端，包含代理站点用户中心及授权管理员后台。
 
-项目覆盖公开官网、注册登录、2FA、KYC/KYB、虚拟卡、实体卡、Recharge、提现、财务流水、Express 汇款、帮助中心、开放平台和安全设置。服务端是最终权限边界，前端不得绕过登录、2FA、认证、风控、地区限制或敏感信息保护。
+当前路由和页面覆盖注册登录、控制台、卡片、Express、认证、财务、消息、安全设置，以及管理员可访问的站点运营管理。实际可用能力由服务端权限、站点配置、地区限制与风控结果决定；前端不得绕过登录、2FA、认证、风控、地区限制或敏感信息保护。
 
 ## 技术栈
 
@@ -25,7 +25,7 @@ yarn
 yarn dev
 ```
 
-默认开发端口为 `5174`。当前 Vite 开发代理将 `/api` 指向沙箱环境，将 `/ipapi` 指向 `https://ipapi.co`。不要在代码、文档或提交记录中写入生产密钥、Token、完整卡号、CVV、OTP、证件资料或其他敏感配置。
+默认开发端口为 `5176`。当前 Vite 开发代理将 `/agent` 指向配置的代理商端 API 环境，将 `/ipapi` 指向 `https://ipapi.co`。不要在代码、文档或提交记录中写入生产密钥、Token、完整卡号、CVV、OTP、证件资料或其他敏感配置。
 
 ### 常用命令
 
@@ -46,7 +46,7 @@ yarn docs:check # 文档链接、锚点、路径和命令检查
 
 ```text
 src/api          API 与统一请求封装
-src/router       公开路由、登录路由、用户中心路由
+src/router       登录注册、用户中心和管理员路由
 src/store        Pinia 状态
 src/views        页面与业务模块
 src/components   共享组件
@@ -54,7 +54,6 @@ src/locales      多语言入口与语言包
 src/config       API host、站点与业务配置
 src/utils        路由、Store、金额、日期、设备、文本等工具
 src/theme        View UI Plus 与全局 Less 主题
-public/agreement 协议类静态文件
 docs             项目专项规范
 ```
 

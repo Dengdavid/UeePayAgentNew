@@ -2,7 +2,7 @@ export default {
   hero: { titleLine1: '源头服务商一体化', titleLine2: '全球支付解决方案', subtitle: '覆盖支付接入、渠道增长、风控共享与品牌运营，帮助团队更轻量地完成全球支付搭建。', consult: '立即咨询', footerTitle: '让全球支付能力更快落地到您的业务体系中', footerSubtitle: '支持 API 快速接入，也支持代理商模式启动运营。', getPlan: '获取合作方案' },
   nav: { api: 'API接入', apiDesc: '适合开发团队与平台型客户', agent: '代理商分销', agentDesc: '适合渠道、商务与运营团队', recommended: '推荐' },
   api: {
-    title: '全面开放 · 高效集成', subtitle: '丰富灵活的开放能力与便捷的开发体验，为多币种虚拟卡业务提供深度集成方案。', stepsTitle: '标准步骤 · 快速集成', stepsSubtitle: '从接入准备到正式上线，提供清晰的开发指引与技术支持，协助您的系统稳定集成优易付支付能力。',
+    title: '全面开放 · 高效集成', subtitle: '丰富灵活的开放能力与便捷的开发体验，为多币种虚拟卡业务提供深度集成方案。', stepsTitle: '标准步骤 · 快速集成', stepsSubtitle: '从接入准备到正式上线，提供清晰的开发指引与技术支持，协助您的系统稳定集成支付能力。',
     features: [
       { label: '日志追踪检索', tag: '工具', desc: '可快捷回溯服务端、客户端 API 调用的异常日志，便于问题排查。' },
       { label: '周期数据报表', tag: '功能', desc: '根据历史数据周期性提供分析报告，为运营决策提供参考。' },
