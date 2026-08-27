@@ -1,10 +1,10 @@
-import router from '@/router/index.js'
+import router, { setRouterUserStoreResolver } from '@/router/index.js'
 import pinia from '@/store/index.js'
+import { useUserStore } from '@/store/user.js'
 import { vClickOutside } from '@/utils/clickOutside.js'
 import ViewUIPlus from 'view-ui-plus'
 import { createApp } from 'vue'
 import App from './App.vue'
-import 'view-ui-plus/dist/styles/viewuiplus.css'
 import '@/theme/default.less'
 const app = createApp(App)
 //公共组件
@@ -14,6 +14,7 @@ Object.entries(FormComponents).forEach(([name, component]) => {
 });
 // store
 app.use(pinia)
+setRouterUserStoreResolver(() => useUserStore(pinia))
 
 // 初始化多语言
 import i18n, { initializeLocaleMessages } from '@/locales/index.js'

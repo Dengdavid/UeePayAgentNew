@@ -118,13 +118,19 @@ export const activateLocaleMessages = async (code) => {
 }
 
 export const initializeLocaleMessages = async () => {
-  await loadLocaleMessages(FALLBACK_LOCALE)
+  const fallbackLoad = loadLocaleMessages(FALLBACK_LOCALE)
   if (locale.value !== FALLBACK_LOCALE) {
     try {
-      await loadLocaleMessages(locale.value)
+      await Promise.all([
+        fallbackLoad,
+        loadLocaleMessages(locale.value),
+      ])
     } catch {
       setLocale(FALLBACK_LOCALE, { persist: false })
+      await fallbackLoad
     }
+  } else {
+    await fallbackLoad
   }
   i18n.global.locale.value = locale.value
 }

@@ -4,7 +4,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import * as echarts from 'echarts';
+import { graphic } from 'echarts/core';
 import EChartBox from '@/components/echarts/EChartBox.vue';
 import { t } from '@/utils';
 
@@ -210,7 +210,7 @@ const optionLine = computed(() => ({
       },
       // 区域渐变填充
       areaStyle: {
-        color: new echarts.graphic.LinearGradient(
+        color: new graphic.LinearGradient(
           0,
           0,
           0,

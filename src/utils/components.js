@@ -43,7 +43,6 @@ import UiTabs from "@/components/uiForm/UiTabs/index.vue";
 import UiPage from "@/components/uiForm/UiPage/index.vue";
 import UiStep from "@/components/uiForm/UiStep/index.vue";
 import UiFormItem from "@/components/uiForm/UiFormItem/index.vue";
-import UiTableSelect from "@/components/uiForm/UiTableSelect/index.vue";
 import UiImg from "@/components/uiForm/UiImg/index.vue";
 import UiCell from "@/components/uiForm/UiCell/index.vue";
 import UiTips from "@/components/uiForm/UiTips/index.vue";
@@ -100,7 +99,6 @@ export {
   PageTitle,
   UiStep,
   UiFormItem,
-  UiTableSelect,
   UiImg,
   UiCell,
   UiTips,

@@ -4,8 +4,18 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, shallowRef } from 'vue';
-import * as echarts from 'echarts';
+import * as echarts from 'echarts/core';
+import { LineChart } from 'echarts/charts';
+import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
 import { useWindowResize } from '@/utils/onWindowResize.js'
+echarts.use([
+  LineChart,
+  GridComponent,
+  LegendComponent,
+  TooltipComponent,
+  CanvasRenderer,
+])
 // 定义 Props
 const props = defineProps({
   // ECharts 配置项

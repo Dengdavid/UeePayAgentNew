@@ -81,7 +81,6 @@ const data=reactive({
 })
 //消息预警
 import PupMessage from '@/views/ucenter/components/PupMessage.vue'
-import { color } from 'echarts'
 const ref_pup_message = ref()
 const openPupMessage=()=>{
   ref_pup_message.value?.open?.()

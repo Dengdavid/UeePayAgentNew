@@ -110,6 +110,7 @@ import { message,confirm } from '@/utils/message.js'
 import { useRouteParams,useRouteQuery } from '@/utils/route.js'
 import TransferInput from './components/TransferInput.vue'
 import TransferFormItem from './components/TransferFormItem.vue'
+import UiTableSelect from '@/components/uiForm/UiTableSelect/index.vue'
 import StateIcon from '@/components/ui/state-icon.vue'
 import { debounce } from "@/libs/tools.js"
 import { toRoute } from '@/utils/route';

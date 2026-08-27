@@ -181,7 +181,7 @@ import { useAppStore } from '@/store/app.js'
 import { useUserStore } from '@/store/user.js'
 import { storeToRefs } from 'pinia'
 import { copyText } from '@/utils/dataInfo.js'
-import { message } from '@/utils/message.js'
+import { confirm, message } from '@/utils/message.js'
 import { clearBrowserCache } from '@/utils/preferences.js'
 import { toRoute, useRoute } from '@/utils/route.js'
 import { t } from '@/utils/index.js'
@@ -266,20 +266,23 @@ const handleGoPage = function (name) {
 }
 
 // 退出
-const handleLogout = async function () {
-  await userApi.logout()
-  message(t('message.logoutSuccess'))
-  userStore.logout()
-  await clearBrowserCache()
+const handleLogout = function () {
+  confirm(t('message.logoutConfirm')).then(() => {
+    userApi.logout().then(async () => {
+      message(t('message.logoutSuccess'))
+      userStore.logout()
+      await clearBrowserCache()
 
-  // 非白名单页面，退出后跳转首页
-  const index = whiteRoutes.findIndex((item) => item.name === route.name)
-  if (index === -1 || ['certify', 'card'].includes(route.name)) {
-    await toRoute('home', {}, 'query', { replace: true })
-  }
-
-  // 重新创建应用实例，清除当前用户遗留的页面运行时缓存和请求状态。
-  window.location.reload()
+      const sourceUrl = configDatas.value?.source_url
+      if (sourceUrl) {
+        window.location.href = sourceUrl
+        return
+      }
+      await toRoute('login', {}, 'query', { replace: true })
+      // 重新创建应用实例，清除当前用户遗留的页面运行时缓存和请求状态。
+      window.location.reload()
+    })
+  })
 }
 </script>
 

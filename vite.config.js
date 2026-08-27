@@ -41,6 +41,7 @@ export default defineConfig({
     API_URL: JSON.stringify(process.env.API_URL || ""),
   },
   build: {
+    emptyOutDir: true,
     // 启用 terser 压缩
     minify: "terser",
     terserOptions: {

@@ -8,9 +8,8 @@ import {
 } from "./router.js";
 import { watch } from 'vue'
 import Cookies from 'js-cookie'
-import { t } from '@/utils/index.js'
+import { t } from '@/utils'
 import { locale } from '@/locales/set.js'
-import { useUserStore } from '@/store/user.js'
 import { tokenName } from "@systemConfig";
 const routeNames = (arr) => {
   const _arr = []
@@ -27,6 +26,11 @@ const routeNames = (arr) => {
 const whiteRouteNames = new Set(routeNames([...whiteRoutes, ...errorRoutes]));
 
 const loginUnableRouteNames = new Set(loginUnableRoutes.map(item => item.name));
+let resolveUserStore = null
+
+export const setRouterUserStoreResolver = (resolver) => {
+  resolveUserStore = resolver
+}
 
 const router = createRouter({
   history: createWebHistory(),
@@ -61,7 +65,7 @@ router.beforeEach(async (to) => {
   }
 
   if (to.matched.some((record) => record.meta.requiresAdmin)) {
-    const userStore = useUserStore()
+    const userStore = resolveUserStore()
     if (!Object.prototype.hasOwnProperty.call(userStore.user, 'is_admin')) {
       await userStore.getUserInfo()
     }

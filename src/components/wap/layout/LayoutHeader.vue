@@ -190,10 +190,11 @@ import IconBox from '@/components/com/IconBox.vue'
 import dayjs from 'dayjs'
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { toRoute,useRoute } from '@/utils/route.js'
-import { ucenterRoutes, whiteRoutes } from '@/router/router.js'
+import { ucenterRoutes } from '@/router/router.js'
 const route = useRoute()
 import { message,confirm } from '@/utils/message.js'
-import { getApi, postApi } from '@/utils/api.js'
+import { getApi } from '@/utils/api.js'
+import { userApi } from '@/api'
 import { t } from '@/utils/index.js'
 import { agentLogo, agentName } from '@/utils/agent.js'
 import { clearBrowserCache } from '@/utils/preferences.js'
@@ -202,7 +203,7 @@ import { useAppStoreRefs, useUserStoreRefs } from '@/utils/store'
 import { useUserStore } from '@/store/user.js'
 const userStore=useUserStore()
 const { user, userGroup,isLogin, menuPermissions } = useUserStoreRefs()
-const { customerUrl } = useAppStoreRefs()
+const { customerUrl, configDatas } = useAppStoreRefs()
 const isShowMenu = ref(false)
 const menuTriggerRef = ref(null)
 const menuCloseRef = ref(null)
@@ -323,15 +324,18 @@ const handleLogout = () =>{
   userClose()
   isShowMenu.value = false
   confirm(t('message.logoutConfirm')).then(()=>{
-    postApi('/user/auth/logout').then(async () => {
+    userApi.logout().then(async () => {
       message(t('message.logoutSuccess'))
       userStore.logout()
       await clearBrowserCache()
-      // 非白名单页面，退出后跳转首页
-      const index = whiteRoutes.findIndex((item) => item.name === route.name)
-      if (index === -1 || ['certify', 'card'].includes(route.name)) {
-        await toRoute('home', {}, 'query', { replace: true })
+
+      const sourceUrl = configDatas.value?.source_url
+      if (sourceUrl) {
+        window.location.href = sourceUrl
+        return
       }
+
+      await toRoute('login', {}, 'query', { replace: true })
       window.location.reload()
     })
   })
