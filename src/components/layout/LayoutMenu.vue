@@ -39,7 +39,7 @@
         <div class="balance-title">
           <span class="label">{{ $t('dashboard.availableBalance') }}</span>
           <Tooltip
-            placement="right"
+            placement="top"
             :max-width="280"
             transfer
           >
