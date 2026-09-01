@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import { postApi } from '@/utils/api.js'
 
 let pageRequestSequence = 0
@@ -13,6 +13,7 @@ export const usePageRequest = ({ props, isPhone, isCertificationBlocked, scrollT
   const loading = ref(false)
   const total = ref(0)
   const pageSearch = ref(props.data?.search || {})
+  const initialSearch = { ...(props.data?.search || {}) }
   const pageData = ref({ page: 1, limit: 10 })
   const tbody = ref([])
   let currentRequestId = 0
@@ -23,8 +24,7 @@ export const usePageRequest = ({ props, isPhone, isCertificationBlocked, scrollT
   const duplicateRequestWindow = 500
 
   const cancelActiveRequest = () => {
-    if (!requestController) return
-    requestController.abort()
+    requestController?.abort()
     requestController = null
     activeRequestKey = ''
     lastRequestKey = ''
@@ -108,6 +108,36 @@ export const usePageRequest = ({ props, isPhone, isCertificationBlocked, scrollT
     search()
   }
 
+  const resetSearch = async () => {
+    for (const item of props.data?.searchThead || []) {
+      if (item.type === 'daterange' || item.type === 'monthrange') {
+        const startKey = item.startKey || 'startTime'
+        const endKey = item.endKey || 'endTime'
+        const shouldRestoreDefaultRange = item.type === 'daterange'
+          && Number(item.maxMonths) > 0
+          && initialSearch[startKey]
+          && initialSearch[endKey]
+
+        if (shouldRestoreDefaultRange) {
+          pageSearch.value[startKey] = initialSearch[startKey]
+          pageSearch.value[endKey] = initialSearch[endKey]
+        } else {
+          delete pageSearch.value[startKey]
+          delete pageSearch.value[endKey]
+        }
+        continue
+      }
+
+      if (item.prop) delete pageSearch.value[item.prop]
+    }
+
+    const statusKey = props.data?.statusKey ?? (props.data?.status?.length ? 'status' : '')
+    if (statusKey) pageSearch.value[statusKey] = statusValue.value
+    await nextTick()
+    cancelActiveRequest()
+    reset()
+  }
+
   const setStatus = (value) => {
     if (statusValue.value !== value) statusValue.value = value
     reset()
@@ -139,6 +169,7 @@ export const usePageRequest = ({ props, isPhone, isCertificationBlocked, scrollT
     tbody,
     search,
     reset,
+    resetSearch,
     setStatus,
     handleChangePage,
     handleChangePageSize,

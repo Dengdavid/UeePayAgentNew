@@ -31,11 +31,10 @@ const props = defineProps({
   },
 })
 const show=ref(false)
-const emit = defineEmits(['search','update:pageSearch'])
+const emit = defineEmits(['search','reset','update:pageSearch'])
 const reset=()=>{
-  emit('update:pageSearch', {})
   show.value=false
-  emit('search')
+  emit('reset')
 }
 const search=()=>{
   show.value=false

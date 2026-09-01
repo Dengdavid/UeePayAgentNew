@@ -189,7 +189,7 @@
       <slot name="pageRight" v-else-if="$slots.pageRight"></slot>
     </div>
   </Drawer>
-  <PageSearchPhone ref="openSearchRef" :data="data?.searchThead" v-model:pageSearch="pageSearch" @search="reset" v-if="isPhone"/>
+  <PageSearchPhone ref="openSearchRef" :data="data?.searchThead" v-model:pageSearch="pageSearch" @search="reset" @reset="resetSearch" v-if="isPhone"/>
 </template>
 
 <script setup>
@@ -346,6 +346,7 @@ const {
   tbody,
   search,
   reset,
+  resetSearch,
   setStatus,
   handleChangePage,
   handleChangePageSize,
