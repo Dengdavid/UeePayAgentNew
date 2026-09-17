@@ -46,6 +46,7 @@ const openNotice = () => {
   if (!notice.value) return
 
   Modal.info({
+    width: 560,
     title: t('header.notice.title'),
     content: notice.value,
     okText: t('button.confirm'),
@@ -55,7 +56,9 @@ const openNotice = () => {
   nextTick(() => {
     const noticeModals = document.querySelectorAll('.ivu-modal-confirm')
     const currentModal = noticeModals[noticeModals.length - 1]
-    currentModal?.closest('.ivu-modal-wrap')?.classList.add('vertical-center-modal')
+    const noticeIcon = currentModal?.querySelector('.ivu-modal-confirm-head-icon i')
+    if (noticeIcon) noticeIcon.className = 'iconfont icon-gonggao1'
+    currentModal?.closest('.ivu-modal-wrap')?.classList.add('vertical-center-modal', 'notice-board-modal')
   })
 }
 
@@ -96,6 +99,92 @@ watch(notice, (value) => {
 @media (prefers-reduced-motion: reduce){
   .notice-trigger{
     transition: none;
+  }
+}
+</style>
+
+<style lang="less">
+.notice-board-modal{
+  .ivu-modal{
+    max-width: calc(100% - 32px) !important;
+    margin-inline: auto;
+  }
+
+  .ivu-modal-content{
+    overflow: hidden;
+    border-radius: var(--ui-radius-2xl);
+    background: linear-gradient(180deg, var(--ui-color-surface-selected-strong), var(--ui-color-surface) 85%);
+  }
+
+  .ivu-modal-body,
+  .ivu-modal-confirm{
+    padding: 0;
+  }
+
+  .ivu-modal-confirm-head{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ui-space-8);
+    padding: var(--ui-space-20);
+  }
+
+  .ivu-modal-confirm-head-icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    flex-shrink: 0;
+    line-height: 1;
+    color: var(--primary-color);
+
+    .iconfont{
+      display: block;
+      font-size: var(--ui-font-size-xl);
+      line-height: 1;
+    }
+  }
+
+  .ivu-modal-confirm-head-title{
+    min-width: 0;
+    margin: 0;
+    color: var(--primary-color);
+    font-size: var(--ui-font-size-xl);
+    font-weight: var(--ui-font-weight-semibold);
+    overflow-wrap: anywhere;
+  }
+
+  .ivu-modal-confirm-body{
+    max-height: 60vh;
+    margin: 0 var(--ui-space-16);
+    padding: var(--ui-space-16);
+    border-radius: var(--ui-radius-lg);
+    background: var(--ui-color-surface);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    color: var(--ui-color-text);
+    font-size: var(--ui-font-size-md);
+    line-height: var(--ui-line-height-xl);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    text-align: start;
+  }
+
+  .ivu-modal-confirm-footer{
+    margin: 0;
+    padding: var(--ui-space-16) var(--ui-space-24);
+    text-align: center;
+
+    .ivu-btn{
+      min-width: 96px;
+      min-height: 36px;
+    }
+  }
+
+  @media (max-width: 576px){
+    .ivu-modal-confirm-footer{
+      padding: var(--ui-space-16) var(--ui-space-20);
+    }
   }
 }
 </style>
