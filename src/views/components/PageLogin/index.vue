@@ -257,16 +257,30 @@ onMounted(() => {
     }
 
     .pageLogin-visual {
-      min-height: auto;
-      padding: 24px 20px;
-      background-position: top center;
+      min-height: 76px;
+      padding: 22px 20px;
+      // 移动端使用指定渐变，覆盖后台配置的行内背景图。
+      background: linear-gradient(10deg, var(--ui-color-surface-subtle) 0%, var(--ui-color-surface-selected) 50%, #f3f1fe 100%) !important;
 
       .pageLogin-starlight {
         display: none;
       }
 
       .pageLogin-logo{
-        width: 120px;
+        width: fit-content;
+        max-width: calc(100% - 120px);
+        min-width: 0;
+
+        :deep(.logoImg) {
+          flex-shrink: 0;
+        }
+
+        :deep(.logoText) {
+          min-width: 0;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
       }
 
       .pageLogin-slogan,

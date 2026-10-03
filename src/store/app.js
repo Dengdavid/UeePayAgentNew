@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { publicApi } from '@/api/index.js'
 import { siteConfig } from '@/config/site.js'
+import router from '@/router/index.js'
 
 export const useAppStore = defineStore('appStore', {
   persist: {
@@ -15,6 +16,7 @@ export const useAppStore = defineStore('appStore', {
     customerUrl: siteConfig.customerServiceUrl,
     notice: '',
     areaDatas: [],
+    configUnavailable: false,
     configDatas: {
       site_name: '',
       site_keyword: '',
@@ -42,11 +44,19 @@ export const useAppStore = defineStore('appStore', {
       await publicApi
         .getConfig()
         .then((res) => {
+          this.configUnavailable = res === ''
           this.configDatas = res || {}
+          if (!res) {
+            return router.replace({ name: 'error_403' })
+          }
           this.customerUrl=res.customer_link
         })
-        .catch(() => {
-          // err
+        .catch((err) => {
+          if (err?.data === '' && ![-100, 410, 429, 451].includes(err?.code)) {
+            this.configUnavailable = true
+            this.configDatas = {}
+            return router.replace({ name: 'error_403' })
+          }
         })
     },
     // 获取代理商公告

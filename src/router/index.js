@@ -11,6 +11,7 @@ import Cookies from 'js-cookie'
 import { t } from '@/utils'
 import { locale } from '@/locales/set.js'
 import { tokenName } from "@systemConfig";
+import { useAppStore } from '@/store/app.js'
 const routeNames = (arr) => {
   const _arr = []
   arr.map((item) => {
@@ -24,6 +25,7 @@ const routeNames = (arr) => {
 }
 
 const whiteRouteNames = new Set(routeNames([...whiteRoutes, ...errorRoutes]));
+const errorRouteNames = new Set(routeNames(errorRoutes));
 
 const loginUnableRouteNames = new Set(loginUnableRoutes.map(item => item.name));
 let resolveUserStore = null
@@ -52,6 +54,9 @@ const updateDocumentTitle = (route) => {
 }
 
 router.beforeEach(async (to) => {
+  if (useAppStore().configUnavailable && !errorRouteNames.has(to.name)) {
+    return { name: 'error_403', replace: true }
+  }
   const token = Cookies.get(tokenName)
   const isWhiteRoute = whiteRouteNames.has(to.name)
   const isLoginUnableRoute = loginUnableRouteNames.has(to.name)
