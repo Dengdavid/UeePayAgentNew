@@ -266,5 +266,17 @@ export default {
     description: 'Escolha como receber notificações de evento de cartão. As mensagens no aplicativo são sempre mantidas.', insufficientBalance: 'Notificação de saldo insuficiente', insufficientBalanceDesc: 'Receba um alerta quando um saldo de cartão cair abaixo do valor configurado', enabled: 'Já ativado', disabled: 'Desactivado',
     method: 'Método de notificação', warningAmount: 'Quantidade de aviso', warningPlaceholder: 'O valor do alerta não pode ser inferior a US$ 1', consumptionFailed: 'Notificação de falha de consumo', consumptionFailedDesc: 'Receber um alerta quando uma transacção falhar ou for recusada',
     onsite: 'Notícias do site', email: 'Notificação por e-mail', telegram: 'Notificação dos membros', title: 'Configurações de mensagem', confirm: 'Confirmar', success: 'Configuração bem-sucedida', failed: 'Falha na configuração',
-  }
+  },
+  sliderCaptcha: {
+    title: 'Verificação de segurança',
+    drag: 'Arraste o controlo para completar o puzzle',
+    refresh: 'Atualizar',
+    loading: 'A carregar as imagens de verificação…',
+    verifying: 'A verificar…',
+    failed: 'A verificação falhou. Tente novamente.',
+    expired: 'A verificação com o controlo deslizante deixou de ser válida. Efetue novamente a verificação.',
+    sendFailed: "Não foi possível enviar o email. Tente novamente.",
+    retry: 'Não foi possível carregar. Atualize e tente novamente.',
+    keyboardHint: 'Use as teclas de direção para mover a peça e prima Enter para verificar.',
+  },
 }

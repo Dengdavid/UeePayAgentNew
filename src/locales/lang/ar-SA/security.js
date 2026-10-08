@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "أدخل عنوان بريد إلكتروني جديدًا، مثل: *****{'@'}gmail.com", code: 'رمز التحقق', codePlaceholder: 'أدخل رمز التحقق', codeAfterEmail: 'أدخل عنوان البريد الإلكتروني لطلب رمز تحقق',
     changeTitle: 'تغيير عنوان البريد الإلكتروني', save: 'حفظ', bindSuccess: 'تم ربط عنوان البريد الإلكتروني بنجاح', bindFailed: 'تعذر ربط عنوان البريد الإلكتروني', changeSuccess: 'تم تغيير عنوان البريد الإلكتروني بنجاح', changeFailed: 'تعذر تغيير عنوان البريد الإلكتروني',
     verifyTitle: 'التحقق عبر البريد الإلكتروني', verifyDescription: 'أرسلنا رمز تحقق مكوّنًا من 6 أرقام إلى {email}. أدخله أدناه لإكمال التحقق.', securityFooter: 'التحقق الأمني من {siteName} · حماية حسابك', securityTitle: 'التحقق الأمني', submit: 'إرسال', googleClosed: 'تم تعطيل Google Authenticator بنجاح', googleCloseFailed: 'تعذر تعطيل Google Authenticator',
+    duplicate: 'يرجى عدم إدخال عنوان البريد الإلكتروني نفسه',
   },
   password: {
-    old: 'كلمة المرور الحالية', new: 'كلمة المرور الجديدة', confirm: 'تأكيد كلمة المرور', length: 'أدخل كلمة مرور تتكون من 6 إلى 32 حرفًا', oldPlaceholder: 'أدخل كلمة المرور الحالية', newPlaceholder: 'أدخل كلمة المرور الجديدة', confirmPlaceholder: 'أدخل كلمة المرور الجديدة مرة أخرى', mismatch: 'كلمتا المرور غير متطابقتين', title: 'تغيير كلمة المرور', submit: 'إرسال', success: 'تم تغيير كلمة المرور بنجاح. يُرجى تسجيل الدخول مرة أخرى.', failed: 'تعذر تغيير كلمة المرور',
+    old: 'كلمة المرور الحالية', new: 'كلمة المرور الجديدة', confirm: 'تأكيد كلمة المرور', length: 'أدخل كلمة مرور تتكون من 6 إلى 30 حرفًا', oldPlaceholder: 'أدخل كلمة المرور الحالية', newPlaceholder: 'أدخل كلمة المرور الجديدة', confirmPlaceholder: 'أدخل كلمة المرور الجديدة مرة أخرى', mismatch: 'كلمتا المرور غير متطابقتين', title: 'تغيير كلمة المرور', submit: 'إرسال', success: 'تم تغيير كلمة المرور بنجاح. يُرجى تسجيل الدخول مرة أخرى.', failed: 'تعذر تغيير كلمة المرور',
+    lettersAndNumbers: "يجب تضمين أحرف إنجليزية وأرقام",
+    strength: "قوة كلمة المرور: {level}",
+    strengthWeak: "ضعيفة",
+    strengthMedium: "متوسطة",
+    strengthStrong: "قوية",
+    strengthUnavailable: "يتعذر تقييم قوة كلمة المرور حاليًا",
+    sameAsOld: 'لا يمكن أن تكون كلمة المرور الجديدة مطابقة لكلمة المرور الحالية',
   },
   ipWhitelist: { duplicate: 'تم العثور على إدخال مكرر: {ip}', title: 'تعديل قائمة عناوين IP المسموح بها', save: 'حفظ', success: 'تم تحديث قائمة عناوين IP المسموح بها بنجاح', failed: 'تعذر تحديث قائمة عناوين IP المسموح بها' },
   google: {

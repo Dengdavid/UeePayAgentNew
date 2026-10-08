@@ -27,4 +27,5 @@ export default {
   googleCodeDescription: 'Google Authenticator’daki 6 haneli kodu girin',
   googleCodeTip: 'Doğrulama kodunu görmek için Google Authenticator’ı açın',
   googleCodeLabel: '6 haneli Google Authenticator kodunu girin',
+  enableGoogleConfirm: 'Google Authenticator etkinleştirilmemiş. Etkinleştirmek için Güvenlik Merkezi’ne gitmek ister misiniz?',
 }

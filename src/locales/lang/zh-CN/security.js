@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "请输入新的邮箱地址，例如：*****{'@'}gmail.com", code: '验证码', codePlaceholder: '请输入验证码', codeAfterEmail: '请输入邮箱地址后获取验证码',
     changeTitle: '修改邮箱', save: '保存', bindSuccess: '绑定邮箱成功', bindFailed: '绑定邮箱失败', changeSuccess: '修改邮箱成功', changeFailed: '修改失败',
     verifyTitle: '邮箱验证', verifyDescription: '我们已向您的 {email} 发送 6 位验证码，请在下方输入以完成验证。', securityFooter: '{siteName}安全验证 · 保障账户安全', securityTitle: '安全验证', submit: '提交', googleClosed: '关闭谷歌验证器成功', googleCloseFailed: '关闭谷歌验证器失败',
+    duplicate: '请勿输入重复邮箱',
   },
   password: {
-    old: '原密码', new: '新密码', confirm: '确认密码', length: '请输入 6-32 位密码', oldPlaceholder: '请输入原密码', newPlaceholder: '请输入新密码', confirmPlaceholder: '请再次输入密码', mismatch: '两次密码不相同', title: '修改密码', submit: '提交', success: '修改密码成功，请重新登录', failed: '修改失败',
+    old: '原密码', new: '新密码', confirm: '确认密码', length: '请输入 6-30 位密码', oldPlaceholder: '请输入原密码', newPlaceholder: '请输入新密码', confirmPlaceholder: '请再次输入密码', mismatch: '两次密码不相同', title: '修改密码', submit: '提交', success: '修改密码成功，请重新登录', failed: '修改失败',
+    lettersAndNumbers: "至少包含英文字母和数字",
+    strength: "密码强度：{level}",
+    strengthWeak: "弱",
+    strengthMedium: "中",
+    strengthStrong: "强",
+    strengthUnavailable: "暂时无法评估密码强度",
+    sameAsOld: '新密码不能与原密码相同',
   },
   ipWhitelist: { duplicate: '发现重复项：{ip}', title: '修改 IP 白名单', save: '保存', success: '修改 IP 白名单成功', failed: '修改失败' },
   google: {

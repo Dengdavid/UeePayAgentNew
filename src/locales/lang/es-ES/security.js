@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "Introduzca una nueva dirección de correo electrónico, por ejemplo: *****{'@'}gmail.com", code: 'Código de verificación', codePlaceholder: 'Introduzca el código de verificación', codeAfterEmail: 'Introduzca una dirección de correo electrónico para solicitar un código de verificación',
     changeTitle: 'Cambiar dirección de correo electrónico', save: 'Guardar', bindSuccess: 'Dirección de correo electrónico conectada con éxito', bindFailed: 'Incapaz de vincular la dirección de correo electrónico', changeSuccess: 'Correo electrónico cambió con éxito', changeFailed: 'La modificación falló',
     verifyTitle: 'Verificación de correo electrónico', verifyDescription: 'Hemos enviado un código de verificación de 6 dígitos a {email}. Introdúzcalo a continuación para completar la verificación.', securityFooter: 'Verificación de seguridad de {siteName} · Protegemos su cuenta', securityTitle: 'Verificación de seguridad', submit: 'Enviar', googleClosed: 'Google Authenticator se ha desactivado', googleCloseFailed: 'No se ha podido desactivar Google Authenticator',
+    duplicate: 'No introduzca la misma dirección de correo electrónico',
   },
   password: {
-    old: 'Contraseña actual', new: 'Nueva contraseña', confirm: 'Confirmar contraseña', length: 'Introduzca una contraseña de entre 6 y 32 caracteres', oldPlaceholder: 'Introduzca su contraseña actual', newPlaceholder: 'Introduzca una contraseña nueva', confirmPlaceholder: 'Vuelva a introducir la contraseña nueva', mismatch: 'Las contraseñas no coinciden', title: 'Cambiar contraseña', submit: 'Enviar', success: 'La contraseña se ha cambiado correctamente. Vuelva a iniciar sesión.', failed: 'No se pudo cambiar la contraseña',
+    old: 'Contraseña actual', new: 'Nueva contraseña', confirm: 'Confirmar contraseña', length: 'Introduzca una contraseña de entre 6 y 30 caracteres', oldPlaceholder: 'Introduzca su contraseña actual', newPlaceholder: 'Introduzca una contraseña nueva', confirmPlaceholder: 'Vuelva a introducir la contraseña nueva', mismatch: 'Las contraseñas no coinciden', title: 'Cambiar contraseña', submit: 'Enviar', success: 'La contraseña se ha cambiado correctamente. Vuelva a iniciar sesión.', failed: 'No se pudo cambiar la contraseña',
+    lettersAndNumbers: "Incluya letras (A–Z, a–z) y dígitos (0–9)",
+    strength: "Seguridad de la contraseña: {level}",
+    strengthWeak: "Débil",
+    strengthMedium: "Media",
+    strengthStrong: "Fuerte",
+    strengthUnavailable: "Seguridad de la contraseña no disponible ahora",
+    sameAsOld: 'La nueva contraseña no puede ser igual a la contraseña actual',
   },
   ipWhitelist: { duplicate: 'Se encontró una entrada duplicada: {ip}', title: 'Editar lista de IP permitidas', save: 'Guardar', success: 'La lista de IP permitidas se actualizó correctamente', failed: 'No se pudo actualizar la lista de IP permitidas' },
   google: {

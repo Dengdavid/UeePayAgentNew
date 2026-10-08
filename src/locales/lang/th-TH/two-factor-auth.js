@@ -27,4 +27,5 @@ export default {
   googleCodeDescription: 'กรอกรหัส 6 หลักจาก Google Authenticator',
   googleCodeTip: 'เปิด Google Authenticator เพื่อดูรหัสยืนยัน',
   googleCodeLabel: 'กรอกรหัส Google Authenticator 6 หลัก',
+  enableGoogleConfirm: 'ยังไม่ได้เปิดใช้งาน Google Authenticator ต้องการไปที่ศูนย์ความปลอดภัยเพื่อเปิดใช้งานหรือไม่',
 }

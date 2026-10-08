@@ -8,6 +8,7 @@
       :maxlength="6"
       :show-word-limit="false"
       v-bind="$attrs"
+      :disabled="!hasSentCode || props.disabled"
       @on-change="handleInputChange"
       @on-enter="handleInputEnter"
     >
@@ -18,14 +19,21 @@
     <div class="send" @click.stop="">
       <Button type="text" :disabled="!canSendCode" @click="handleSend">{{ sendText }}</Button>
     </div>
+    <SliderCaptchaModal ref="emailCaptchaRef" />
   </div>
 </template>
 
+<script>
+const countdownDeadlines = new Map()
+</script>
+
 <script setup>
-import { postApi } from '@/utils/api.js'
+import SliderCaptchaModal from '@/components/SliderCaptchaModal/index.vue'
 import { message } from '@/utils/message.js'
 import { t } from '@/utils/index.js'
 import { computed, defineProps, onMounted, onUnmounted, ref, watch } from 'vue'
+
+const emailCaptchaRef = ref(null)
 
 const COUNTDOWN_SECONDS = 60
 const EMAIL_REG = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -42,6 +50,10 @@ const props = defineProps({
   email:{
     type:String,
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 const emits = defineEmits(['update:modelValue', 'on-change','on-enter'])
 const c_modelValue = computed({
@@ -54,13 +66,14 @@ const c_modelValue = computed({
 })
 const normalizedEmail = computed(() => (props.email || '').trim())
 const isValidEmail = computed(() => EMAIL_REG.test(normalizedEmail.value))
-const storageKey = computed(() => {
+const countdownKey = computed(() => {
   if (!normalizedEmail.value) return ''
-  return `form_code_countdown:${props.event}:${encodeURIComponent(normalizedEmail.value)}`
+  return JSON.stringify([props.event, normalizedEmail.value])
 })
 const countdown = ref(0)
 const sendingCode = ref(false)
-const canSendCode = computed(() => isValidEmail.value && !sendingCode.value && countdown.value <= 0)
+const hasSentCode = ref(false)
+const canSendCode = computed(() => !props.disabled && isValidEmail.value && !sendingCode.value && countdown.value <= 0)
 const sendText = computed(() => countdown.value > 0
   ? t('formCode.resendIn', { seconds: countdown.value })
   : t('formCode.send'))
@@ -73,16 +86,14 @@ const clearCountdownTimer = () => {
   }
 }
 
-const resetCountdown = (key = storageKey.value) => {
+const resetCountdown = (key = countdownKey.value) => {
   clearCountdownTimer()
   countdown.value = 0
-  if (key) {
-    localStorage.removeItem(key)
-  }
+  if (key) countdownDeadlines.delete(key)
 }
 
-const updateCountdown = (key = storageKey.value) => {
-  const expiresAt = Number(localStorage.getItem(key) || 0)
+const updateCountdown = (key = countdownKey.value) => {
+  const expiresAt = countdownDeadlines.get(key) || 0
   const remaining = Math.ceil((expiresAt - Date.now()) / 1000)
 
   if (!expiresAt || remaining <= 0) {
@@ -93,11 +104,13 @@ const updateCountdown = (key = storageKey.value) => {
   countdown.value = remaining
 }
 
-const startCountdown = (key = storageKey.value) => {
+const startCountdown = (key = countdownKey.value) => {
   if (!key) return
 
-  const expiresAt = Date.now() + COUNTDOWN_SECONDS * 1000
-  localStorage.setItem(key, String(expiresAt))
+  for (const [cachedKey, expiresAt] of countdownDeadlines) {
+    if (expiresAt <= Date.now()) countdownDeadlines.delete(cachedKey)
+  }
+  countdownDeadlines.set(key, Date.now() + COUNTDOWN_SECONDS * 1000)
   clearCountdownTimer()
   updateCountdown(key)
   countdownTimer = setInterval(() => updateCountdown(key), 1000)
@@ -105,7 +118,8 @@ const startCountdown = (key = storageKey.value) => {
 
 const restoreCountdown = () => {
   clearCountdownTimer()
-  const key = storageKey.value
+  hasSentCode.value = false
+  const key = countdownKey.value
   if (!key) {
     countdown.value = 0
     return
@@ -113,31 +127,30 @@ const restoreCountdown = () => {
 
   updateCountdown(key)
   if (countdown.value > 0) {
+    hasSentCode.value = true
     countdownTimer = setInterval(() => updateCountdown(key), 1000)
   }
 }
 
-const handleSend=()=>{
+const handleSend = async () => {
   if (!isValidEmail.value) {
     message(t('formCode.invalidEmail'), 'error')
     return
   }
-  if(!canSendCode.value) return
+  if (!canSendCode.value) return
 
   const targetEmail = normalizedEmail.value
-  const targetStorageKey = storageKey.value
-  sendingCode.value=true
-  postApi('/user/auth/sendEmail',{
-    email:targetEmail,
-    event:props.event
-  }).then((res)=>{
+  const targetKey = countdownKey.value
+  sendingCode.value = true
+  try {
+    const sent = await emailCaptchaRef.value.open({ email: targetEmail, event: props.event })
+    if (sent !== true || targetKey !== countdownKey.value) return
+    hasSentCode.value = true
     message(t('formCode.sent'))
-    startCountdown(targetStorageKey)
-  }).catch((err)=>{
-    message(err?.msg || t('formCode.failed'),'error')
-  }).finally(()=>{
-    sendingCode.value=false
-  })
+    startCountdown(targetKey)
+  } finally {
+    sendingCode.value = false
+  }
 }
 
 const handleInputChange = (value) => {
@@ -148,13 +161,25 @@ const handleInputEnter = (value) => {
   emits('on-enter', value)
 }
 
-watch(storageKey, restoreCountdown)
+watch(countdownKey, () => {
+  emailCaptchaRef.value?.close()
+  c_modelValue.value = ''
+  restoreCountdown()
+})
 
 onMounted(()=>{
+  // 清除旧版本保存在邮箱键中的倒计时，后续只使用当前页面内存。
+  try {
+    for (let index = localStorage.length - 1; index >= 0; index--) {
+      const key = localStorage.key(index)
+      if (key?.startsWith('form_code_countdown:')) localStorage.removeItem(key)
+    }
+  } catch {}
   restoreCountdown()
 })
 
 onUnmounted(()=>{
+  emailCaptchaRef.value?.close()
   clearCountdownTimer()
 })
 </script>

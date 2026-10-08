@@ -22,13 +22,11 @@
           </template>
         </FormCode>
       </FormItem>
-      <FormItem prop="pwd">
-        <FormInput v-model="form.pwd" size="large" type="password" :placeholder="$t('register.placeholder.password')" maxlength="30">
+      <FormPassword v-model="form.pwd" prop="pwd" size="large" :placeholder="$t('register.placeholder.password')" maxlength="30" :required-message="$t('register.validation.passwordRequired')" :length-message="$t('register.validation.passwordLength')">
           <template #prefix>
             <Icon type="md-lock" />
           </template>
-        </FormInput>
-      </FormItem>
+      </FormPassword>
       <FormItem prop="repwd">
         <FormInput v-model="form.repwd" size="large" type="password" :placeholder="$t('register.placeholder.confirmPassword')" maxlength="30">
           <template #prefix>
@@ -97,6 +95,7 @@ import { goBack,toRoute } from '@/utils/route.js'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 import PageLogin from '@/views/components/PageLogin/index.vue'
+import FormPassword from '@/components/form/FormPassword/index.vue'
 import { useUserStore } from '@/store/user.js'
 import { useAppStore } from '@/store/app.js'
 import PrivacyModal from './PrivacyModal.vue'
@@ -187,10 +186,6 @@ const rules = {
   ],
   email_code: [
       { required: true, message: t('register.validation.verificationCodeRequired'), trigger: 'blur' }
-  ],
-  pwd: [
-      { required: true, message: t('register.validation.passwordRequired'), trigger: 'blur' },
-      { min: 6, max: 30, message: t('register.validation.passwordLength'), trigger: 'blur' }
   ],
   repwd: [
       { required: true, message: t('register.validation.confirmPasswordRequired'), trigger: 'blur' },

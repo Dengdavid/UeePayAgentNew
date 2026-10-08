@@ -27,4 +27,5 @@ export default {
   googleCodeDescription: 'Google Authenticator에서 6자리 코드를 입력하십시오.',
   googleCodeTip: '인증 코드를 보려면 Google Authenticator를 엽니 다',
   googleCodeLabel: 'Google Authenticator의 6자리 코드를 입력해 주세요',
+  enableGoogleConfirm: 'Google Authenticator가 활성화되어 있지 않습니다. 보안 센터로 이동하여 활성화하시겠습니까?',
 }

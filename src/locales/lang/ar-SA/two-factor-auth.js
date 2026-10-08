@@ -27,4 +27,5 @@ export default {
   googleCodeDescription: 'أدخل الرمز المكوّن من 6 أرقام من Google Authenticator',
   googleCodeTip: 'افتح Google Authenticator لعرض رمز التحقق',
   googleCodeLabel: 'أدخل رمز Google Authenticator المكوّن من 6 أرقام',
+  enableGoogleConfirm: 'لم يتم تفعيل Google Authenticator بعد. هل تريد الانتقال إلى مركز الأمان لتفعيله؟',
 }

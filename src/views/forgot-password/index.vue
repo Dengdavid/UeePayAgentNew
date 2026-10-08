@@ -15,13 +15,11 @@
           </template>
         </FormCode>
       </FormItem>
-      <FormItem prop="pwd">
-        <FormInput v-model="form.pwd" size="large" type="password" :placeholder="$t('forgotPassword.placeholder.password')">
-          <template #prefix>
-            <Icon type="md-lock" />
-          </template>
-        </FormInput>
-      </FormItem>
+      <FormPassword v-model="form.pwd" prop="pwd" size="large" :required-message="$t('forgotPassword.validation.passwordRequired')" :placeholder="$t('forgotPassword.placeholder.password')">
+        <template #prefix>
+          <Icon type="md-lock" />
+        </template>
+      </FormPassword>
       <FormItem prop="repwd">
         <FormInput v-model="form.repwd" size="large" type="password" :placeholder="$t('forgotPassword.placeholder.confirmPassword')">
           <template #prefix>
@@ -55,6 +53,7 @@ import { goBack,toRoute } from '@/utils/route.js'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 import PageLogin from '@/views/components/PageLogin/index.vue'
+import FormPassword from '@/components/form/FormPassword/index.vue'
 import { useUserStore } from '@/store/user.js'
 import { useAppStore } from '@/store/app.js'
 import { Button } from 'view-ui-plus'
@@ -76,10 +75,6 @@ const rules = {
   code: [
       { required: true, message: t('forgotPassword.validation.verificationCodeRequired'), trigger: 'blur' },
       { min: 6, max: 6, message: t('forgotPassword.validation.verificationCodeLength'), trigger: 'blur' }
-  ],
-  pwd: [
-      { required: true, message: t('forgotPassword.validation.passwordRequired'), trigger: 'blur' },
-      { min: 6, message: t('forgotPassword.validation.passwordLength'), trigger: 'blur' }
   ],
   repwd: [
       { required: true, message: t('forgotPassword.validation.confirmPasswordRequired'), trigger: 'blur' },

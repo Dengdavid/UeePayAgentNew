@@ -248,6 +248,7 @@ async function createVerificationComponent(verifyData, requestState) {
 
   emptyRouter.beforeEach((to, from, next) => next(false))
 
+  verificationApp.use(i18n)
   verificationApp.use(emptyRouter)
   return verificationApp.mount(containerElement)
 }

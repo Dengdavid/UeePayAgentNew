@@ -266,5 +266,17 @@ export default {
     description: 'Pilih bagaimana menerima pemberitahuan acara kartu. Pesan In- app selalu dipertahankan.', insufficientBalance: 'Notifikasi saldo tidak mencukupi', insufficientBalanceDesc: 'Menerima peringatan ketika balance kartu jatuh di bawah jumlah yang dikonfigurasi', enabled: 'Sudah dihidupkan', disabled: 'Dinonaktifkan',
     method: 'Metode pemberitahuan', warningAmount: 'Jumlah peringatan', warningPlaceholder: 'Jumlah peringatan tidak boleh kurang dari $1', consumptionFailed: 'Pemberitahuan kegagalan konsumsi', consumptionFailedDesc: 'Menerima peringatan ketika transaksi gagal atau ditolak',
     onsite: 'Berita situs', email: 'Pemberitahuan email', telegram: 'Pemberitahuan Anggota', title: 'Pengaturan pesan', confirm: 'Konfirmasi', success: 'Penyiapan berhasil', failed: 'Tak bisa memutakhirkan pengaturan',
-  }
+  },
+  sliderCaptcha: {
+    title: 'Verifikasi keamanan',
+    drag: 'Geser penggeser untuk melengkapi teka-teki',
+    refresh: 'Muat ulang',
+    loading: 'Memuat gambar verifikasi…',
+    verifying: 'Memverifikasi…',
+    failed: 'Verifikasi gagal. Silakan coba lagi.',
+    expired: 'Verifikasi dengan penggeser sudah tidak berlaku. Silakan lakukan verifikasi ulang.',
+    sendFailed: "Gagal mengirim email. Silakan coba lagi.",
+    retry: 'Tidak dapat memuat. Muat ulang dan coba lagi.',
+    keyboardHint: 'Gunakan tombol panah untuk memindahkan potongan, lalu tekan Enter untuk memverifikasi.',
+  },
 }

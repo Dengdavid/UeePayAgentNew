@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "Masukkan alamat email baru, misalnya: *****{'@'}gmail.com", code: 'Kode Verifikasi', codePlaceholder: 'Masukkan kode verifikasi', codeAfterEmail: 'Masukkan alamat email untuk meminta kode verifikasi',
     changeTitle: 'Ubah Alamat Email', save: 'Simpan', bindSuccess: 'Alamat email berhasil dihubungkan', bindFailed: 'Alamat email tidak dapat dihubungkan', changeSuccess: 'Alamat email berhasil diubah', changeFailed: 'Alamat email tidak dapat diubah',
     verifyTitle: 'Verifikasi Email', verifyDescription: 'Kami telah mengirim kode verifikasi 6 digit ke {email}. Masukkan kode tersebut di bawah untuk menyelesaikan verifikasi.', securityFooter: 'Verifikasi Keamanan {siteName} · Melindungi Akun Anda', securityTitle: 'Verifikasi Keamanan', submit: 'Kirim', googleClosed: 'Google Authenticator berhasil dinonaktifkan', googleCloseFailed: 'Google Authenticator tidak dapat dinonaktifkan',
+    duplicate: 'Jangan masukkan alamat email yang sama',
   },
   password: {
-    old: 'Kata Sandi Saat Ini', new: 'Kata Sandi Baru', confirm: 'Konfirmasi Kata Sandi', length: 'Masukkan kata sandi sepanjang 6–32 karakter', oldPlaceholder: 'Masukkan kata sandi saat ini', newPlaceholder: 'Masukkan kata sandi baru', confirmPlaceholder: 'Masukkan kembali kata sandi baru', mismatch: 'Kata sandi tidak cocok', title: 'Ubah Kata Sandi', submit: 'Kirim', success: 'Kata sandi berhasil diubah. Silakan login kembali.', failed: 'Kata sandi tidak dapat diubah',
+    old: 'Kata Sandi Saat Ini', new: 'Kata Sandi Baru', confirm: 'Konfirmasi Kata Sandi', length: 'Masukkan kata sandi sepanjang 6–30 karakter', oldPlaceholder: 'Masukkan kata sandi saat ini', newPlaceholder: 'Masukkan kata sandi baru', confirmPlaceholder: 'Masukkan kembali kata sandi baru', mismatch: 'Kata sandi tidak cocok', title: 'Ubah Kata Sandi', submit: 'Kirim', success: 'Kata sandi berhasil diubah. Silakan login kembali.', failed: 'Kata sandi tidak dapat diubah',
+    lettersAndNumbers: "Sertakan huruf A–Z/a–z dan angka 0–9",
+    strength: "Kekuatan kata sandi: {level}",
+    strengthWeak: "Lemah",
+    strengthMedium: "Sedang",
+    strengthStrong: "Kuat",
+    strengthUnavailable: "Kekuatan kata sandi belum dapat dinilai",
+    sameAsOld: 'Kata sandi baru tidak boleh sama dengan kata sandi saat ini',
   },
   ipWhitelist: { duplicate: 'Ditemukan entri duplikat: {ip}', title: 'Edit Daftar IP yang Diizinkan', save: 'Simpan', success: 'Daftar IP yang diizinkan berhasil diperbarui', failed: 'Daftar IP yang diizinkan tidak dapat diperbarui' },
   google: {

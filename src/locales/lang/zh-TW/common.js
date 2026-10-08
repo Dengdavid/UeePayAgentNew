@@ -266,5 +266,17 @@ export default {
     description: '設定卡片相關事件的通知方式，站內消息將始終保留。', insufficientBalance: '餘額不足通知', insufficientBalanceDesc: '卡片餘額低於設定金額時提醒', enabled: '已開啓', disabled: '已關閉',
     method: '通知方式', warningAmount: '預警金額', warningPlaceholder: '預警金額不可低於 $1', consumptionFailed: '消費失敗通知', consumptionFailedDesc: '消費失敗或交易被拒絕時提醒',
     onsite: '站內消息', email: '郵件通知', telegram: '會員通知', title: '消息設定', confirm: '確認', success: '設定成功', failed: '設定失敗',
-  }
+  },
+  sliderCaptcha: {
+    title: '安全驗證',
+    drag: '拖動滑塊完成拼圖',
+    refresh: '換一張',
+    loading: '正在載入驗證圖片…',
+    verifying: '正在驗證…',
+    failed: '驗證失敗，請重試。',
+    expired: '滑塊驗證已失效，請重新驗證',
+    sendFailed: "郵件發送失敗，請重試。",
+    retry: '載入失敗，請重新整理後再試。',
+    keyboardHint: '使用方向鍵移動拼圖，再按 Enter 驗證。',
+  },
 }

@@ -1,16 +1,21 @@
 <template>
   <FormPupBox ref="pupRef" :pup="pup">
     <template #default="{form}">
-       <FormItemBox :label="$t('security.password.old')" prop="oldpwd" isRequired :rules="[
-        { min: 6, max: 32, message: $t('security.password.length'), trigger: 'blur' },
-      ]">
+       <FormItemBox :label="$t('security.password.old')" prop="oldpwd" isRequired :rules="{ min: 6, max: 32 }">
         <FormInput type="password" v-model="form.oldpwd" :placeholder="$t('security.password.oldPlaceholder')"></FormInput>
       </FormItemBox>
-      <FormItemBox :label="$t('security.password.new')" prop="pwd" isRequired :rules="[
-        { min: 6, max: 32, message: $t('security.password.length'), trigger: 'blur' },
-      ]">
-        <FormInput type="password" v-model="form.pwd" :placeholder="$t('security.password.newPlaceholder')"></FormInput>
-      </FormItemBox>
+      <FormPassword v-model="form.pwd" :label="$t('security.password.new')" prop="pwd" :placeholder="$t('security.password.newPlaceholder')" :rules="[
+        {
+          validator: (rule, value, callback) => {
+            if (value && value === form.oldpwd) {
+              callback(new Error($t('security.password.sameAsOld')))
+            } else {
+              callback()
+            }
+          },
+          trigger: ['change', 'blur'],
+        },
+      ]" />
       <FormItemBox :label="$t('security.password.confirm')" prop="repwd" isRequired :rules="[
         {
           validator: (rule, value, callback) => {
@@ -30,7 +35,8 @@
 </template>
 
 <script setup>
-import {ref,reactive} from 'vue'
+import {ref,reactive,watch} from 'vue'
+import FormPassword from '@/components/form/FormPassword/index.vue'
 import { postApi } from '@/utils/api.js'
 import { message } from '@/utils/message.js'
 import { toRoute } from '@/utils/route.js'
@@ -39,6 +45,7 @@ import { t } from '@/utils'
 const userStore = useUserStore()
 const props = defineProps({
 })
+const pupRef = ref(null)
 const pup = reactive({
   status:false,
   title: t('security.password.title'),
@@ -71,6 +78,11 @@ const pup = reactive({
     }
   ]
 })
+watch(() => pup.form.oldpwd, () => {
+  if (pup.status && pup.form.pwd) {
+    pupRef.value?.validateField('pwd')
+  }
+}, { flush: 'post' })
 const open=()=>{
   pup.status=true
 }

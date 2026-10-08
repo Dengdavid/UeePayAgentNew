@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "Yeni bir e-posta adresi girin, örneğin: *****{'@'}gmail.com", code: 'Doğrulama Kodu', codePlaceholder: 'Doğrulama kodunu girin', codeAfterEmail: 'Doğrulama kodu istemek için bir e-posta adresi girin',
     changeTitle: 'E-posta Adresini Değiştir', save: 'Kaydet', bindSuccess: 'E-posta adresi başarıyla bağlandı', bindFailed: 'E-posta adresi bağlanamadı', changeSuccess: 'E-posta adresi başarıyla değiştirildi', changeFailed: 'E-posta adresi güncellenemedi',
     verifyTitle: 'E-posta Doğrulaması', verifyDescription: '{email} adresine 6 haneli bir doğrulama kodu gönderdik. Doğrulamayı tamamlamak için kodu aşağıya girin.', securityFooter: '{siteName} Güvenlik Doğrulaması · Hesabınızı Korur', securityTitle: 'Güvenlik Doğrulaması', submit: 'Gönder', googleClosed: 'Google Authenticator başarıyla devre dışı bırakıldı', googleCloseFailed: 'Google Authenticator devre dışı bırakılamadı',
+    duplicate: 'Lütfen aynı e-posta adresini girmeyin',
   },
   password: {
-    old: 'Mevcut Şifre', new: 'Yeni Şifre', confirm: 'Şifreyi Onayla', length: '6-32 karakterden oluşan bir şifre girin', oldPlaceholder: 'Mevcut şifrenizi girin', newPlaceholder: 'Yeni şifreyi girin', confirmPlaceholder: 'Yeni şifreyi yeniden girin', mismatch: 'Şifreler eşleşmiyor', title: 'Şifreyi Değiştir', submit: 'Gönder', success: 'Şifre başarıyla değiştirildi. Yeniden giriş yapın.', failed: 'Şifre değiştirilemedi',
+    old: 'Mevcut Şifre', new: 'Yeni Şifre', confirm: 'Şifreyi Onayla', length: '6-30 karakterden oluşan bir şifre girin', oldPlaceholder: 'Mevcut şifrenizi girin', newPlaceholder: 'Yeni şifreyi girin', confirmPlaceholder: 'Yeni şifreyi yeniden girin', mismatch: 'Şifreler eşleşmiyor', title: 'Şifreyi Değiştir', submit: 'Gönder', success: 'Şifre başarıyla değiştirildi. Yeniden giriş yapın.', failed: 'Şifre değiştirilemedi',
+    lettersAndNumbers: "A–Z/a–z harfleri ve 0–9 rakamları içermeli",
+    strength: "Parola gücü: {level}",
+    strengthWeak: "Zayıf",
+    strengthMedium: "Orta",
+    strengthStrong: "Güçlü",
+    strengthUnavailable: "Parola gücü şu anda değerlendirilemiyor",
+    sameAsOld: 'Yeni şifre mevcut şifreyle aynı olamaz',
   },
   ipWhitelist: { duplicate: 'Yinelenen kayıt bulundu: {ip}', title: 'IP İzin Listesini Düzenle', save: 'Kaydet', success: 'IP izin listesi başarıyla güncellendi', failed: 'IP izin listesi güncellenemedi' },
   google: {

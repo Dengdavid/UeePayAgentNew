@@ -266,5 +266,17 @@ export default {
     description: '카드 이벤트 알림 수신 방법을 선택하세요. 앱 내 메시지는 항상 유지됩니다.', insufficientBalance: '잔액 부족 알림', insufficientBalanceDesc: '카드 잔액이 형성된 금액의 밑에 떨어질 때 경고를 받으십시오', enabled: '이미 켜져 있음', disabled: '지원하다',
     method: '통지방법', warningAmount: '경고 금액', warningPlaceholder: '알림 금액은 1달러보다 작을 수 없습니다.', consumptionFailed: '소비 실패 알림', consumptionFailedDesc: '거래가 실패하거나 중단 될 때 경고를 수신',
     onsite: '사이트 뉴스', email: '이메일 알림', telegram: '회원등록', title: '메시지 설정', confirm: '확   인', success: '설정 성공', failed: '설정 실패',
-  }
+  },
+  sliderCaptcha: {
+    title: '보안 인증',
+    drag: '슬라이더를 움직여 퍼즐을 완성해 주세요',
+    refresh: '새로고침',
+    loading: '인증 이미지 불러오는 중…',
+    verifying: '인증 중…',
+    failed: '인증에 실패했습니다. 다시 시도해 주세요.',
+    expired: '슬라이더 인증이 더 이상 유효하지 않습니다. 다시 인증해 주세요.',
+    sendFailed: "이메일을 보내지 못했습니다. 다시 시도해 주세요.",
+    retry: '불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.',
+    keyboardHint: '방향키로 조각을 이동한 후 Enter 키로 인증하세요.',
+  },
 }

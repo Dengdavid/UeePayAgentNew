@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "กรอกอีเมลใหม่ เช่น *****{'@'}gmail.com", code: 'รหัสยืนยัน', codePlaceholder: 'กรอกรหัสยืนยัน', codeAfterEmail: 'กรอกอีเมลเพื่อขอรหัสยืนยัน',
     changeTitle: 'เปลี่ยนอีเมล', save: 'บันทึก', bindSuccess: 'เชื่อมโยงอีเมลแล้ว', bindFailed: 'ไม่สามารถเชื่อมโยงอีเมลได้', changeSuccess: 'เปลี่ยนอีเมลแล้ว', changeFailed: 'ไม่สามารถเปลี่ยนอีเมลได้',
     verifyTitle: 'ยืนยันอีเมล', verifyDescription: 'เราได้ส่งรหัสยืนยัน 6 หลักไปยัง {email} โปรดกรอกรหัสด้านล่างเพื่อยืนยันให้เสร็จสิ้น', securityFooter: 'การยืนยันความปลอดภัยของ {siteName} · ปกป้องบัญชีของคุณ', securityTitle: 'การยืนยันความปลอดภัย', submit: 'ส่ง', googleClosed: 'ปิดใช้งาน Google Authenticator แล้ว', googleCloseFailed: 'ไม่สามารถปิดใช้งาน Google Authenticator ได้',
+    duplicate: 'โปรดอย่าป้อนที่อยู่อีเมลเดียวกับที่ใช้อยู่',
   },
   password: {
-    old: 'รหัสผ่านปัจจุบัน', new: 'รหัสผ่านใหม่', confirm: 'ยืนยันรหัสผ่าน', length: 'กรอกรหัสผ่าน 6–32 ตัวอักษร', oldPlaceholder: 'กรอกรหัสผ่านปัจจุบัน', newPlaceholder: 'กรอกรหัสผ่านใหม่', confirmPlaceholder: 'กรอกรหัสผ่านใหม่อีกครั้ง', mismatch: 'รหัสผ่านไม่ตรงกัน', title: 'เปลี่ยนรหัสผ่าน', submit: 'ส่ง', success: 'เปลี่ยนรหัสผ่านแล้ว โปรดเข้าสู่ระบบอีกครั้ง', failed: 'ไม่สามารถเปลี่ยนรหัสผ่านได้',
+    old: 'รหัสผ่านปัจจุบัน', new: 'รหัสผ่านใหม่', confirm: 'ยืนยันรหัสผ่าน', length: 'กรอกรหัสผ่าน 6–30 ตัวอักษร', oldPlaceholder: 'กรอกรหัสผ่านปัจจุบัน', newPlaceholder: 'กรอกรหัสผ่านใหม่', confirmPlaceholder: 'กรอกรหัสผ่านใหม่อีกครั้ง', mismatch: 'รหัสผ่านไม่ตรงกัน', title: 'เปลี่ยนรหัสผ่าน', submit: 'ส่ง', success: 'เปลี่ยนรหัสผ่านแล้ว โปรดเข้าสู่ระบบอีกครั้ง', failed: 'ไม่สามารถเปลี่ยนรหัสผ่านได้',
+    lettersAndNumbers: "ต้องมีตัวอักษรอังกฤษและตัวเลข",
+    strength: "ความแข็งแรงของรหัสผ่าน: {level}",
+    strengthWeak: "ต่ำ",
+    strengthMedium: "ปานกลาง",
+    strengthStrong: "สูง",
+    strengthUnavailable: "ยังประเมินความแข็งแรงของรหัสผ่านไม่ได้",
+    sameAsOld: 'รหัสผ่านใหม่ต้องไม่เหมือนกับรหัสผ่านปัจจุบัน',
   },
   ipWhitelist: { duplicate: 'พบรายการซ้ำ: {ip}', title: 'แก้ไขรายการ IP ที่อนุญาต', save: 'บันทึก', success: 'อัปเดตรายการ IP ที่อนุญาตแล้ว', failed: 'ไม่สามารถอัปเดตรายการ IP ที่อนุญาตได้' },
   google: {

@@ -27,4 +27,5 @@ export default {
   googleCodeDescription: '请输入 Google 验证器中的 6 位验证码',
   googleCodeTip: '打开 Google 验证器查看验证码',
   googleCodeLabel: '请输入 6 位 Google 验证码',
+  enableGoogleConfirm: 'Google 验证器尚未开启，是否前往安全中心开启？',
 }

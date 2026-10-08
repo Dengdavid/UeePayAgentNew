@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "Enter a new email address, for example: *****{'@'}gmail.com", code: 'Verification Code', codePlaceholder: 'Enter the verification code', codeAfterEmail: 'Enter an email address to request a verification code',
     changeTitle: 'Change Email Address', save: 'Save', bindSuccess: 'Email address linked successfully', bindFailed: 'Unable to link the email address', changeSuccess: 'Email address changed successfully', changeFailed: 'Unable to update the email address',
     verifyTitle: 'Email Verification', verifyDescription: 'We sent a 6-digit verification code to {email}. Enter it below to complete verification.', securityFooter: '{siteName} Security Verification · Protecting Your Account', securityTitle: 'Security Verification', submit: 'Submit', googleClosed: 'Google Authenticator disabled successfully', googleCloseFailed: 'Unable to disable Google Authenticator',
+    duplicate: 'Please do not enter the same email address',
   },
   password: {
-    old: 'Current Password', new: 'New Password', confirm: 'Confirm Password', length: 'Enter a password containing 6-32 characters', oldPlaceholder: 'Enter your current password', newPlaceholder: 'Enter a new password', confirmPlaceholder: 'Enter the new password again', mismatch: 'The passwords do not match', title: 'Change Password', submit: 'Submit', success: 'Password changed successfully. Please log in again.', failed: 'Unable to change the password',
+    old: 'Current Password', new: 'New Password', confirm: 'Confirm Password', length: 'Enter a password containing 6-30 characters', oldPlaceholder: 'Enter your current password', newPlaceholder: 'Enter a new password', confirmPlaceholder: 'Enter the new password again', mismatch: 'The passwords do not match', title: 'Change Password', submit: 'Submit', success: 'Password changed successfully. Please log in again.', failed: 'Unable to change the password',
+    lettersAndNumbers: "Include letters (A–Z, a–z) and digits (0–9)",
+    strength: "Password strength: {level}",
+    strengthWeak: "Weak",
+    strengthMedium: "Medium",
+    strengthStrong: "Strong",
+    strengthUnavailable: "Password strength temporarily unavailable",
+    sameAsOld: 'The new password cannot be the same as the current password',
   },
   ipWhitelist: { duplicate: 'Duplicate entry found: {ip}', title: 'Edit IP Allowlist', save: 'Save', success: 'IP allowlist updated successfully', failed: 'Unable to update the IP allowlist' },
   google: {

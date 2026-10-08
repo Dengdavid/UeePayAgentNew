@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "Nhập địa chỉ email mới, ví dụ: *****{'@'}gmail.com", code: 'Mã xác minh', codePlaceholder: 'Vui lòng nhập mã xác minh', codeAfterEmail: 'Nhập địa chỉ email để yêu cầu mã xác minh',
     changeTitle: 'Thay đổi địa chỉ email', save: 'Lưu', bindSuccess: 'Đã liên kết địa chỉ email', bindFailed: 'Không thể liên kết địa chỉ email', changeSuccess: 'Đã thay đổi địa chỉ email', changeFailed: 'Không thể thay đổi địa chỉ email',
     verifyTitle: 'Xác minh email', verifyDescription: 'Chúng tôi đã gửi mã xác minh gồm 6 chữ số đến {email}. Hãy nhập mã bên dưới để hoàn tất xác minh.', securityFooter: 'Xác minh bảo mật {siteName} · Bảo vệ tài khoản của bạn', securityTitle: 'Xác minh bảo mật', submit: 'Gửi', googleClosed: 'Đã tắt Google Authenticator', googleCloseFailed: 'Không thể tắt Google Authenticator',
+    duplicate: 'Vui lòng không nhập địa chỉ email trùng với địa chỉ hiện tại',
   },
   password: {
-    old: 'Mật khẩu hiện tại', new: 'Mật khẩu mới', confirm: 'Xác nhận mật khẩu', length: 'Nhập mật khẩu từ 6–32 ký tự', oldPlaceholder: 'Nhập mật khẩu hiện tại', newPlaceholder: 'Nhập mật khẩu mới', confirmPlaceholder: 'Nhập lại mật khẩu mới', mismatch: 'Mật khẩu không khớp', title: 'Đổi mật khẩu', submit: 'Gửi', success: 'Đã đổi mật khẩu. Vui lòng đăng nhập lại.', failed: 'Không thể đổi mật khẩu',
+    old: 'Mật khẩu hiện tại', new: 'Mật khẩu mới', confirm: 'Xác nhận mật khẩu', length: 'Nhập mật khẩu từ 6–30 ký tự', oldPlaceholder: 'Nhập mật khẩu hiện tại', newPlaceholder: 'Nhập mật khẩu mới', confirmPlaceholder: 'Nhập lại mật khẩu mới', mismatch: 'Mật khẩu không khớp', title: 'Đổi mật khẩu', submit: 'Gửi', success: 'Đã đổi mật khẩu. Vui lòng đăng nhập lại.', failed: 'Không thể đổi mật khẩu',
+    lettersAndNumbers: "Phải có chữ cái tiếng Anh và chữ số",
+    strength: "Độ mạnh mật khẩu: {level}",
+    strengthWeak: "Yếu",
+    strengthMedium: "Trung bình",
+    strengthStrong: "Mạnh",
+    strengthUnavailable: "Tạm thời không thể đánh giá độ mạnh mật khẩu",
+    sameAsOld: 'Mật khẩu mới không được trùng với mật khẩu hiện tại',
   },
   ipWhitelist: { duplicate: 'Tìm mục nhập trùng:{ip}', title: 'Chỉnh sửa danh sách IP được phép', save: 'Lưu', success: 'Đã cập nhật danh sách IP được phép', failed: 'Sửa đổi không thành công' },
   google: {

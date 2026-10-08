@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "新しいメールアドレスを入力してください（例：*****{'@'}gmail.com）", code: '認証コード', codePlaceholder: '認証コードを入力してください', codeAfterEmail: '認証コードを取得するにはメールアドレスを入力してください',
     changeTitle: 'メールアドレスを変更', save: '保存', bindSuccess: 'メールアドレスを連携しました', bindFailed: 'メールアドレスを連携できませんでした', changeSuccess: 'メールアドレスを変更しました', changeFailed: 'メールアドレスを変更できませんでした',
     verifyTitle: 'メール認証', verifyDescription: '{email} に 6 桁の認証コードを送信しました。以下に入力して認証を完了してください。', securityFooter: '{siteName} セキュリティ認証 · アカウントを保護', securityTitle: 'セキュリティ認証', submit: '認証する', googleClosed: 'Google Authenticator を無効にしました', googleCloseFailed: 'Google Authenticator を無効にできませんでした',
+    duplicate: '現在と同じメールアドレスは入力しないでください',
   },
   password: {
-    old: '現在のパスワード', new: '新しいパスワード', confirm: 'パスワードの確認', length: '6～32 文字のパスワードを入力してください', oldPlaceholder: '現在のパスワードを入力してください', newPlaceholder: '新しいパスワードを入力してください', confirmPlaceholder: '新しいパスワードをもう一度入力してください', mismatch: 'パスワードが一致しません', title: 'パスワードを変更', submit: '変更する', success: 'パスワードを変更しました。もう一度ログインしてください。', failed: 'パスワードを変更できませんでした',
+    old: '現在のパスワード', new: '新しいパスワード', confirm: 'パスワードの確認', length: '6～30 文字のパスワードを入力してください', oldPlaceholder: '現在のパスワードを入力してください', newPlaceholder: '新しいパスワードを入力してください', confirmPlaceholder: '新しいパスワードをもう一度入力してください', mismatch: 'パスワードが一致しません', title: 'パスワードを変更', submit: '変更する', success: 'パスワードを変更しました。もう一度ログインしてください。', failed: 'パスワードを変更できませんでした',
+    lettersAndNumbers: "英字と数字を含めてください",
+    strength: "パスワードの強度：{level}",
+    strengthWeak: "弱い",
+    strengthMedium: "普通",
+    strengthStrong: "強い",
+    strengthUnavailable: "現在、パスワードの強度を評価できません",
+    sameAsOld: '新しいパスワードは現在のパスワードと同じにできません',
   },
   ipWhitelist: { duplicate: '重複する項目があります：{ip}', title: 'IP 許可リストを編集', save: '保存', success: 'IP 許可リストを更新しました', failed: 'IP 許可リストを更新できませんでした' },
   google: {

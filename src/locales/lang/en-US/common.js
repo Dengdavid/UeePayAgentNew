@@ -267,4 +267,16 @@ export default {
     method: 'Notification Method', warningAmount: 'Alert Amount', warningPlaceholder: 'The alert amount cannot be less than $1', consumptionFailed: 'Declined Transaction Notification', consumptionFailedDesc: 'Receive an alert when a transaction fails or is declined',
     onsite: 'In-app Message', email: 'Email Notification', telegram: 'Member Notification', title: 'Notification Settings', confirm: 'Confirm', success: 'Settings updated successfully', failed: 'Unable to update settings',
   },
+  sliderCaptcha: {
+    title: 'Security verification',
+    drag: 'Drag the slider to complete the puzzle',
+    refresh: 'Refresh',
+    loading: 'Loading verification images…',
+    verifying: 'Verifying…',
+    failed: 'Verification failed. Please try again.',
+    expired: 'Slider verification is no longer valid. Please verify again.',
+    sendFailed: "Failed to send the email. Please try again.",
+    retry: 'Unable to load. Please refresh and try again.',
+    keyboardHint: 'Use the arrow keys to move the piece, then press Enter to verify.',
+  },
 }

@@ -63,7 +63,13 @@
           <template #step3>
             <div class="googleModalBox">
               <div class="tip">{{ $t('security.google.enterCodeTip') }}</div>
-              <Input size="large" v-model="pup.form.code" :disabled="loading" :placeholder="$t('security.google.codePlaceholder')" maxlength="6"></Input>
+              <FormOtpInput
+                ref="codeInputRef"
+                v-model="pup.form.code"
+                class="google-code-inputs"
+                :aria-label="$t('security.google.codePlaceholder')"
+                :disabled="loading"
+              />
             </div>
           </template>
         </UiStep>
@@ -73,7 +79,8 @@
 </template>
 
 <script setup>
-import {ref,reactive,nextTick} from 'vue'
+import {ref,reactive,nextTick,watch,onBeforeUnmount} from 'vue'
+import FormOtpInput from '@/components/form/FormOtpInput/index.vue'
 import { postApi } from '@/utils/api.js'
 import { message } from '@/utils/message.js'
 import { t } from '@/utils'
@@ -95,6 +102,8 @@ const steps=[
 const loading=ref(false)
 const googleAuthKey=ref('')
 const qr_code=ref('')
+const codeInputRef=ref(null)
+let requestGeneration=0
 // 复制验证器密钥到剪贴板
 const copyAuthKey = () => {
   copyText(googleAuthKey.value, t('security.google.keyCopied'))
@@ -120,14 +129,18 @@ const maskSecretKey = (key) => {
   return prefix + '******' + suffix
 }
 const nextStep=(current)=>{
-
+  if(current===steps.length-1){
+    nextTick(() => codeInputRef.value?.focus())
+  }
 }
 const finish=()=>{
+  if(loading.value) return
   const {code}=pup.form
   if(!code || code.length!==6 || !/^[0-9]{6}$/.test(code)){
     message(t('security.google.invalidCode'),'error')
     return
   }
+  const generation=requestGeneration
   loading.value=true
   //验证谷歌验证码
   postApi('/user/auth/verifySecretKey',{
@@ -135,13 +148,21 @@ const finish=()=>{
     secret: googleAuthKey.value,
   })
     .then((res) => {
+      if(generation!==requestGeneration || !pup.status) return
       message(t('security.google.bindSuccess'))
       close()
       emits('success')
     })
     .catch((err) => {
+      if(generation!==requestGeneration || !pup.status || err?.silent || err?.cancelled || err?.msg==='SILENT_ERROR') return
+      codeInputRef.value?.clear()
     })
-    loading.value=false
+    .finally(() => {
+      loading.value=false
+      if(generation===requestGeneration && pup.status && !pup.form.code){
+        codeInputRef.value?.focus()
+      }
+    })
 }
 const pup = reactive({
   status:false,
@@ -153,7 +174,14 @@ const pup = reactive({
     code:'',
   },
 })
+watch(() => pup.status, () => {
+  requestGeneration++
+}, { flush: 'sync' })
+onBeforeUnmount(() => {
+  requestGeneration++
+})
 const open=()=>{
+  pup.form.code=''
   pup.status=true
   getCode()
 }
@@ -214,6 +242,9 @@ defineExpose({
       p{
         flex: 1%;
       }
+    }
+    :deep(.google-code-inputs){
+      max-width: 352px;
     }
   }
 }

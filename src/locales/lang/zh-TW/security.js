@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "請輸入新的電子信箱地址，例如：*****{'@'}gmail.com", code: '驗證碼', codePlaceholder: '請輸入驗證碼', codeAfterEmail: '請輸入電子信箱地址後獲取驗證碼',
     changeTitle: '修改電子信箱', save: '儲存', bindSuccess: '綁定電子信箱成功', bindFailed: '綁定電子信箱失敗', changeSuccess: '修改電子信箱成功', changeFailed: '修改失敗',
     verifyTitle: '電子信箱驗證', verifyDescription: '我們已向您的 {email} 發送 6 位驗證碼，請在下方輸入以完成驗證。', securityFooter: '{siteName}安全驗證 · 保障帳戶安全', securityTitle: '安全驗證', submit: '提交', googleClosed: '關閉谷歌驗證器成功', googleCloseFailed: '關閉谷歌驗證器失敗',
+    duplicate: '請勿輸入重複電子信箱',
   },
   password: {
-    old: '原密碼', new: '新密碼', confirm: '確認密碼', length: '請輸入 6-32 位密碼', oldPlaceholder: '請輸入原密碼', newPlaceholder: '請輸入新密碼', confirmPlaceholder: '請再次輸入密碼', mismatch: '兩次密碼不相同', title: '修改密碼', submit: '提交', success: '修改密碼成功，請重新登入', failed: '修改失敗',
+    old: '原密碼', new: '新密碼', confirm: '確認密碼', length: '請輸入 6-30 位密碼', oldPlaceholder: '請輸入原密碼', newPlaceholder: '請輸入新密碼', confirmPlaceholder: '請再次輸入密碼', mismatch: '兩次密碼不相同', title: '修改密碼', submit: '提交', success: '修改密碼成功，請重新登入', failed: '修改失敗',
+    lettersAndNumbers: "至少包含英文字母和數字",
+    strength: "密碼強度：{level}",
+    strengthWeak: "弱",
+    strengthMedium: "中",
+    strengthStrong: "強",
+    strengthUnavailable: "暫時無法評估密碼強度",
+    sameAsOld: '新密碼不能與原密碼相同',
   },
   ipWhitelist: { duplicate: '發現重復項：{ip}', title: '修改 IP 白名單', save: '儲存', success: '修改 IP 白名單成功', failed: '修改失敗' },
   google: {

@@ -79,30 +79,15 @@
             </div>
             <div class="verification-code-area">
               <div class="code-label">{{ t('twoFactorAuth.emailCodeLabel') }}</div>
-              <div class="email-code-inputs">
-                <input
-                  v-for="(code, index) in emailCodeArray"
-                  :key="index"
-                  ref="emailCodeInputs"
-                  type="text"
-                  inputmode="numeric"
-                  pattern="[0-9]*"
-                  maxlength="1"
-                  autocomplete="off"
-                  autocapitalize="off"
-                  spellcheck="false"
-                  data-1p-ignore="true"
-                  data-lpignore="true"
-                  data-bwignore="true"
-                  class="e-code-input"
-                  :class="{ 'error': verifyError }"
-                  :value="code"
-                  @input="(e) => handleCodeInput('email', e, index)"
-                  @keydown="(e) => handleCodeKeyDown('email', e, index)"
-                  @paste="(e) => handleCodePaste('email', e)"
-                  :disabled="submiting"
-                />
-              </div>
+              <FormOtpInput
+                ref="emailCodeInput"
+                v-model="emailCode"
+                :aria-label="t('twoFactorAuth.emailCodeLabel')"
+                :disabled="!codeSent || submiting"
+                :error="verifyError"
+                @input="resetError"
+                @complete="submitEmailVerification"
+              />
               <div class="send-code-action">
                 <Button
                   type="primary"
@@ -126,30 +111,15 @@
             </div>
             <div class="google-code-area">
               <div class="code-label">{{ t('twoFactorAuth.googleCodeLabel') }}</div>
-              <div class="google-code-inputs">
-                <input
-                  v-for="(code, index) in googleCodeArray"
-                  :key="index"
-                  ref="googleCodeInputs"
-                  type="text"
-                  inputmode="numeric"
-                  pattern="[0-9]*"
-                  maxlength="1"
-                  autocomplete="off"
-                  autocapitalize="off"
-                  spellcheck="false"
-                  data-1p-ignore="true"
-                  data-lpignore="true"
-                  data-bwignore="true"
-                  class="g-code-input"
-                  :class="{ 'error': verifyError }"
-                  :value="code"
-                  @input="(e) => handleCodeInput('google', e, index)"
-                  @keydown="(e) => handleCodeKeyDown('google', e, index)"
-                  @paste="(e) => handleCodePaste('google', e)"
-                  :disabled="submiting"
-                />
-              </div>
+              <FormOtpInput
+                ref="googleCodeInput"
+                v-model="googleCode"
+                :aria-label="t('twoFactorAuth.googleCodeLabel')"
+                :disabled="submiting"
+                :error="verifyError"
+                @input="resetError"
+                @complete="submitGoogleVerification"
+              />
               <div class="send-code-action send-code-placeholder" aria-hidden="true"></div>
             </div>
           </template>
@@ -182,14 +152,30 @@
       </div>
     </div>
   </Modal>
+  <Modal
+    v-model="enableGoogleConfirmVisible"
+    :title="t('twoFactorAuth.googleAuthenticator')"
+    width="380"
+    class-name="two-factor-enable-google-confirm vertical-center-modal"
+    :closable="false"
+    :mask-closable="false"
+    :z-index="11000"
+    :ok-text="t('twoFactorAuth.enableGoogle')"
+    :cancel-text="t('button.cancel')"
+    @on-ok="confirmEnableGoogle"
+  >
+    <p>{{ t('twoFactorAuth.enableGoogleConfirm') }}</p>
+  </Modal>
+  <SliderCaptchaModal ref="emailCaptchaRef" :active="drawerVisible" />
 </template>
 
 <script setup>
 import { ref, computed, nextTick, onBeforeUnmount, watch } from 'vue'
+import SliderCaptchaModal from '@/components/SliderCaptchaModal/index.vue'
+import FormOtpInput from '@/components/form/FormOtpInput/index.vue'
 import { Modal, Button, Icon } from 'view-ui-plus'
 import { message } from '@/utils/message.js'
 import { t } from '@/utils'
-import userApi from '@/api/user.js'
 import { useUserStore } from '@/store/user'
 
 const CODE_LENGTH = 6
@@ -197,8 +183,7 @@ const COUNTDOWN_SECONDS = 60
 const VERIFY_CODE_ERROR = -990
 const VERIFY_ERROR_KEYWORDS = ['验证码错误', '邮箱验证码错误']
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const createCodeArray = () => Array(CODE_LENGTH).fill('')
-const isCodeComplete = (codeArray) => codeArray.every(Boolean) && codeArray.length === CODE_LENGTH
+const isCodeComplete = code => new RegExp(`^\\d{${CODE_LENGTH}}$`).test(code)
 
 const userStore = useUserStore();
 
@@ -286,20 +271,32 @@ const currentStep = ref(defaultAuthMethod.value)
 
 // 邮箱验证相关状态
 const emailInput = ref(props.userEmail || '')
-const emailCode = computed(() => emailCodeArray.value.join(''))
-const emailCodeArray = ref(createCodeArray())
-const emailCodeInputs = ref([])
+const emailCode = ref('')
+const emailCodeInput = ref(null)
 const isValidEmail = computed(() => {
   return EMAIL_REGEX.test(emailInput.value || props.userEmail)
 })
 const isEmailCodeComplete = computed(() => {
-  return isCodeComplete(emailCodeArray.value)
+  return isCodeComplete(emailCode.value)
 })
 const sendingEmailCode = ref(false)
 const codeSent = ref(false)
 const countdown = ref(0)
 const isCodeCoolingDown = computed(() => countdown.value > 0)
 let countdownTimer = null
+let emailSendGeneration = 0
+const emailCaptchaRef = ref(null)
+
+const resetEmailVerification = () => {
+  emailSendGeneration++
+  emailCaptchaRef.value?.close()
+  sendingEmailCode.value = false
+  emailCode.value = ''
+  codeSent.value = false
+  clearInterval(countdownTimer)
+  countdownTimer = null
+  countdown.value = 0
+}
 
 // 遮蔽邮箱显示，保护隐私
 const maskEmail = (email) => {
@@ -328,14 +325,15 @@ const maskEmail = (email) => {
 }
 
 // 谷歌验证器相关状态
-const googleCodeArray = ref(createCodeArray())
-const googleCodeInputs = ref([])
+const googleCode = ref('')
+const googleCodeInput = ref(null)
 const isGoogleCodeComplete = computed(() => {
-  return isCodeComplete(googleCodeArray.value)
+  return isCodeComplete(googleCode.value)
 })
 
 // 提交状态
 const submiting = ref(false)
+const enableGoogleConfirmVisible = ref(false)
 // 添加错误状态
 const verifyError = ref(false)
 const errorMessage = ref('')
@@ -363,9 +361,9 @@ const selectVerificationMethod = (method) => {
 
   // 如果选择了谷歌验证器，自动聚焦到第一个输入框
   if (method === 'google') {
-    focusCodeInput(googleCodeInputs, 0)
+    nextTick(() => googleCodeInput.value?.focus())
   } else if (method === 'email') {
-    focusCodeInput(emailCodeInputs, 0)
+    nextTick(() => emailCodeInput.value?.focus())
   }
 }
 
@@ -379,8 +377,8 @@ const resetCurrentCode = () => {
   const authConfig = verificationMap[currentStep.value]
   if (!authConfig) return
 
-  authConfig.codeArray.value = createCodeArray()
-  focusCodeInput(authConfig.inputs, 0)
+  authConfig.code.value = ''
+  authConfig.input.value?.focus()
 }
 
 const resetForRetry = () => {
@@ -390,81 +388,18 @@ const resetForRetry = () => {
 
 const verificationMap = {
   email: {
-    codeArray: emailCodeArray,
-    inputs: emailCodeInputs,
-    submit: () => submitEmailVerification()
+    code: emailCode,
+    input: emailCodeInput,
   },
   google: {
-    codeArray: googleCodeArray,
-    inputs: googleCodeInputs,
-    submit: () => submitGoogleVerification()
+    code: googleCode,
+    input: googleCodeInput,
   }
-}
-
-const focusCodeInput = (inputs, index) => {
-  nextTick(() => {
-    inputs.value[index]?.focus()
-  })
 }
 
 const blurActiveCodeInput = () => {
-  const activeElement = document.activeElement
-  if (activeElement?.classList?.contains('e-code-input') || activeElement?.classList?.contains('g-code-input')) {
-    activeElement.blur()
-  }
-}
-
-const handleCodeInput = (type, e, index) => {
-  resetError()
-
-  const { codeArray, inputs, submit } = verificationMap[type]
-  const value = e.target.value.replace(/\D/g, '').slice(-1)
-  codeArray.value[index] = value
-
-  if (!value) return
-
-  if (index < CODE_LENGTH - 1) {
-    focusCodeInput(inputs, index + 1)
-  } else if (isCodeComplete(codeArray.value)) {
-    submit()
-  }
-}
-
-const handleCodeKeyDown = (type, e, index) => {
-  const { codeArray, inputs } = verificationMap[type]
-
-  if (e.key === 'Backspace') {
-    if (!codeArray.value[index] && index > 0) {
-      codeArray.value[index - 1] = ''
-      focusCodeInput(inputs, index - 1)
-    }
-  } else if (e.key === 'ArrowLeft' && index > 0) {
-    e.preventDefault()
-    focusCodeInput(inputs, index - 1)
-  } else if (e.key === 'ArrowRight' && index < CODE_LENGTH - 1) {
-    e.preventDefault()
-    focusCodeInput(inputs, index + 1)
-  }
-}
-
-const handleCodePaste = (type, e) => {
-  e.preventDefault()
-
-  const { codeArray, inputs, submit } = verificationMap[type]
-  const digits = e.clipboardData.getData('text').replace(/\D/g, '').substring(0, CODE_LENGTH)
-
-  digits.split('').forEach((digit, index) => {
-    codeArray.value[index] = digit
-  })
-
-  nextTick(() => {
-    const focusIndex = Math.min(digits.length, CODE_LENGTH - 1)
-    inputs.value[focusIndex]?.focus()
-
-    if (isCodeComplete(codeArray.value)) {
-      submit()
-    }
-  })
+  emailCodeInput.value?.blur()
+  googleCodeInput.value?.blur()
 }
 
 // 发送邮箱验证码
@@ -482,27 +417,23 @@ const sendEmailCode = async () => {
     return
   }
 
-  if (sendingEmailCode.value || isCodeCoolingDown.value) return
+  if (!drawerVisible.value || currentStep.value !== 'email' || sendingEmailCode.value || isCodeCoolingDown.value) return
 
+  const generation = ++emailSendGeneration
   try {
     sendingEmailCode.value = true
-    const response = await userApi.sendEmail({
+    const sent = await emailCaptchaRef.value.open({
       email: targetEmail,
       event: props.eventType
     })
+    if (generation !== emailSendGeneration || sent !== true || !drawerVisible.value || currentStep.value !== 'email') return
 
-    if (response === true || response?.code === 1 || response?.data === true || response?.code === undefined) {
-      message(t('twoFactorAuth.codeSentSuccess'))
-      codeSent.value = true
-      startCountdown()
-      focusCodeInput(emailCodeInputs, 0)
-    } else {
-      message(response.msg || t('twoFactorAuth.sendCodeFailed'), 'error')
-    }
-  } catch (error) {
-    message(error?.msg || t('twoFactorAuth.sendCodeRetry'), 'error')
-  } finally {
-    sendingEmailCode.value = false
+    message(t('twoFactorAuth.codeSentSuccess'))
+    codeSent.value = true
+    startCountdown()
+    emailCodeInput.value?.focus()
+  } catch {} finally {
+    if (generation === emailSendGeneration) sendingEmailCode.value = false
   }
 }
 
@@ -522,7 +453,7 @@ const startCountdown = () => {
 
 // 提交邮箱验证
 const submitEmailVerification = () => {
-  if (submiting.value) return
+  if (!codeSent.value || submiting.value) return
 
   submiting.value = true
   resetError()
@@ -560,7 +491,7 @@ const submitGoogleVerification = () => {
   resetError()
 
   try {
-    const code = googleCodeArray.value.join('')
+    const code = googleCode.value
     if (!isGoogleCodeComplete.value) {
       message(t('twoFactorAuth.googleCodeLabel'), 'error')
       submiting.value = false
@@ -615,13 +546,10 @@ const handleCancel = () => {
 const reset = () => {
   currentStep.value = defaultAuthMethod.value
   emailInput.value = props.userEmail || emailInput.value
-  emailCodeArray.value = createCodeArray()
-  googleCodeArray.value = createCodeArray()
-  codeSent.value = false
-  clearInterval(countdownTimer)
-  countdownTimer = null
-  countdown.value = 0
+  resetEmailVerification()
+  googleCode.value = ''
   submiting.value = false
+  enableGoogleConfirmVisible.value = false
   resetError()
 }
 
@@ -631,8 +559,12 @@ watch(() => drawerVisible.value, (newVal) => {
     reset()
   } else {
     blurActiveCodeInput()
+    resetEmailVerification()
+    enableGoogleConfirmVisible.value = false
   }
-})
+}, { flush: 'sync' })
+
+watch([() => props.userEmail || emailInput.value, () => props.eventType], resetEmailVerification, { flush: 'sync' })
 
 watch(availableAuthMethods, (methods) => {
   if (!methods.includes(currentStep.value)) {
@@ -643,9 +575,7 @@ watch(availableAuthMethods, (methods) => {
 // 在组件卸载前清除计时器
 onBeforeUnmount(() => {
   blurActiveCodeInput()
-  if (countdownTimer) {
-    clearInterval(countdownTimer)
-  }
+  resetEmailVerification()
 })
 
 // 向父组件暴露的方法
@@ -656,13 +586,13 @@ defineExpose({
 
 // 添加goToEnableGoogle函数
 const goToEnableGoogle = () => {
-  // 关闭抽屉
-  blurActiveCodeInput()
-  drawerVisible.value = false;
+  enableGoogleConfirmVisible.value = true
+}
 
-  // 统一使用事件通知父组件处理跳转
-  emit('enable-google');
-};
+const confirmEnableGoogle = () => {
+  blurActiveCodeInput()
+  emit('enable-google')
+}
 </script>
 
 <style lang="less" scoped>

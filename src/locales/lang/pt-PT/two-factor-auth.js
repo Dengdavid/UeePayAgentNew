@@ -27,4 +27,5 @@ export default {
   googleCodeDescription: 'Digite o código de 6 dígitos do Google Authenticator',
   googleCodeTip: 'Abra o Google Authenticator para visualizar o código de verificação',
   googleCodeLabel: 'Introduza o código de 6 dígitos do Google Authenticator',
+  enableGoogleConfirm: 'O Google Authenticator não está ativado. Quer aceder ao Centro de Segurança para o ativar?',
 }

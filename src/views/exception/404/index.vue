@@ -25,8 +25,7 @@
 
 <script>
 export default {
-	name: 'NotFound',
-	data() {}
+	name: 'NotFound'
 }
 </script>
 

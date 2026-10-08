@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "Saisissez une nouvelle adresse e-mail, par exemple : *****{'@'}gmail.com", code: 'Code de vérification', codePlaceholder: 'Saisissez le code de vérification', codeAfterEmail: 'Saisissez une adresse électronique pour demander un code de vérification',
     changeTitle: 'Modifier l\'adresse électronique', save: 'Enregistrer', bindSuccess: 'Adresse électronique liée avec succès', bindFailed: 'Impossible de lier l\'adresse électronique', changeSuccess: 'L\'adresse électronique a été modifiée avec succès', changeFailed: 'La modification a échoué',
     verifyTitle: 'Vérification de l’adresse e-mail', verifyDescription: 'Nous avons envoyé un code de vérification à 6 chiffres à {email}. Saisissez-le ci-dessous pour terminer la vérification.', securityFooter: 'Vérification de sécurité {siteName} · Protection de votre compte', securityTitle: 'Vérification de sécurité', submit: 'Envoyer', googleClosed: 'Google Authenticator a été désactivé', googleCloseFailed: 'Impossible de désactiver Google Authenticator',
+    duplicate: 'Veuillez ne pas saisir la même adresse e-mail',
   },
   password: {
-    old: 'Mot de passe actuel', new: 'Nouveau mot de passe', confirm: 'Confirmer le mot de passe', length: 'Saisissez un mot de passe de 6 à 32 caractères', oldPlaceholder: 'Saisissez votre mot de passe actuel', newPlaceholder: 'Saisissez un nouveau mot de passe', confirmPlaceholder: 'Saisissez à nouveau le nouveau mot de passe', mismatch: 'Les mots de passe ne correspondent pas', title: 'Modifier le mot de passe', submit: 'Envoyer', success: 'Le mot de passe a été modifié. Veuillez vous reconnecter.', failed: 'Impossible de modifier le mot de passe',
+    old: 'Mot de passe actuel', new: 'Nouveau mot de passe', confirm: 'Confirmer le mot de passe', length: 'Saisissez un mot de passe de 6 à 30 caractères', oldPlaceholder: 'Saisissez votre mot de passe actuel', newPlaceholder: 'Saisissez un nouveau mot de passe', confirmPlaceholder: 'Saisissez à nouveau le nouveau mot de passe', mismatch: 'Les mots de passe ne correspondent pas', title: 'Modifier le mot de passe', submit: 'Envoyer', success: 'Le mot de passe a été modifié. Veuillez vous reconnecter.', failed: 'Impossible de modifier le mot de passe',
+    lettersAndNumbers: "Incluez des lettres (A–Z, a–z) et des chiffres (0–9)",
+    strength: "Force du mot de passe : {level}",
+    strengthWeak: "Faible",
+    strengthMedium: "Moyenne",
+    strengthStrong: "Forte",
+    strengthUnavailable: "Force du mot de passe momentanément indisponible",
+    sameAsOld: 'Le nouveau mot de passe ne peut pas être identique au mot de passe actuel',
   },
   ipWhitelist: { duplicate: 'Une entrée en double a été détectée : {ip}', title: 'Modifier la liste d’adresses IP autorisées', save: 'Enregistrer', success: 'La liste d’adresses IP autorisées a été mise à jour', failed: 'Impossible de mettre à jour la liste d’adresses IP autorisées' },
   google: {

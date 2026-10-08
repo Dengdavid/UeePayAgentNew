@@ -266,5 +266,17 @@ export default {
     description: 'Choisissez comment recevoir les notifications d\'événements par carte. Les messages dans l\'application sont toujours conservés.', insufficientBalance: 'Notification de solde insuffisante', insufficientBalanceDesc: 'Recevez une alerte lorsqu\'un solde de carte tombe sous le montant configuré', enabled: 'Déjà allumé', disabled: 'Handicapé',
     method: 'Méthode de notification', warningAmount: 'Montant de l\'avertissement', warningPlaceholder: 'Le montant de l\'alerte ne peut pas être inférieur à 1 $', consumptionFailed: 'Notification de panne de consommation', consumptionFailedDesc: 'Recevoir une alerte lorsqu\'une transaction échoue ou est refusée',
     onsite: 'Actualités du site', email: 'Notification par courrier électronique', telegram: 'Notification aux membres', title: 'Paramètres des messages', confirm: 'Confirmer', success: 'Configuration réussie', failed: 'Impossible de mettre à jour les paramètres',
-  }
+  },
+  sliderCaptcha: {
+    title: 'Vérification de sécurité',
+    drag: 'Faites glisser le curseur pour compléter le puzzle',
+    refresh: 'Actualiser',
+    loading: 'Chargement des images de vérification…',
+    verifying: 'Vérification…',
+    failed: 'La vérification a échoué. Veuillez réessayer.',
+    expired: 'La vérification par curseur n’est plus valide. Veuillez effectuer une nouvelle vérification.',
+    sendFailed: "Échec de l’envoi de l’e-mail. Veuillez réessayer.",
+    retry: 'Impossible de charger. Actualisez la page et réessayez.',
+    keyboardHint: 'Utilisez les flèches pour déplacer la pièce, puis appuyez sur Entrée pour vérifier.',
+  },
 }

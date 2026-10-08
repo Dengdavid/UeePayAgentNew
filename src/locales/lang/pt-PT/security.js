@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "Introduza um novo endereço de e-mail, por exemplo: *****{'@'}gmail.com", code: 'Código de verificação', codePlaceholder: 'Digite o código de verificação', codeAfterEmail: 'Digite um endereço de e- mail para solicitar um código de verificação',
     changeTitle: 'Alterar endereço de e- mail', save: 'Gravar', bindSuccess: 'Endereço de e- mail ligado com sucesso', bindFailed: 'Não foi possível ligar o endereço de e- mail', changeSuccess: 'O endereço de e- mail foi alterado com sucesso', changeFailed: 'Falha na modificação',
     verifyTitle: 'Verificação de e-mail', verifyDescription: 'Enviámos um código de verificação de 6 dígitos para {email}. Introduza-o abaixo para concluir a verificação.', securityFooter: 'Verificação de segurança {siteName} · Proteção da sua conta', securityTitle: 'Verificação de segurança', submit: 'Enviar', googleClosed: 'O Google Authenticator foi desativado', googleCloseFailed: 'Não foi possível desativar o Google Authenticator',
+    duplicate: 'Não introduza o mesmo endereço de e-mail',
   },
   password: {
-    old: 'Palavra-passe atual', new: 'Nova palavra-passe', confirm: 'Confirmar palavra-passe', length: 'Introduza uma palavra-passe com 6 a 32 caracteres', oldPlaceholder: 'Introduza a palavra-passe atual', newPlaceholder: 'Introduza uma nova palavra-passe', confirmPlaceholder: 'Introduza novamente a nova palavra-passe', mismatch: 'As palavras-passe não coincidem', title: 'Alterar palavra-passe', submit: 'Enviar', success: 'A palavra-passe foi alterada. Inicie sessão novamente.', failed: 'Não foi possível alterar a palavra-passe',
+    old: 'Palavra-passe atual', new: 'Nova palavra-passe', confirm: 'Confirmar palavra-passe', length: 'Introduza uma palavra-passe com 6 a 30 caracteres', oldPlaceholder: 'Introduza a palavra-passe atual', newPlaceholder: 'Introduza uma nova palavra-passe', confirmPlaceholder: 'Introduza novamente a nova palavra-passe', mismatch: 'As palavras-passe não coincidem', title: 'Alterar palavra-passe', submit: 'Enviar', success: 'A palavra-passe foi alterada. Inicie sessão novamente.', failed: 'Não foi possível alterar a palavra-passe',
+    lettersAndNumbers: "Inclua letras (A–Z, a–z) e algarismos (0–9)",
+    strength: "Força da palavra-passe: {level}",
+    strengthWeak: "Fraca",
+    strengthMedium: "Média",
+    strengthStrong: "Forte",
+    strengthUnavailable: "Força da palavra-passe indisponível de momento",
+    sameAsOld: 'A nova palavra-passe não pode ser igual à palavra-passe atual',
   },
   ipWhitelist: { duplicate: 'Foi encontrada uma entrada duplicada: {ip}', title: 'Editar lista de IP permitidos', save: 'Guardar', success: 'A lista de IP permitidos foi atualizada', failed: 'Não foi possível atualizar a lista de IP permitidos' },
   google: {

@@ -27,4 +27,5 @@ export default {
   googleCodeDescription: 'Nhập mã 6 số từ Google xác thực',
   googleCodeTip: 'Mở bộ xác thực Google để xem mã xác thực',
   googleCodeLabel: 'Nhập mã xác minh Google gồm 6 chữ số',
+  enableGoogleConfirm: 'Google Authenticator chưa được bật. Bạn có muốn đến Trung tâm bảo mật để bật không?',
 }

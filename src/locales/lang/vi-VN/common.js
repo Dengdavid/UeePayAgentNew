@@ -266,5 +266,17 @@ export default {
     description: 'Chọn cách nhận thông báo về thẻ. Tin nhắn mới luôn được giữ lại.', insufficientBalance: 'Thông báo số dư không đủ', insufficientBalanceDesc: 'Nhận cảnh báo khi sự cân bằng thẻ nằm dưới số lượng đã cấu hình', enabled: 'Đã bật rồi', disabled: 'Tắt',
     method: 'Phương thức thông báo', warningAmount: 'Số tiền cảnh báo', warningPlaceholder: 'Số tiền cảnh báo không thể nhỏ hơn $1', consumptionFailed: 'Thông báo lỗi tiêu thụ', consumptionFailedDesc: 'Nhận cảnh báo khi giao dịch thất bại hoặc bị từ chối',
     onsite: 'tin tức trang web', email: 'Thông báo qua email', telegram: 'Thông báo thành viên', title: 'Cài đặt tin nhắn', confirm: 'Xác nhận', success: 'Thiết lập thành công', failed: 'Không thể cập nhật thiết lập',
-  }
+  },
+  sliderCaptcha: {
+    title: 'Xác minh bảo mật',
+    drag: 'Kéo thanh trượt để hoàn thành hình ghép',
+    refresh: 'Làm mới',
+    loading: 'Đang tải hình ảnh xác minh…',
+    verifying: 'Đang xác minh…',
+    failed: 'Xác minh không thành công. Vui lòng thử lại.',
+    expired: 'Xác minh bằng thanh trượt không còn hiệu lực. Vui lòng xác minh lại.',
+    sendFailed: "Không thể gửi email. Vui lòng thử lại.",
+    retry: 'Không thể tải. Vui lòng làm mới và thử lại.',
+    keyboardHint: 'Dùng phím mũi tên để di chuyển mảnh ghép, rồi nhấn Enter để xác minh.',
+  },
 }

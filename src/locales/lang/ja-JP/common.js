@@ -266,5 +266,17 @@ export default {
     description: 'カード関連イベントの通知方法を設定できます。サイト内メッセージは常に保存されます。', insufficientBalance: '残高不足通知', insufficientBalanceDesc: 'カード残高が設定金額を下回った場合に通知します', enabled: '有効', disabled: '無効',
     method: '通知方法', warningAmount: '通知基準額', warningPlaceholder: '通知基準額は 1 USD 以上に設定してください', consumptionFailed: '決済失敗通知', consumptionFailedDesc: '購入に失敗した場合、または取引が拒否された場合に通知します',
     onsite: 'サイト内メッセージ', email: 'メール通知', telegram: 'Telegram 通知', title: '通知設定', confirm: '確認', success: '設定を保存しました', failed: '設定を保存できませんでした',
-  }
+  },
+  sliderCaptcha: {
+    title: 'セキュリティ認証',
+    drag: 'スライダーを動かしてパズルを完成させてください',
+    refresh: '更新',
+    loading: '認証画像を読み込み中…',
+    verifying: '認証中…',
+    failed: '認証に失敗しました。もう一度お試しください。',
+    expired: 'スライダー認証が無効になりました。もう一度認証してください。',
+    sendFailed: "メールの送信に失敗しました。もう一度お試しください。",
+    retry: '読み込めませんでした。更新してもう一度お試しください。',
+    keyboardHint: '方向キーでピースを動かし、Enter キーで認証してください。',
+  },
 }

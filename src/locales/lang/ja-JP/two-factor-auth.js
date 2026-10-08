@@ -27,4 +27,5 @@ export default {
   googleCodeDescription: 'Google Authenticator に表示された6桁の認証コードを入力してください',
   googleCodeTip: 'Google Authenticatorを開いて認証コードを表示します',
   googleCodeLabel: 'Google Authenticator の 6 桁のコードを入力してください',
+  enableGoogleConfirm: 'Google Authenticator は有効になっていません。セキュリティセンターに移動して有効にしますか？',
 }

@@ -266,5 +266,17 @@ export default {
     description: 'Kart-event bildirimleri nasıl alınır seçin. In-app mesajları her zaman korunur.', insufficientBalance: 'Yetersiz bakiye bildirimi', insufficientBalanceDesc: 'Bir kart dengesi yapılandırıldığında bir uyarı alın.', enabled: 'Zaten açık', disabled: 'Engelliler',
     method: 'Bildirim yöntemi', warningAmount: 'Uyarı miktarı', warningPlaceholder: 'Uyarı tutarı 1 ABD dolarından az olamaz', consumptionFailed: 'Tüketim hatası bildirimi', consumptionFailedDesc: 'Bir işlem başarısız olduğunda veya başarısız olduğunda bir uyarı alın veya reddedilir',
     onsite: 'Site haberleri', email: 'E-posta bildirimi', telegram: 'Üye Bildirim', title: 'Mesaj ayarları', confirm: 'Onayla', success: 'Kurulum başarılı', failed: 'güncelleştirme ayarları için kullanılamaz',
-  }
+  },
+  sliderCaptcha: {
+    title: 'Güvenlik doğrulaması',
+    drag: 'Yapbozu tamamlamak için kaydırıcıyı sürükleyin',
+    refresh: 'Yenile',
+    loading: 'Doğrulama görselleri yükleniyor…',
+    verifying: 'Doğrulanıyor…',
+    failed: 'Doğrulama başarısız. Lütfen tekrar deneyin.',
+    expired: 'Kaydırıcı doğrulaması artık geçerli değil. Lütfen yeniden doğrulayın.',
+    sendFailed: "E-posta gönderilemedi. Lütfen tekrar deneyin.",
+    retry: 'Yüklenemedi. Lütfen yenileyip tekrar deneyin.',
+    keyboardHint: 'Parçayı hareket ettirmek için ok tuşlarını kullanın, ardından doğrulamak için Enter tuşuna basın.',
+  },
 }

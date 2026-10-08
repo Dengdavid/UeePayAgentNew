@@ -266,5 +266,17 @@ export default {
     description: '设置卡片相关事件的通知方式，站内消息将始终保留。', insufficientBalance: '余额不足通知', insufficientBalanceDesc: '卡片余额低于设定金额时提醒', enabled: '已开启', disabled: '已关闭',
     method: '通知方式', warningAmount: '预警金额', warningPlaceholder: '预警金额不可低于 $1', consumptionFailed: '消费失败通知', consumptionFailedDesc: '消费失败或交易被拒绝时提醒',
     onsite: '站内消息', email: '邮件通知', telegram: '会员通知', title: '消息设置', confirm: '确认', success: '设置成功', failed: '设置失败',
-  }
+  },
+  sliderCaptcha: {
+    title: '安全验证',
+    drag: '拖动滑块完成拼图',
+    refresh: '换一张',
+    loading: '正在加载验证图片…',
+    verifying: '正在验证…',
+    failed: '验证失败，请重试。',
+    expired: '滑块验证已失效，请重新验证',
+    sendFailed: "邮件发送失败，请重试。",
+    retry: '加载失败，请刷新重试。',
+    keyboardHint: '使用方向键移动拼图，然后按 Enter 验证。',
+  },
 }

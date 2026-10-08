@@ -16,9 +16,17 @@ export default {
     newPlaceholder: "새 이메일 주소를 입력해 주세요. 예: *****{'@'}gmail.com", code: '인증 코드', codePlaceholder: '인증 코드를 입력', codeAfterEmail: '인증 코드를 요청하려면 이메일 주소를 입력하십시오.',
     changeTitle: '이메일 변경', save: '저장', bindSuccess: '이메일 주소가 연결되었습니다', bindFailed: '이메일 주소를 연결할 수 없습니다', changeSuccess: '이메일 주소가 변경되었습니다', changeFailed: '이메일 주소를 변경할 수 없습니다',
     verifyTitle: '이메일 인증', verifyDescription: '{email}로 6자리 인증 코드를 보냈습니다. 아래에 입력하여 인증을 완료해 주세요.', securityFooter: '{siteName} 보안 인증 · 계정 보호', securityTitle: '보안 인증', submit: '제출', googleClosed: 'Google Authenticator가 비활성화되었습니다', googleCloseFailed: 'Google Authenticator를 비활성화할 수 없습니다',
+    duplicate: '현재와 동일한 이메일 주소를 입력하지 마세요',
   },
   password: {
-    old: '현재 비밀번호', new: '새 비밀번호', confirm: '비밀번호 확인', length: '6~32자의 비밀번호를 입력해 주세요', oldPlaceholder: '현재 비밀번호를 입력해 주세요', newPlaceholder: '새 비밀번호를 입력해 주세요', confirmPlaceholder: '새 비밀번호를 다시 입력해 주세요', mismatch: '비밀번호가 일치하지 않습니다', title: '비밀번호 변경', submit: '제출', success: '비밀번호가 변경되었습니다. 다시 로그인해 주세요.', failed: '비밀번호를 변경할 수 없습니다',
+    old: '현재 비밀번호', new: '새 비밀번호', confirm: '비밀번호 확인', length: '6~30자의 비밀번호를 입력해 주세요', oldPlaceholder: '현재 비밀번호를 입력해 주세요', newPlaceholder: '새 비밀번호를 입력해 주세요', confirmPlaceholder: '새 비밀번호를 다시 입력해 주세요', mismatch: '비밀번호가 일치하지 않습니다', title: '비밀번호 변경', submit: '제출', success: '비밀번호가 변경되었습니다. 다시 로그인해 주세요.', failed: '비밀번호를 변경할 수 없습니다',
+    lettersAndNumbers: "영문자와 숫자를 포함해 주세요",
+    strength: "비밀번호 강도: {level}",
+    strengthWeak: "약함",
+    strengthMedium: "보통",
+    strengthStrong: "강함",
+    strengthUnavailable: "현재 비밀번호 강도를 평가할 수 없습니다",
+    sameAsOld: '새 비밀번호는 현재 비밀번호와 같을 수 없습니다',
   },
   ipWhitelist: { duplicate: '중복된 항목이 있습니다: {ip}', title: 'IP 허용 목록 수정', save: '저장', success: 'IP 허용 목록이 업데이트되었습니다', failed: 'IP 허용 목록을 업데이트할 수 없습니다' },
   google: {

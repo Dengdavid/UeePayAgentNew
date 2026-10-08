@@ -180,9 +180,19 @@ export default {
   resetAuthorization(data) {
     return request({ url: "/user/resetAuthorization", method: "post", data });
   },
+  // 邮箱滑块题目、答案校验及一次性凭证发送均不自动重试。
+  getCaptcha(data, config = {}) {
+    return request({ ...config, url: "/user/auth/getCaptcha", method: "post", data,
+      requestPolicy: { retryOnTimeout: false, redirectOnNetworkError: false, errorHandling: 'local' } });
+  },
+  checkCaptcha(data, config = {}) {
+    return request({ ...config, url: "/user/auth/checkCaptcha", method: "post", data,
+      requestPolicy: { retryOnTimeout: false, redirectOnNetworkError: false, errorHandling: 'local' } });
+  },
   // 发送邮箱验证码
-  sendEmail(data) {
-    return request({ url: "/user/auth/sendEmail", method: "post", data });
+  sendEmail(data, config = {}) {
+    return request({ ...config, url: "/user/auth/sendEmail", method: "post", data,
+      requestPolicy: { retryOnTimeout: false, redirectOnNetworkError: false, errorHandling: 'local' } });
   },
   // 激活邮箱
   validateEmail(data) {
