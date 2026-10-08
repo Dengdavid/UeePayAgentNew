@@ -1,6 +1,6 @@
 <template>
   <div v-if="canAccess" class="wallet-page">
-    <UiPage ref="pageRef" :data="data" :return-state="returnState.wallets"  :isBack="!embedded" :fallback="{ name: 'sharedCard' }" isAuto :isNotTitle="embedded" title-size="small" row-key="id">
+    <UiPage ref="pageRef" :data="data" :return-state="returnState.wallets"  :isBack="!embedded" :fallback="{ name: 'sharedCard' }" :isNotTitle="embedded" title-size="small" row-key="id">
       <template #counts>
         <UiCounts class="wallet-counts" :data="countsData" isBg :list="countsList" :loading="quotaLoading" @refresh="reload" />
       </template>

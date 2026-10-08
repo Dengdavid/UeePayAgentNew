@@ -1,7 +1,7 @@
 <template>
-  <Upload :type="type" name="files" :show-upload-list="false" :headers="headers" :accept="c_accept"
-    :on-progress="handleProgress" :on-success="handleSuccess" :on-format-error="handleFormatError"
-    :on-exceeded-size="handleMaxSize" :max-size="maxSize" :on-error="handleError" :disabled="loading" :before-upload="handleBeforeUpload"
+  <Upload :type="type" name="files" :show-upload-list="false" :accept="c_accept"
+    :on-format-error="handleFormatError"
+    :on-exceeded-size="handleMaxSize" :max-size="maxSize" :disabled="loading" :before-upload="handleBeforeUpload"
     :action="baseURL + props.action" v-bind="$attrs" :style="{
       width: sizeNum(width, '100%'),
       height: sizeNum(height, width),
@@ -24,11 +24,11 @@
 
 <script setup>
 import { host } from '@/config/index';
-import Cookies from 'js-cookie';
-import { computed, defineProps, getCurrentInstance, ref } from 'vue';
+import { postApi } from '@/utils/api.js';
+import { computed, defineProps, getCurrentInstance, onBeforeUnmount, ref } from 'vue';
 import { Message } from 'view-ui-plus';
 import { message } from '@/utils/message.js'
-import { tokenName,baseURL } from "@systemConfig";
+import { baseURL } from "@systemConfig";
 const { proxy } = getCurrentInstance()
 const props = defineProps({
   modelValue: {
@@ -49,7 +49,7 @@ const props = defineProps({
     type: [String, Number],
   },
   format: {
-    type: Array,
+    type: [Array, String],
     default: () => [],
   },
   action: {
@@ -64,9 +64,15 @@ const props = defineProps({
     default:false
   }
 })
+const c_format = computed(() => {
+  const format = Array.isArray(props.format) ? props.format : String(props.format || '').split(',')
+  return format
+    .map(item => String(item).trim().replace(/^\./, '').toLowerCase())
+    .filter(Boolean)
+})
 const c_accept = computed(() => {
-  if (!props.format) return
-  const formats = props.format.map(item => '.' + item);
+  if (!c_format.value.length) return
+  const formats = c_format.value.map(item => '.' + item);
   return formats.join(',');
 })
 const loading = ref(false)
@@ -77,9 +83,6 @@ const c_typeName = computed(() => {
   }
   return '文件'
 })
-const headers = {
-  token: Cookies.get(tokenName)
-}
 const sizeNum = (val, defaultValue) => {
   let v = val ?? defaultValue
 
@@ -105,36 +108,9 @@ const sizeNum = (val, defaultValue) => {
   return v != null ? String(v) : defaultValue
 }
 const emits = defineEmits(['update:modelValue', 'update:url', 'update:id', 'on-change'])
-//文件上传时的钩子
-const handleProgress = (res, file) => {
-  progress.value =Math.floor(res.percent);
-  loading.value = true
-}
-//
-const handleChange = (value) => {
-  loading.value = false
-  emits('on-change', value)
-}
-//文件上传成功时的钩子
-const handleSuccess = (res, file) => {
-  progress.value = 0;
-  if (res.code === 1 || res.code === 200) {
-    // 上传成功
-    handleChange(res.data)
-  } else {
-    loading.value = false
-    message(res.msg || '上传失败', 'error')
-  }
-}
-//上传文件失败时的钩子
-const handleError = (error, file) => {
-  loading.value = false
-  message('网络错误或上传失败', 'error')
-}
 //文件格式验证失败时的钩子
 const handleFormatError = (file) => {
   // 文件格式验证失败
-  loading.value = false
   message(`${file.name} 格式不正确`, 'warning')
 }
 const getFileSize = (sizeKb) => {
@@ -164,14 +140,65 @@ const getFileSize = (sizeKb) => {
 //文件超出指定大小限制时的钩
 const handleMaxSize = (file) => {
   // 文件超出指定大小限制
-  loading.value = false
   const fileMaxSize = getFileSize(props.maxSize ?? 0)
   message(`${file.name} 文件太大，超出${fileMaxSize}大小限制`, 'warning')
 }
-//上传文件之前的钩子，参数为上传的文件，若返回 false 或者 Promise 则停止上传
-const handleBeforeUpload = (file) => {
+const getFileExt = (fileName = '') => {
+  const ext = fileName.includes('.') ? fileName.split('.').pop() : ''
+  return String(ext || '').toLowerCase()
+}
+const validateFileFormat = (file) => {
+  if (!c_format.value.length) return true
+  const fileExt = getFileExt(file.name)
+  if (fileExt && c_format.value.includes(fileExt)) return true
+  handleFormatError(file)
+  return false
+}
+const validateFileSize = (file) => {
+  if (!props.maxSize || file.size <= props.maxSize * 1024) return true
+  handleMaxSize(file)
+  return false
+}
+const uploadControllers = new Set()
+onBeforeUnmount(() => {
+  uploadControllers.forEach(controller => controller.abort())
+})
+const uploadFile = async (file) => {
   loading.value = true
-  return true
+  progress.value = 0
+  const controller = new AbortController()
+  uploadControllers.add(controller)
+  try {
+    const formData = new FormData()
+    formData.append('files', file)
+    if (props.action === '/user/agentSite/upload') {
+      formData.append('module', 'agent')
+      formData.append('file', file)
+    }
+    const res = await postApi(props.action, formData, {
+      signal: controller.signal,
+      requestPolicy: { retryOnTimeout: false },
+      onUploadProgress: (progressEvent) => {
+        if (progressEvent.total) {
+          progress.value = Math.floor((progressEvent.loaded * 100) / progressEvent.total)
+        }
+      },
+    })
+    if (!controller.signal.aborted) emits('on-change', res)
+  } catch (error) {
+    if (controller.signal.aborted || error?.silent || error?.cancelled || error?.errorHandled || error?.msg === 'SILENT_ERROR' || error?.code === 'ERR_CANCELED') return
+    message(typeof error?.msg === 'string' && error.msg ? error.msg : '上传失败', 'error')
+  } finally {
+    uploadControllers.delete(controller)
+    loading.value = uploadControllers.size > 0
+    if (!loading.value) progress.value = 0
+  }
+}
+//上传文件之前的钩子，返回 false 停止 Upload 的自动上传
+const handleBeforeUpload = (file) => {
+  if (!validateFileFormat(file) || !validateFileSize(file)) return false
+  uploadFile(file)
+  return false
 }
 </script>
 <style lang="less" scoped>

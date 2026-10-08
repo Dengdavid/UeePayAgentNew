@@ -1,6 +1,6 @@
 <template>
   <div class="card-account-box">
-    <div class="left">
+    <div class="left" :class="{ 'is-shared': shared }">
       <dl>
         <dt>
           <span>{{ shared ? $t('card.index.detail.statistics.sharedWalletBalance') : $t('card.index.detail.statistics.availableBalance') }}</span>
@@ -513,6 +513,12 @@ import { hasPermission } from '@/utils/permission'
     background: #fff;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+}
+
+@media (min-width: 769px){
+  .card-account-box .left.is-shared{
+    width: var(--ui-size-360);
   }
 }
 

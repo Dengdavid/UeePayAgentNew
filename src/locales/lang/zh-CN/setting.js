@@ -17,6 +17,9 @@ export default {
       basicInfo:'基本信息',//基本信息
       siteInfoTitle:'站点信息配置',
       siteInfoDesc:'管理您的站点身份标识与通信服务',
+      noticeDesc:'编辑站点公告内容',
+      noticeContent:'公告内容',
+      noticeHint:'支持换行，最多 {max} 字',
       customerServicePlaceholder:'如：电报 https://t.me/用户名',
       homeUrlPlaceholder:'http:// 或 https://',
       serverHostPlaceholder: '如：smtp.gmail.com',

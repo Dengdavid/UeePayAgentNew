@@ -4,20 +4,83 @@
       <LogoBox :collapsed="collapsed" />
     </div>
     <div class="menu-list">
-      <div
-        class="account-menu-item"
-        :class="{
-          active:getMenuRouteName(route)===item.name
-        }"
-        @click="handleGoPage(item.name)"
-        v-for="item in accountMenus"
-        :key="item.name"
-         v-show="showAccountMenu(item)"
-        :title="accountMenuTitle(item)"
-      >
-        <IconBox :icon="item.meta?.menuIcon || 'icon-CRMEB-xiadanjianshu-mianxing'" :size="18" />
-        <span class="account-menu-title">{{ accountMenuTitle(item) }}</span>
-      </div>
+      <template v-for="item in accountMenus" :key="item.name">
+        <div v-if="item.children" class="account-menu-group">
+          <Dropdown
+            v-if="collapsed"
+            class="account-menu-dropdown"
+            trigger="hover"
+            placement="right-start"
+            transfer
+            @on-click="handleGoPage"
+          >
+            <button
+              type="button"
+              class="account-menu-item account-menu-parent"
+              :class="{ active: item.children.some(child => getMenuRouteName(route) === child.name) }"
+              :title="accountMenuTitle(item)"
+              aria-haspopup="menu"
+            >
+              <IconBox :icon="item.meta.menuIcon" :size="18" />
+              <span class="account-menu-title">{{ accountMenuTitle(item) }}</span>
+            </button>
+            <template #list>
+              <DropdownMenu role="menu">
+                <DropdownItem
+                  v-for="child in item.children"
+                  :key="child.name"
+                  :name="child.name"
+                  :selected="getMenuRouteName(route) === child.name"
+                  :title="accountMenuTitle(child)"
+                  role="menuitem"
+                  tabindex="0"
+                  @keydown.enter.prevent="$event.currentTarget.click()"
+                  @keydown.space.prevent="$event.currentTarget.click()"
+                >
+                  {{ accountMenuTitle(child) }}
+                </DropdownItem>
+              </DropdownMenu>
+            </template>
+          </Dropdown>
+          <template v-else>
+            <button
+              type="button"
+              class="account-menu-item account-menu-parent"
+              :title="accountMenuTitle(item)"
+              :aria-expanded="isCardMenuExpanded"
+              aria-controls="desktop-card-menu"
+              @click="isCardMenuExpanded = !isCardMenuExpanded"
+            >
+              <IconBox :icon="item.meta.menuIcon" :size="18" />
+              <span class="account-menu-title">{{ accountMenuTitle(item) }}</span>
+              <Icon type="md-arrow-dropdown" class="menu-expand-icon" :class="{ 'is-open': isCardMenuExpanded }" :size="16" />
+            </button>
+            <div id="desktop-card-menu" v-show="isCardMenuExpanded" class="account-submenu">
+              <button
+                v-for="child in item.children"
+                :key="child.name"
+                type="button"
+                class="account-menu-item"
+                :class="{ active: getMenuRouteName(route) === child.name }"
+                :title="accountMenuTitle(child)"
+                @click="handleGoPage(child.name)"
+              >
+                <span class="account-menu-title">{{ accountMenuTitle(child) }}</span>
+              </button>
+            </div>
+          </template>
+        </div>
+        <div
+          v-else
+          class="account-menu-item"
+          :class="{ active: getMenuRouteName(route) === item.name }"
+          :title="accountMenuTitle(item)"
+          @click="handleGoPage(item.name)"
+        >
+          <IconBox :icon="item.meta?.menuIcon || 'icon-CRMEB-xiadanjianshu-mianxing'" :size="18" />
+          <span class="account-menu-title">{{ accountMenuTitle(item) }}</span>
+        </div>
+      </template>
       <div
         class="account-menu-item"
         :class="{
@@ -99,7 +162,7 @@
 <script setup>
 import LogoBox from '@/views/components/LogoBox/index.vue'
 import { ucenterRoutes} from '@/router/router.js'
-import { computed,ref,onMounted} from 'vue'
+import { computed,ref,onMounted,watch} from 'vue'
 import Decimal from 'decimal.js'
 import { toRoute, getMenuRouteName } from '@/utils/route.js'
 import { hasMenuPermission } from '@/utils/permission.js'
@@ -111,6 +174,8 @@ import { t } from '@/utils/index.js'
 import { getApi } from '@/utils/api.js'
 defineProps({ collapsed: Boolean })
 const menus = ref([])
+const isCardMenuExpanded = ref(true)
+const cardMenuNames = ['card', 'sharedCard']
 const userStore = useUserStore()
 const isBalanceRefreshing = ref(false)
 const hasFrozenAmount = computed(() => {
@@ -120,9 +185,21 @@ const hasFrozenAmount = computed(() => {
     return false
   }
 })
-const accountMenus = computed(() =>ucenterRoutes.children.filter(
-  item => !item.meta?.hidden,
-))
+const accountMenus = computed(() => {
+  const visibleMenus = ucenterRoutes.children.filter(
+    item => !item.meta?.hidden && showAccountMenu(item),
+  )
+  const cardMenus = visibleMenus.filter(item => cardMenuNames.includes(item.name))
+  return visibleMenus.flatMap(item => {
+    if (!cardMenuNames.includes(item.name)) return [item]
+    if (item.name !== cardMenus[0]?.name) return []
+    return [{
+      name: 'cardManagementMenu',
+      meta: { titleKey: 'card.index.management', menuIcon: 'icon-CRMEB-zichan-mianxing' },
+      children: cardMenus,
+    }]
+  })
+})
 
 const getMenus=()=>{
   getApi('/user/agentSite/menus').then(res=>{
@@ -142,6 +219,10 @@ const showAccountMenu = (item) => {
   if (!item?.meta?.need_auth) return true
   return Boolean(user.value?.[item.meta.need_auth] || menuPermissions.value?.[item.meta.need_auth])
 }
+
+watch(() => route.fullPath, () => {
+  if (cardMenuNames.includes(getMenuRouteName(route))) isCardMenuExpanded.value = true
+})
 
 const handleSelect = (row) => {
   if(row.open_type===0){
@@ -180,6 +261,7 @@ onMounted(()=>{
   line-height: 44px;
   cursor: pointer;
   color: var(--menu-text-color);
+  background-color: transparent;
   transition: color .16s ease, background-color .16s ease;
   .iconfont{
     font-size: 18px;
@@ -212,6 +294,13 @@ onMounted(()=>{
     height: var(--app-shell-header-height);
     border-bottom: 1px solid var(--menu-border-color);
     box-sizing: border-box;
+    :deep(.logoImg){
+      max-width: var(--ui-size-28);
+      max-height: var(--ui-size-28);
+      img{
+        max-height: var(--ui-size-28);
+      }
+    }
     :deep(.logoText){
       color: var(--menu-text-strong-color);
     }
@@ -223,6 +312,43 @@ onMounted(()=>{
     flex-direction: column;
     gap: 4px;
     padding: 12px 10px;
+    .account-menu-group{
+      .account-menu-dropdown{
+        width: 100%;
+      }
+      .account-menu-item{
+        width: 100%;
+        font: inherit;
+        text-align: start;
+        &:focus-visible{
+          outline: 2px solid var(--menu-text-strong-color);
+          outline-offset: -2px;
+        }
+      }
+      .account-menu-parent{
+        .account-menu-title{
+          flex: 1;
+        }
+        .menu-expand-icon{
+          flex: none;
+          transform: rotate(-90deg);
+          &.is-open{
+            transform: rotate(0deg);
+          }
+        }
+      }
+      .account-submenu{
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin-top: 2px;
+        .account-menu-item{
+          height: 36px;
+          line-height: 36px;
+          padding-inline-start: 42px;
+        }
+      }
+    }
     .account-menu-item{
       padding: 0 10px;
       border: 0;

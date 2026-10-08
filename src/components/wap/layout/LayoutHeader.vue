@@ -124,20 +124,56 @@
         </div>
 
         <nav class="menu-drawer-list" :aria-label="$t('route.menu')">
-          <button
-            v-for="item in accountMenus"
-            :key="item.name"
-            type="button"
-            class="menu-drawer-item"
-            :class="{ active: isRouteActive(item.name) }"
-            @click="handleGoPage(item.name)"
-          >
-            <IconBox :icon="item.meta.menuIcon" :size="20" />
-            <span class="menu-drawer-title">{{ accountMenuTitle(item) }}</span>
-            <span v-if="item.meta.menuTagKey" class="menu-drawer-tag">
-              {{ $t(item.meta.menuTagKey) }}
-            </span>
-          </button>
+          <template v-for="item in accountMenus" :key="item.name">
+            <template v-if="item.children">
+              <button
+                type="button"
+                class="menu-drawer-item"
+                :title="accountMenuTitle(item)"
+                :aria-expanded="String(isCardMenuExpanded)"
+                aria-controls="mobile-card-management-menu"
+                @click="isCardMenuExpanded = !isCardMenuExpanded"
+              >
+                <IconBox :icon="item.meta.menuIcon" :size="20" />
+                <span class="menu-drawer-title">{{ accountMenuTitle(item) }}</span>
+                <Icon
+                  type="md-arrow-dropdown"
+                  :size="18"
+                  class="menu-drawer-arrow"
+                  :class="{ 'is-expanded': isCardMenuExpanded }"
+                />
+              </button>
+              <div id="mobile-card-management-menu" v-show="isCardMenuExpanded">
+                <button
+                  v-for="child in item.children"
+                  :key="child.name"
+                  type="button"
+                  class="menu-drawer-item menu-drawer-child"
+                  :class="{ active: getMenuRouteName(route) === child.name }"
+                  :title="accountMenuTitle(child)"
+                  @click="handleGoPage(child.name)"
+                >
+                  <span class="menu-drawer-title">{{ accountMenuTitle(child) }}</span>
+                  <span v-if="child.meta.menuTagKey" class="menu-drawer-tag">
+                    {{ $t(child.meta.menuTagKey) }}
+                  </span>
+                </button>
+              </div>
+            </template>
+            <button
+              v-else
+              type="button"
+              class="menu-drawer-item"
+              :class="{ active: isRouteActive(item.name) }"
+              @click="handleGoPage(item.name)"
+            >
+              <IconBox :icon="item.meta.menuIcon" :size="20" />
+              <span class="menu-drawer-title">{{ accountMenuTitle(item) }}</span>
+              <span v-if="item.meta.menuTagKey" class="menu-drawer-tag">
+                {{ $t(item.meta.menuTagKey) }}
+              </span>
+            </button>
+          </template>
 
           <button
             v-for="item in agentMenuItems"
@@ -188,7 +224,7 @@ import MessageBox from '@/components/wap/layout/components/MessageBox.vue'
 import GlobalPreferences from '@/components/layout/GlobalPreferences.vue'
 import IconBox from '@/components/com/IconBox.vue'
 import dayjs from 'dayjs'
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { toRoute,useRoute } from '@/utils/route.js'
 import { ucenterRoutes } from '@/router/router.js'
 import { hasMenuPermission } from '@/utils/permission.js'
@@ -207,6 +243,7 @@ const userStore=useUserStore()
 const { user, userGroup,isLogin, menuPermissions } = useUserStoreRefs()
 const { customerUrl, configDatas } = useAppStoreRefs()
 const isShowMenu = ref(false)
+const isCardMenuExpanded = ref(true)
 const menuTriggerRef = ref(null)
 const menuCloseRef = ref(null)
 const agentMenuItems = ref([])
@@ -230,9 +267,29 @@ const showAccountMenu = (item) => {
   if (!item?.meta?.need_auth) return true
   return Boolean(user.value?.[item.meta.need_auth] || menuPermissions.value?.[item.meta.need_auth])
 }
-const accountMenus = computed(() => ucenterRoutes.children.filter(
-  item => !item.meta?.hidden && showAccountMenu(item),
-))
+const accountMenus = computed(() => {
+  const visibleMenus = ucenterRoutes.children.filter(
+    item => !item.meta?.hidden && showAccountMenu(item),
+  )
+  const cardMenus = visibleMenus.filter(item => ['card', 'sharedCard'].includes(item.name))
+  return visibleMenus.flatMap(item => {
+    if (!cardMenus.includes(item)) return [item]
+    if (item !== cardMenus[0]) return []
+    return [{
+      name: 'cardManagementMenu',
+      meta: {
+        titleKey: 'card.index.management',
+        menuIcon: 'icon-CRMEB-zichan-mianxing',
+      },
+      children: cardMenus,
+    }]
+  })
+})
+watch(() => route.fullPath, () => {
+  if (['card', 'sharedCard'].includes(getMenuRouteName(route))) {
+    isCardMenuExpanded.value = true
+  }
+})
 const accountMenuTitle = (item) => {
   const titleKey = item.meta?.menuTitleKey || item.meta?.titleKey
   return titleKey ? t(titleKey) : item.meta?.title || ''
@@ -571,6 +628,19 @@ onMounted(() => {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+  .menu-drawer-child{
+    padding-inline-start: 42px;
+    &:not(:last-child){
+      margin-bottom: 0;
+    }
+  }
+  .menu-drawer-arrow{
+    flex: none;
+    transform: rotate(-90deg);
+    &.is-expanded{
+      transform: rotate(0deg);
+    }
   }
   .menu-drawer-tag{
     flex: none;

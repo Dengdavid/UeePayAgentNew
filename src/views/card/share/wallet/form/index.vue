@@ -520,6 +520,7 @@ onBeforeUnmount(() => {
 <style lang="less" scoped>
 .shared-account-form {
   padding: var(--ui-padding-24);
+  padding-block-start: 0;
   background: var(--ui-color-surface);
   fieldset { min-width: 0; padding: 0; border: 0; }
   h3, h4 { color: var(--ui-color-text); }

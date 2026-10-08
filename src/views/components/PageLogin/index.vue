@@ -190,10 +190,6 @@ onMounted(() => {
   @media (min-width: 768px) and (max-height: 1050px) {
     .pageLogin-visual {
       padding: 32px 44px 36px;
-      background-image:
-        linear-gradient(to bottom, #f7f7fc 0, rgba(247, 247, 252, 0.94) 72px, rgba(247, 247, 252, 0) 220px);
-      background-position: center top, center calc(100% + 72px);
-      background-size: 100% 220px, cover;
 
       .pageLogin-logo {
         width: var(--ui-size-150);
@@ -221,7 +217,6 @@ onMounted(() => {
   @media (min-width: 768px) and (max-height: 700px) {
     .pageLogin-visual {
       padding: 20px 32px;
-      background-position: center top, center calc(100% + 56px);
 
       .pageLogin-logo {
         width: 132px;

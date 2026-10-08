@@ -537,6 +537,9 @@ const handlGoCustomer = () => {
   background: #fff;
   border-radius: var(--ui-radius-6);
 }
+.is-success .result-panel{
+  background: var(--ui-alert-background-warning);
+}
 .result-panel.has-edit-action{
   margin: 32px auto 24px;
   padding: 18px 20px;

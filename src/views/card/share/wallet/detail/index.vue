@@ -1,10 +1,12 @@
 <template>
   <template v-if="canAccess">
     <UiPage v-if="isPhone" :key="route.params.id" :tabs="mobileTabs" isNotTitle :fallback="{ name: 'cardSharedWallets' }" />
-    <UiPage v-else ref="pageRef" isBack isNotBg isAuto title-size="small" :title="t('card.index.sharedManagement.detailTitle')" :fallback="{ name: 'cardSharedWallets' }">
-      <WalletOverview v-bind="overviewProps" v-on="overviewEvents" />
-      <UiPage v-if="can('shared_wallet.cards') || can('shared_wallet.transaction')" :key="route.params.id" :tabs="tabs" isNotTitle />
-    </UiPage>
+    <div v-else class="ui-layout">
+      <UiPage ref="pageRef" isBack isNotBg :title="t('card.index.sharedManagement.detailTitle')" :fallback="{ name: 'cardSharedWallets' }">
+        <WalletOverview v-bind="overviewProps" v-on="overviewEvents" />
+        <UiPage v-if="can('shared_wallet.cards') || can('shared_wallet.transaction')" :key="route.params.id" :tabs="tabs" class="mt-20" isNotTitle />
+      </UiPage>
+    </div>
     <WalletTransferModal :key="`transfer-${route.params.id}`" ref="transferRef" v-model:busy="fundsBusy" @success="handleFundsSuccess" />
     <WalletCollectModal :key="`collect-${route.params.id}`" ref="collectRef" v-model:busy="fundsBusy" @success="handleFundsSuccess" />
   </template>

@@ -76,7 +76,7 @@
                                     </td>
                                 </tr>
                                 <tr v-if="item.feeType=='fee' || !item.feeType">
-                                    <td class="text-left">{{ $t('groupManagement.fee') }} <span class="unit">($/{{item.key==='create_amount'?$t('groupManagement.ordersUnit'):$t('groupManagement.transactionUnit')}})</span></td>
+                                    <td class="text-left">{{ $t('groupManagement.fee') }}</td>
                                     <td>
                                         <div class="price-item isEdit disabled">
                                             <p>{{ element?.form?.[item.key]?.system?.fee || 0 }}</p>
@@ -96,12 +96,12 @@
                                     <td  class="text-center">=</td>
                                     <td>
                                         <div class="price-item isEdit disabled">
-                                            <p>{{ sumCount(element?.form?.[item.key])?.fee || 0 }}</p>
+                                            <p>{{ sumCount(element?.form?.[item.key])?.fee || 0 }} <span class="unit">$/{{item.key==='create_amount'?$t('groupManagement.ordersUnit'):$t('groupManagement.transactionUnit')}}</span></p>
                                         </div>
                                     </td>
                                 </tr>
                                 <tr  v-if="item.feeType=='fee_rate' || !item.feeType">
-                                    <td class="text-left">{{ $t('groupManagement.fee_rate') }} <span class="unit">(%)</span></td>
+                                    <td class="text-left">{{ $t('groupManagement.fee_rate') }}</td>
                                     <td>
                                         <div class="price-item isEdit disabled">
                                             <p>{{ element?.form?.[item.key]?.system?.fee_rate || 0 }}</p>
@@ -121,7 +121,7 @@
                                     <td class="text-center">=</td>
                                     <td>
                                         <div class="price-item isEdit disabled">
-                                            <p>{{ sumCount(element?.form?.[item.key])?.fee_rate || 0 }}</p>
+                                            <p>{{ sumCount(element?.form?.[item.key])?.fee_rate || 0 }} <span class="unit">%</span></p>
                                         </div>
                                     </td>
                                 </tr>

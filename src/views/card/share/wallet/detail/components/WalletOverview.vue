@@ -21,7 +21,7 @@ const enabledText = value => value == null ? 0 : t(`card.index.sharedManagement.
 </script>
 
 <template>
-  <UiPage isNotTitle isAuto :padding="0">
+  <UiPage isNotTitle :padding="0">
     <CardBox>
       <div class="account-overview">
         <header class="account-header">

@@ -6,6 +6,7 @@
     isMx: isMx,
   }" :style="{
     padding:isPhone || $slots.pageRight || isNotBg || isContentBg?'':typeof padding==='number'? padding+'px': padding,
+    gap: !isPhone && theadShow && (isContentBg || isNotBg || $slots.pageRight) ? (hasHeaderPadding ? 0 : typeof padding === 'number' ? padding + 'px' : padding) : undefined,
   }">
     <template v-if="certificationShow && isCertificationBlocked()">
       <PageCertification/>
@@ -13,7 +14,9 @@
     <template v-else>
       <div class="ui-page-thead" :class="{
         borderBottom:route.meta?.isAppDetail && isPhone
-      }" v-if="theadShow">
+      }" :style="hasHeaderPadding ? {
+        padding: typeof padding === 'number' ? padding + 'px' : padding,
+      } : undefined" v-if="theadShow">
         <div  class="title" v-if="!props.isNotTitle || isPhone">
           <template v-if="isBack || (route.meta?.isAppDetail && isPhone)">
             <div class="back" @click="backHandler ? backHandler() : goBack(fallback)">
@@ -46,6 +49,7 @@
       </div>
       <div class="ui-page-content" :class="{ 'has-background': isContentBg }" :style="{
         padding: isContentBg ? (typeof padding === 'number' ? padding + 'px' : padding) : undefined,
+        paddingBlockStart: isContentBg ? 0 : undefined,
       }">
       <div class="ui-page-tip" v-if="$slots.tip">
         <slot name="tip"></slot>
@@ -411,6 +415,7 @@ const theadShow=computed(()=>{
   return true
 })
 const isContentBg = computed(() => props.titleSize === 'small' && theadShow.value && !isPhone.value && !props.isNotBg && !props.isBackTitle && !slots.pageRight)
+const hasHeaderPadding = computed(() => !isPhone.value && (isContentBg.value || (props.isAuto && (props.isNotBg || slots.pageRight))))
 const tableSlotItems=computed(()=>(props.data?.thead || []).filter((item)=>slots[item.prop || item.key]))
 const tableRowKey=computed(()=>props.rowKey || props.data?.rowKey || 'id')
 const certificationShow=ref(true)
@@ -646,6 +651,7 @@ watch(() => props.data?.status?.length, () => {
   }
   .ui-page-thead{
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     .ui-page-thead-arefresh{
       flex: 1;

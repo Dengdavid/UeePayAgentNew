@@ -17,6 +17,9 @@ export default {
       basicInfo:'Basic Information',//基本信息
       siteInfoTitle:'Site Information Settings',
       siteInfoDesc:'Manage your site identity and communication services',
+      noticeDesc:'Edit the site announcement',
+      noticeContent:'Announcement content',
+      noticeHint:'Line breaks are supported. Maximum {max} characters.',
       customerServicePlaceholder: 'e.g., Telegram https://t.me/username',
       homeUrlPlaceholder: 'http:// or https://',
       serverHostPlaceholder: 'e.g., smtp.gmail.com',

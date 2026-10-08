@@ -209,12 +209,37 @@ export const ucenterRoutes = {
       component: () => import("@/views/ucenter/index/index.vue"),
     },
     {
+      path: "/certify",
+      name: "certify",
+      meta: {
+        title: "实名认证",
+        titleKey: "route.identityVerification",
+        menuIcon: "md-checkmark-circle",
+        menuIconStyle: menuIconStyles.purple,
+        hidden: true,
+      },
+      component: () => import("@/views/certify/index.vue"),
+    },
+    {
+      path: "/certify",
+      name: "certify",
+      alias: ['/ucenter/certify'],
+      meta: {
+        title: "实名认证",
+        titleKey: "route.identityVerification",
+        menuIcon: "icon-chakankaihuxinxi",
+        menuIconStyle: menuIconStyles.purple,
+      },
+      component: () => import("@/views/certify/index.vue"),
+    },
+    {
     path: "/card",
     name: "card",
     meta: {
       title: "常规卡",
       titleKey: "card.index.regularCard",
       menuIcon: "icon-CRMEB-zichan-mianxing",
+      menuIconStyle: menuIconStyles.blue,
       menuIconSize: "22px",
       isApp: true,
       isAppDetail: true,
@@ -310,18 +335,6 @@ export const ucenterRoutes = {
       component: () => import("@/views/express/index.vue"),
     },
     {
-      path: "/certify",
-      name: "certify",
-      meta: {
-        title: "实名认证",
-        titleKey: "route.identityVerification",
-        menuIcon: "md-checkmark-circle",
-        menuIconStyle: menuIconStyles.purple,
-        hidden: true,
-      },
-      component: () => import("@/views/certify/index.vue"),
-    },
-    {
       path: "expressTransfer",
       name: "express_transfer",
       meta: {
@@ -385,18 +398,6 @@ export const ucenterRoutes = {
         isCertification: true,
       },
       component: () => import("@/views/express/detail/index.vue"),
-    },
-    {
-      path: "/certify",
-      name: "certify",
-      alias: ['/ucenter/certify'],
-      meta: {
-        title: "实名认证",
-        titleKey: "route.identityVerification",
-        menuIcon: "icon-chakankaihuxinxi",
-        menuIconStyle: menuIconStyles.purple,
-      },
-      component: () => import("@/views/certify/index.vue"),
     },
     {
       path: "cardholder",

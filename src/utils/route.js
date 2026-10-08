@@ -1,11 +1,17 @@
 
 import router from '@/router/index'
 import { useRoute,useRouter } from 'vue-router'
+import { hasCardPermission } from '@/utils/permission.js'
 
 const ROUTE_DATA_TYPES = ['query', 'params']
 const RETURN_ROUTE_CONSUMER_NAMES = ['login', 'register']
 export const isRecoveryRoute = route => ['login', 'error_403', 'error_404', 'error_451', 'error_500'].includes(route.name)
 export const getMenuRouteName = (route) => {
+  if (route.name === 'cardAdd') {
+    const type = route.query?.type
+    const isShared = type ? type === 'share' : !hasCardPermission('create') && hasCardPermission('create', true)
+    return isShared ? 'sharedCard' : 'card'
+  }
   let current = route
   const visited = new Set()
   while (current.meta?.direct && current.meta.hidden !== false && router.hasRoute(current.meta.direct) && !visited.has(current.name)) {

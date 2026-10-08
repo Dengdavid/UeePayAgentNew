@@ -13,7 +13,7 @@
           </div>
         </UiCell>
         <UiCell  :title="$t('card.index.opening.page.selectBin')">
-          <div class="list-b-16">
+          <div class="card-bin-selection list-b-16">
             <div class="card-tags">
               <Select size="large" v-model="filterForm.network" clearable :placeholder="$t('card.index.opening.page.cardNetwork')">
                 <Option v-for="item in cardNetworks" :key="item" :value="item"></Option>
@@ -30,7 +30,7 @@
                 <Option value="0">{{ $t('card.index.opening.page.threeDsUnsupported') }}</Option>
               </Select>
             </div>
-            <div v-if="binsLoading" class="card-tags card-tags-2" role="status" aria-busy="true" :aria-label="$t('remoteSelect.loading')">
+            <div v-if="binsLoading" class="card-tags" role="status" aria-busy="true" :aria-label="$t('remoteSelect.loading')">
               <div v-for="index in binsPlaceholderCount" :key="index" class="bin-skeleton" aria-hidden="true">
                 <span class="bin-skeleton-radio"></span>
                 <div class="bin-skeleton-content">
@@ -48,7 +48,7 @@
                 <p>{{ $t('card.index.opening.page.binsEmptyHelp') }}</p>
               </div>
             </div>
-            <div v-else class="card-tags card-tags-2">
+            <div v-else class="card-tags">
               <CardTag v-for="item in showBins" :key="item.id" :item="item" :checked="item.id === form.binId"
                 @on-click="form.binId = item.id">
               </CardTag>
@@ -1083,6 +1083,11 @@ onMounted(() => {
   width: 100%;
 }
 
+.card-bin-selection {
+  container-type: inline-size;
+  container-name: card-bin-selection;
+}
+
 .card-tags {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1093,15 +1098,12 @@ onMounted(() => {
     min-width: 0;
   }
 
-  &.card-tags-2{
+  @container card-bin-selection (max-width: 1199px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  @media screen and (max-width: 768px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    &.card-tags-2 {
-      grid-template-columns: minmax(0, 1fr);
-    }
+  @container card-bin-selection (max-width: 768px) {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
