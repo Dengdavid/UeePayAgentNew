@@ -16,4 +16,6 @@ export default {
   riskLevelElevated: '较高',
   riskLevelCritical: '极高',
   currentRiskLevel: '当前风险等级：{level}',
+
+  noPermission: '您暂无此操作权限，请联系管理员开通。',
 }

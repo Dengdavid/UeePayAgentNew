@@ -134,16 +134,15 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { goBack, toRoute, useRoute } from '@/utils/route.js'
 import { cardApi } from '@/api'
 import { Message } from 'view-ui-plus'
-import { message } from '@/utils/message.js'
+import { message, showRequestError } from '@/utils/message.js'
 import ImageUpload from '@/components/utils/image-upload.vue'
 import QRCode from "qrcode";
 import { t } from '@/utils'
 
 const route = useRoute()
-const router = useRouter()
 
 const steps = [t('card.index.activation.steps.verification'), t('card.index.activation.steps.activation'), t('card.index.activation.steps.complete')]
 const stepActive = ref(0)
@@ -177,12 +176,12 @@ const cardNo = computed(() => {
 const init = function() {
     const id = route.query.id;
     if(!id) {
-        router.push({name: 'error_404'});
+        toRoute('error_404', {}, 'query', { replace: true });
         return false;
     }
     // 获取卡片详情
     loading.value = true;
-    cardApi.vccInfo({cardId: id}).then(res => {
+    cardApi.vccInfo({cardId: id}, { requestPolicy: { errorHandling: 'local' } }).then(res => {
         card.value = res;
         if(res.physical !== 1) {
             errMsg(t('card.index.activation.notPhysicalCard'));
@@ -213,16 +212,14 @@ const init = function() {
         }
         loading.value = false;
     }).catch(err => {
-        errMsg(err.msg || t('card.index.activation.pageLoadFailed'));
+        errMsg({ ...err, msg: err?.msg || t('card.index.activation.pageLoadFailed') });
     })
 }
 
-const errMsg = function(msg) {
-    message(msg, 'error', {
-        onClose: function() {
-            router.back();
-        }
-    })
+const errMsg = function(error) {
+    const config = { onClose: () => goBack({ name: 'card' }) };
+    if (typeof error === 'string') message(error, 'error', config);
+    else showRequestError(error, config);
 }
 
 // 切换认证类型
@@ -293,9 +290,6 @@ const handleIdentify = function() {
         identifyStep.value = 2;
         submiting.value = false;
         let content = err.msg || t('card.index.activation.submitFailed')
-        message(content, 'error',{
-            duration: 5
-        });
         errorMessage.value = content;
     })
 }
@@ -310,7 +304,7 @@ const handleOtherIdentity = function() {
     }).catch(err => {
         identifyStep.value = 2;
         submiting.value = false;
-        message(err.msg || t('card.index.activation.submitFailed'), 'error');
+        showRequestError(err);
     })
 }
 

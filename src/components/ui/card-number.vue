@@ -2,7 +2,8 @@
     <div class="card-number">
         <CardLogo v-if="showType" :type="showType"></CardLogo>
         <div class="number">
-            <slot>{{ showText }}</slot>
+            <button v-if="canNavigate" type="button" class="number-link" @click.stop="handleDetail"><slot>{{ showText }}</slot></button>
+            <slot v-else>{{ showText }}</slot>
         </div>
         <template v-if="encrypt">
             <div v-if="loading" class="encrypt-btn td-btn">
@@ -24,6 +25,8 @@ import { storeToRefs } from 'pinia'
 import { useCardStore } from '@/store/card.js'
 import { Copy } from 'view-ui-plus'
 import CardLogo from '@/components/ui/card-logo.vue'
+import { hasCardPermission } from '@/utils/permission'
+import { toRoute } from '@/utils/route'
 
 const props = defineProps({
     value: {
@@ -32,6 +35,14 @@ const props = defineProps({
     },
     type: {
         type: String,
+        default: ''
+    },
+    network: {
+        type: String,
+        default: ''
+    },
+    cardId: {
+        type: [String, Number],
         default: ''
     },
     copy: {
@@ -67,12 +78,24 @@ const emits = defineEmits(['on-change'])
 
 const show = ref(!props.encrypt);
 
+const canNavigate = computed(() => Boolean(props.bin && props.cardId && props.value)
+    && ['prepaid', 'share'].includes(props.type)
+    && hasCardPermission('view', props.type === 'share'))
+
+const handleDetail = () => {
+    if (!canNavigate.value) return
+    toRoute(props.type === 'share' ? 'sharedCardDetail' : 'cardDetail', { id: props.cardId }, 'params')
+}
+
 const showText = computed(() => {
     return props.value;
 })
 
 const showType = computed(() => {
-    if(props.type) {
+    if(props.network) {
+        return props.network;
+    }
+    if(props.type && !['prepaid', 'share'].includes(props.type)) {
         return props.type;
     }
     
@@ -132,6 +155,17 @@ watch(() => props.visible, (newval) => {
 }
 .card-number .number {
     flex: 1;
+}
+.number-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ui-color-primary);
+    font: inherit;
+    cursor: pointer;
+}
+.number-link:hover {
+    text-decoration: underline;
 }
 .card-number .encrypt-btn {
     margin-left: 10px;

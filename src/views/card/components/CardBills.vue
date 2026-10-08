@@ -1,10 +1,16 @@
 <template>
-  <UiPage ref="pageRef" :data="data" row-key="id" isNotTitle>
+  <UiPage v-if="hasCardPermission('transaction', props.shared)" ref="pageRef" :data="data" :return-state="returnState" row-key="id" isNotTitle>
+    <template #shared_wallet_name="{ row }">
+      <span v-if="!hasPermission('shared_wallet.view')">{{ row.shared_wallet_name || '--' }}</span>
+      <Button v-else type="text" :disabled="!row.shared_wallet_id" @click="row.shared_wallet_id && hasPermission('shared_wallet.view') && toRoute('cardSharedWalletDetail', { id: String(row.shared_wallet_id) }, 'params')">{{ row.shared_wallet_name || '--' }}</Button>
+    </template>
     <template #number="{ row }">
       <CardNumber
-        :value="row.card_no"
+        :value="maskCardNumber(row.card_no)"
         :bin="row.bin || row.card_bin"
-        :type="row.network || ''"
+        :card-id="row.card_id"
+        :type="props.shared ? 'share' : 'prepaid'"
+        :network="row.network || ''"
         :encrypt="false"
       />
     </template>
@@ -15,13 +21,19 @@
 import { computed, reactive, ref } from 'vue'
 import { format, subMonths } from 'date-fns'
 import CardNumber from '@/components/ui/card-number.vue'
+import { hasCardPermission, hasPermission } from '@/utils/permission'
 import { t } from '@/utils'
-import { postApi } from '@/utils/api.js'
-import { message } from '@/utils/message.js'
 import { toRoute } from '@/utils/route.js'
+import { postApi } from '@/utils/api.js'
+import { message, showRequestError } from '@/utils/message.js'
 import { isPhone } from '@/utils/device.js'
-import { copyCard, statusKeyMap, statusOptions, transactionStatusValues, transactionTypeValues } from '@/utils/card.js'
-defineProps({
+import { copyCard, maskCardNumber, statusKeyMap, statusOptions, transactionStatusValues, transactionTypeValues } from '@/utils/card.js'
+const props = defineProps({
+  returnState: Object,
+  tabBtns: { type: Array, default: () => [] },
+  apiUrl: { type: String, required: true },
+  shared: { type: Boolean, default: false },
+  exportApiUrl: { type: String, required: true },
   active: {
     type: String,
     default: '',
@@ -43,6 +55,7 @@ const getStatusOptions = () => Object.fromEntries(
   ])
 )
 const search = reactive({
+  ...(props.shared ? { shared_wallet_id: '' } : {}),
   type: '',
   status: '',
   startTime: format(subMonths(new Date(), 1), 'yyyy-MM-dd'),
@@ -51,22 +64,22 @@ const search = reactive({
 })
 
 const handleExport = () => {
-  if (exportLoading.value) return
+  if (!hasCardPermission('export', props.shared) || !hasCardPermission('transaction', props.shared) || exportLoading.value) return
   exportLoading.value = true
-  postApi('/vcc/transactionExport', { ...search })
+  postApi(props.exportApiUrl, pageRef.value.getSearchParams())
     .then(() => message(t('card.index.bills.exportCreated')))
-    .catch((err) => message(err?.msg || t('card.index.bills.exportFailed'), 'error'))
+    .catch(showRequestError)
     .finally(() => {
       exportLoading.value = false
     })
 }
 
 const data = computed(() => ({
-  apiUrl: '/vcc/transaction',
+  apiUrl: props.apiUrl,
   statusKey: 'type',
   status: [
     { label: t('card.index.common.all'), value: '' },
-    ...transactionTypeValues.map((value) => ({
+    ...transactionTypeValues.filter((value) => !props.shared || !['TransferIn', 'TransferOut'].includes(value)).map((value) => ({
       value,
       label: getTransactionTypeLabel(value),
     })),
@@ -82,6 +95,16 @@ const data = computed(() => ({
       clearable: false,
       width: 230,
     },
+    ...(props.shared ? [{
+      label: t('card.index.sharedManagement.title'),
+      prop: 'shared_wallet_id',
+      type: 'remote-select',
+      apiUrl: '/vcc/SharedWallet/dataList',
+      labelKey: 'name',
+      valueKey: 'id',
+      multiple: false,
+      width: 200,
+    }] : []),
     {
       label: t('card.index.bills.transactionStatus'),
       prop: 'status',
@@ -100,23 +123,19 @@ const data = computed(() => ({
     },
   ],
   btns: [
-    {
-      label: t('card.index.openCardQuickly'),
-      icon: 'md-add',
-      hidden:()=>isPhone.value,
-      click: () => toRoute('cardAdd'),
-    },
-    {
-      label: t('card.index.bills.export'),
+    ...(isPhone.value ? props.tabBtns : []),
+    ...(!props.shared || hasCardPermission('export', props.shared) ? [{
+      label: t('card.index.bills.export'), permission: props.shared ? undefined : 'card.export',
       icon: 'md-download',
       loading: exportLoading.value,
       click: handleExport,
-    },
+    }] : []),
   ],
   labelWidth: 80,
   thead: [
     { label: t('card.index.bills.transactionTime'), prop: 'transaction_time', width: 180 },
     { label: t('card.index.common.cardNumber'), prop: 'number', type: 'slot', width: 210 , wapType: 'title'},
+    ...(props.shared ? [{ label: t('card.index.sharedManagement.title'), prop: 'shared_wallet_name', type: 'slot', minWidth: 160 }] : []),
     {
       label: t('card.index.bills.type'),
       prop: 'type',
@@ -129,12 +148,12 @@ const data = computed(() => ({
         : row.type ?? '-',
     },
     {
-      label: t('card.index.common.amount'),
+      label: `${t('card.index.common.amount')} ($)`,
       prop: 'amount',
       width: 150,
-      value: (row) => `${row.amount ?? '-'} ${row.currency ?? ''}`.trim(),
+      value: (row) => row.amount ?? '-',
     },
-    { label: t('card.index.common.fee'), prop: 'fee', width: 120 },
+    { label: `${t('card.index.common.fee')} ($)`, prop: 'fee', width: 120 },
     {
       label: t('card.index.common.status'),
       prop: 'status',

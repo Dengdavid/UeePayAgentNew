@@ -17,11 +17,11 @@
       <div class="ucenterPup-tbody" @click.stop="">
         <template v-for="item in ucenterMune">
           <div class="ucenterItem" :class="{
-            on:(item?.children?.map(item=>item.name) || [item.name]).includes(route.name)
+            on:getMenuRouteName(route)===item.name
           }"  @click="toRouteFn(item)" v-if="showMune(item)" :key="item.name">
             <div class="icon-wrap" :style="item.meta.menuIconStyle">
               <span class="tag" v-if="item.meta.menuTagKey">{{ $t(item.meta.menuTagKey) }}</span>
-              <Icon :type="item.meta.menuIcon" />
+              <IconBox :icon="item.meta.menuIcon" />
             </div>
             <span class="title">{{ item.meta.menuTitleKey ? $t(item.meta.menuTitleKey) : (item.meta.titleKey ? $t(item.meta.titleKey) : item.meta.title) }}</span>
           </div>
@@ -40,7 +40,8 @@
 <script setup>
 import { ref,computed } from 'vue'
 import { whiteRoutes,ucenterRoutes } from '@/router/router.js'
-import { toRoute,useRoute } from '@/utils/route.js'
+import { toRoute,useRoute,getMenuRouteName } from '@/utils/route.js'
+import { hasMenuPermission } from '@/utils/permission.js'
 import { useUserStoreRefs,useAppStoreRefs } from '@/utils/store'
 const { isLogin,user,menuPermissions } = useUserStoreRefs()
 const { customerUrl } = useAppStoreRefs()
@@ -63,6 +64,7 @@ const ucenterMune=computed(()=>{
   return helpRoute ? [...arr, helpRoute] : arr
 })
 const showMune=(item)=>{
+  if (!hasMenuPermission(item)) return false
   if(item?.meta?.need_auth){
     if(user?.value?.[item?.meta?.need_auth]){
       return true

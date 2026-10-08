@@ -3,16 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover,maximum-scale=1" />
+    <script>
+      const isAccountActivationPage = /^\/activate\/?$/i.test(window.location.pathname);
+      if (isAccountActivationPage) {
+        const referrerMeta = document.createElement('meta');
+        referrerMeta.name = 'referrer';
+        referrerMeta.content = 'no-referrer';
+        document.head.appendChild(referrerMeta);
+      }
+    </script>
     <link rel="icon" href="./favicon.ico" type="image/x-icon" />
     <title>Loading</title>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-434BJ20M0L"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-434BJ20M0L');
+      if (!isAccountActivationPage) {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function(){window.dataLayer.push(arguments);};
+        window.gtag('js', new Date());
+        window.gtag('config', 'G-434BJ20M0L');
+        const googleTag = document.createElement('script');
+        googleTag.async = true;
+        googleTag.src = 'https://www.googletagmanager.com/gtag/js?id=G-434BJ20M0L';
+        document.head.appendChild(googleTag);
+      }
     </script>
   </head>
   <body>

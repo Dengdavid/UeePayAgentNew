@@ -1,55 +1,84 @@
 <template>
-  <UiPage ref="pageRef" :data="data" row-key="id" isNotTitle>
+  <UiPage v-if="canView" ref="pageRef" :data="data" :return-state="returnState" row-key="id" isNotTitle :padding="padding">
+    <template #label="{ row }">
+      <ColumnsItemType :data="data.thead.find(column => column.prop === 'label')" :row="row" :title="row.label || undefined" />
+    </template>
+    <template #sharedWallet="{ row }">
+      <span v-if="!hasPermission('shared_wallet.view')">{{ row.sharedWallet?.name || '--' }}</span>
+      <Button v-else type="text" :disabled="!row.shared_wallet_id" @click="row.shared_wallet_id && hasPermission('shared_wallet.view') && toRoute('cardSharedWalletDetail', { id: String(row.shared_wallet_id) }, 'params')">{{ row.sharedWallet?.name || '--' }}</Button>
+    </template>
     <template #number="{ row }">
       <CardNumber
-        :value="row.show ? row.card_no : row.masked_card_no"
+        :value="canViewPrivate && row.show ? row.card_no : row.masked_card_no"
         :bin="row.bin || row.card_bin"
-        :type="row.bin?.network || row.card_bin?.network"
-        :visible="row.show"
+        :card-id="row.id"
+        :type="props.shared ? 'share' : 'prepaid'"
+        :network="row.bin?.network || row.card_bin?.network || row.network || ''"
+        :visible="canViewPrivate && row.show"
         :loading="row.loading"
+        :encrypt="canViewPrivate"
         controlled
         @on-change="handleChangeVisible(row)"
       />
     </template>
     <template #term="{ row }">
-      <TermTime
+      <span v-if="!canViewPrivate">**/**</span>
+      <TermTime v-else
         :time="row.expire_date"
-        :visible="row.show"
+        :visible="canViewPrivate && row.show"
         :loading="row.loading"
         controlled
         @on-change="handleChangeVisible(row)"
       />
     </template>
     <template #code="{ row }">
-      <EncryptText
-        :value="row.cvv"
-        :visible="row.show"
+      <span v-if="!canViewPrivate">***</span>
+      <EncryptText v-else
+        :value="row.cvv || '***'"
+        :visible="canViewPrivate && row.show"
         :loading="row.loading"
         controlled
         @on-change="handleChangeVisible(row)"
       />
     </template>
   </UiPage>
-  <IntoModal ref="intoModal" @on-update="handleIntoUpdate" />
-  <OutModal ref="outModal" @on-update="handleUpdate" />
+  <IntoModal v-if="hasCardPermission('recharge', props.shared)" ref="intoModal" @on-update="handleIntoUpdate" />
+  <OutModal v-if="hasCardPermission('withdraw', props.shared)" ref="outModal" @on-update="handleUpdate" />
 </template>
 
 <script setup>
-import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { cardApi } from '@/api'
+import { hasCardPermission, hasPermission } from '@/utils/permission'
+import { maskCardNumber } from '@/utils/card.js'
 import { t } from '@/utils'
 import CardNumber from '@/components/ui/card-number.vue'
 import EncryptText from '@/components/ui/encrypt-text.vue'
 import TermTime from '@/components/ui/term-time.vue'
+import ColumnsItemType from '@/components/uiForm/UiTable/ColumnsItemType.vue'
 import { useCardStore } from '@/store/card.js'
-import { confirmInput, message } from '@/utils/message.js'
+import { confirmInput, message, showRequestError } from '@/utils/message.js'
 import { toRoute } from '@/utils/route.js'
 import { isPhone } from '@/utils/device.js'
-import IntoModal from './IntoModal.vue'
-import OutModal from './OutModal.vue'
+import IntoModal from '../prepaid/components/IntoModal.vue'
+import OutModal from '../prepaid/components/OutModal.vue'
 
-defineProps({
+const props = defineProps({
+  returnState: Object,
+  tabBtns: { type: Array, default: () => [] },
+  apiUrl: { type: String, required: true },
+  shared: { type: Boolean, default: false },
+  privateRequest: { type: Function, required: true },
+  labelRequest: { type: Function, required: true },
+  searchParams: { type: Object },
+  statusKey: { type: String, default: 'account_status' },
+  binKey: { type: String, default: 'bin' },
+  binOptions: { type: Array },
+  viewAllowed: { type: Boolean, default: undefined },
+  showCreate: { type: Boolean, default: true },
+  showSharedWallet: { type: Boolean, default: true },
+  detailPermission: { type: String },
+  padding: { type: [Number, String] },
   active: {
     type: String,
     default: '',
@@ -59,9 +88,30 @@ defineProps({
 const emit = defineEmits(['init'])
 const cardStore = useCardStore()
 const { bins } = storeToRefs(cardStore)
+const permissionPrefix = computed(() => props.shared ? 'shared_card' : 'card')
 const pageRef = ref(null)
 const intoModal = ref(null)
 const outModal = ref(null)
+
+const canView = computed(() => props.viewAllowed ?? hasCardPermission('view', props.shared))
+const canViewPrivate = computed(() => canView.value && hasCardPermission('private', props.shared))
+const privateRows = new Map()
+const clearPrivateRow = row => {
+  row.show = false
+  row.loading = false
+  row.card_no = row.masked_card_no
+  row.expire_date = ''
+  row.cvv = ''
+  privateRows.delete(row)
+}
+const clearPrivateRows = () => {
+  for (const row of privateRows.keys()) clearPrivateRow(row)
+}
+watch(canViewPrivate, allowed => {
+  if (!allowed) clearPrivateRows()
+}, { flush: 'sync' })
+watch(() => props.searchParams, clearPrivateRows, { deep: true, flush: 'sync' })
+onBeforeUnmount(clearPrivateRows)
 
 const statusOptions = [
   { value: '0', label: t('card.index.list.status.active'), type: 'success' },
@@ -78,15 +128,15 @@ const statusOptionMap = Object.fromEntries(
 const reload = () => pageRef.value?.reset()
 
 const handleEdit = (row) => {
+  if (!row.id || !canView.value || !hasCardPermission('update', props.shared)) return
   confirmInput(t('card.index.list.label'), row.label || '', { allowEmpty: true }).then(async ({ value, close }) => {
     try {
-      await cardApi.vccLabel({ cardId: row.id, label: value })
+      if (!row.id || !canView.value || !hasCardPermission('update', props.shared)) return
+      await props.labelRequest({ cardId: row.id, label: value })
       row.label = value
       message(t('card.index.list.editSuccess'))
       close()
-    } catch (error) {
-      message(error?.msg || t('card.index.list.editFailed'), 'error')
-    }
+    } catch (error) { showRequestError(error) }
   })
 }
 
@@ -106,43 +156,50 @@ onBeforeUnmount(() => {
 })
 
 const handleOpenInto = (row) => {
-  if (Number(row.account_status) !== 0) return
+  if (!hasCardPermission('recharge', props.shared) || Number(row.account_status) !== 0) return
   intoModal.value?.open(row)
 }
 
 const handleOpenOut = (row) => {
-  if (Number(row.account_status) !== 0) return
+  if (!hasCardPermission('withdraw', props.shared) || Number(row.account_status) !== 0) return
   outModal.value?.open(row)
 }
 
 const handleChangeVisible = async (row) => {
-  if (row.loading) return
+  if (!canViewPrivate.value || !row.id || row.loading) return
   if (row.show) {
-    row.show = false
+    clearPrivateRow(row)
     return
   }
+  clearPrivateRow(row)
+  const requestId = Symbol()
+  privateRows.set(row, requestId)
   row.loading = true
   try {
-    const result = await cardApi.vccPrivate({ cardId: row.id })
+    const result = await props.privateRequest({ cardId: row.id })
+    if (!canViewPrivate.value || privateRows.get(row) !== requestId) return
     row.card_no = result.card_no
     row.expire_date = result.expire_date
     row.cvv = result.cvv
     row.show = true
   } catch (error) {
-    message(error?.msg || t('card.index.list.privateInfoFailed'), 'error')
+    if (privateRows.get(row) !== requestId) return
+    clearPrivateRow(row)
+    showRequestError(error)
   } finally {
-    row.loading = false
+    if (privateRows.get(row) === requestId) row.loading = false
   }
 }
 
 const data = computed(() => ({
-  apiUrl: '/vcc/index',
-  statusKey: 'account_status',
+  apiUrl: props.apiUrl,
+  statusKey: props.statusKey,
   status: [
     { label: t('card.index.common.all'), value: null },
     ...statusOptions.map(({ value, label }) => ({ value, label })),
   ],
-  search: {
+  search: props.searchParams || {
+    ...(props.shared && props.showSharedWallet ? { shared_wallet_id: '' } : {}),
     bin: '',
     account_status:null,
     status:null,
@@ -153,9 +210,10 @@ const data = computed(() => ({
   searchThead: [
     {
       label: t('card.index.list.allCardBins'),
-      prop: 'bin',
+      prop: props.binKey,
       type: 'select',
-      options: (bins.value || []).filter((item) => item?.bin !== undefined && item?.bin !== null),
+      transfer: true,
+      options: (props.binOptions || bins.value || []).filter((item) => item?.bin !== undefined && item?.bin !== null),
       labelKey: 'name',
       valueKey: 'bin',
       width: 200,
@@ -167,6 +225,16 @@ const data = computed(() => ({
       endKey: 'endTime',
       width: 230,
     },
+    ...(props.shared && props.showSharedWallet ? [{
+      label: t('card.index.sharedManagement.title'),
+      prop: 'shared_wallet_id',
+      type: 'remote-select',
+      apiUrl: '/vcc/SharedWallet/dataList',
+      labelKey: 'name',
+      valueKey: 'id',
+      multiple: false,
+      width: 200,
+    }] : []),
     {
       label: t('card.index.list.cardNumberOrLabel'),
       prop: 'card_no',
@@ -176,10 +244,14 @@ const data = computed(() => ({
   ],
   labelWidth: 72,
   dataProcessor: (rows) => {
+    clearPrivateRows()
     if (!Array.isArray(rows)) return []
     return rows.map((row) => ({
       ...row,
-      masked_card_no: row.card_no,
+      masked_card_no: maskCardNumber(row.masked_card_no || row.card_no),
+      card_no: maskCardNumber(row.masked_card_no || row.card_no),
+      expire_date: '',
+      cvv: '',
       loading: false,
       show: false,
     }))
@@ -188,8 +260,9 @@ const data = computed(() => ({
     { label: t('card.index.common.cardNumber'), prop: 'number', type: 'slot', width: 240, wapType: 'title' },
     { label: t('card.index.list.validThru'), prop: 'term', type: 'slot', width: 120 },
     { label: t('card.index.list.securityCode'), prop: 'code', type: 'slot', width: 100 },
-    { label: t('card.index.list.label'), prop: 'label', minWidth: 120, click: handleEdit },
-    { label: t('card.index.list.balance'), prop: 'available', width: 120 },
+    { label: t('card.index.list.label'), prop: 'label', type: 'slot', minWidth: 120, click: hasCardPermission('update', props.shared) ? handleEdit : undefined },
+    ...(props.shared && props.showSharedWallet ? [{ label: t('card.index.sharedManagement.title'), prop: 'sharedWallet', type: 'slot', minWidth: 160 }] : []),
+    ...(!props.shared ? [{ label: t('card.index.list.balance'), prop: 'available', unit: '$', width: 120 }] : []),
     {
       label: t('card.index.common.status'),
       prop: 'account_status',
@@ -200,31 +273,30 @@ const data = computed(() => ({
     },
     { label: t('card.index.common.openingTime'), prop: 'create_time', width: 174 },
   ],
-  btns: [
-    {
-      label: t('card.index.openCardQuickly'),
-      icon: 'md-add',
-      hidden:()=>isPhone.value,
-      click: () => toRoute('cardAdd'),
-    },
-  ],
+  btns: props.showCreate && isPhone.value ? [...props.tabBtns] : [],
   actions: [
-    {
-      label: t('card.index.list.transferIn'),
-      class: 'action-primary',
-      disabled: (row) => Number(row.account_status) !== 0,
-      click: handleOpenInto,
-    },
-    {
-      label: t('card.index.list.transferOut'),
-      class: 'action-warning',
-      disabled: (row) => Number(row.account_status) !== 0,
-      click: handleOpenOut,
-    },
+    ...(!props.shared ? [
+      {
+        label: t('card.index.list.transferIn'),
+        permission: `${permissionPrefix.value}.recharge`,
+        class: 'action-primary',
+        disabled: (row) => Number(row.account_status) !== 0,
+        click: handleOpenInto,
+      },
+      {
+        label: t('card.index.list.transferOut'),
+        permission: `${permissionPrefix.value}.withdraw`,
+        class: 'action-warning',
+        disabled: (row) => Number(row.account_status) !== 0,
+        click: handleOpenOut,
+      },
+    ] : []),
     {
       label: t('card.index.common.detail'),
+      permission: props.detailPermission,
       class: 'action-default',
-      click: (row) => toRoute('cardDetail', { id: row.id }, 'params'),
+      disabled: row => !row.id,
+      click: (row) => row.id && canView.value && hasCardPermission('view', props.shared) && toRoute(props.shared ? 'sharedCardDetail' : 'cardDetail', { id: row.id }, 'params'),
     },
   ],
 }))

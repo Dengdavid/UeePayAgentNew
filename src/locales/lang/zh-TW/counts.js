@@ -16,4 +16,6 @@ export default {
   riskLevelElevated: '較高',
   riskLevelCritical: '極高',
   currentRiskLevel: '當前風險等級：{level}',
+
+  noPermission: '您尚無此操作權限，請聯絡管理員開通。',
 }

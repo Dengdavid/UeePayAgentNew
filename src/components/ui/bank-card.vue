@@ -13,15 +13,18 @@
                         <div class="valid-thru">
                             <div class="time text" :class="{ 'ui-pointer': !masked }" @click="handlePrivateCopy(card.expire_date)">{{ displayExpireDate }}</div>
                         </div>
-                        <Tooltip :content="masked ? $t('card.index.detail.overview.showFullCardInfo') : $t('card.index.detail.overview.hideFullCardInfo')" placement="top" theme="light" transfer :disabled="isPhone">
-                            <button
-                                class="private-toggle"
-                                type="button"
-                                :disabled="privateLoading"
-                                @click.stop="emit('toggle-private')"
-                            >
-                                <Icon :type="privateLoading ? 'ios-loading' : (masked ? 'md-eye-off' : 'md-eye')" :class="{ 'private-toggle-loading': privateLoading }" />
-                            </button>
+                        <Tooltip :content="!canViewPrivate ? $t('counts.noPermission') : masked ? $t('card.index.detail.overview.showFullCardInfo') : $t('card.index.detail.overview.hideFullCardInfo')" placement="top" theme="light" transfer :disabled="isPhone">
+                            <span class="private-toggle-trigger" :class="{ 'is-forbidden': !canViewPrivate }" :tabindex="!canViewPrivate ? 0 : undefined" :aria-label="!canViewPrivate ? $t('counts.noPermission') : undefined">
+                                <button
+                                    class="private-toggle"
+                                    type="button"
+                                    :disabled="!canViewPrivate || privateLoading"
+                                    :aria-label="!canViewPrivate ? $t('counts.noPermission') : masked ? $t('card.index.detail.overview.showFullCardInfo') : $t('card.index.detail.overview.hideFullCardInfo')"
+                                    @click.stop="canViewPrivate && !privateLoading && emit('toggle-private')"
+                                >
+                                    <Icon :type="privateLoading ? 'ios-loading' : (masked ? 'md-eye-off' : 'md-eye')" :class="{ 'private-toggle-loading': privateLoading }" />
+                                </button>
+                            </span>
                         </Tooltip>
                     </div>
                     <div class="name text ui-pointer" @click="handleCopy(card.holder_username)">{{ card.holder_username || '' }}</div>
@@ -51,6 +54,7 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
+    canViewPrivate: { type: Boolean, default: true },
     privateLoading: {
         type: Boolean,
         default: false
@@ -215,6 +219,13 @@ const handleCopy = (value) => {
     }
   }
 
+  .private-toggle-trigger {
+    display: inline-flex;
+
+    &.is-forbidden { cursor: not-allowed; }
+    button:disabled { pointer-events: none; }
+  }
+
   .private-toggle {
     display: inline-flex;
     align-items: center;
@@ -261,7 +272,8 @@ const handleCopy = (value) => {
 @media screen and (max-width: 768px) {
   .debit-card {
     .card-details {
-      top: 126px;
+      top: auto;
+      bottom: 20px;
       left: 24px;
     }
 

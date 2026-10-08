@@ -38,8 +38,8 @@ export default {
     return request({ url: "/user/savePreferences", method: "post", data });
   },
   // 退出登录
-  logout() {
-    return request({ url: "/user/auth/logout", method: "post" });
+  logout(config = {}) {
+    return request({ ...config, url: "/user/auth/logout", method: "post" });
   },
   // 个人中心统计
   userStatistics(data) {
@@ -223,8 +223,8 @@ export default {
     return request({ url: "/user/auth/closedSecretKey", method: "post", data });
   },
   // 子账户列表
-  getAccountList(data) {
-    return request({ url: "/user/account/index", method: "post", data });
+  getAccountList(data, config = {}) {
+    return request({ ...config, url: "/user/account/index", method: "post", data });
   },
   // 创建子账户
   createAccount(data) {
@@ -295,5 +295,145 @@ export default {
         "Content-Type": "multipart/form-data",
       },
     });
+  },
+  getSharedWalletDetail(params, config = {}) {
+    return request({ ...config, url: "/vcc/SharedWallet/detail", method: "get", params });
+  },
+  batchAddAccountSharedWallets(data) {
+    return request({ url: "/user/Account/batchAddSharedWallets", method: "post", data });
+  },
+  batchRemoveAccountSharedWallets(data) {
+    return request({ url: "/user/Account/batchRemoveSharedWallets", method: "post", data });
+  },
+  batchAddTeamGroupSharedWallets(data) {
+    return request({ url: "/user/TeamGroup/batchAddSharedWallets", method: "post", data });
+  },
+  batchRemoveTeamGroupSharedWallets(data) {
+    return request({ url: "/user/TeamGroup/batchRemoveSharedWallets", method: "post", data });
+  },
+  getAccountOptions(config = {}) {
+    return request({ ...config, url: "/user/Account/options", method: "get" });
+  },
+  batchCreateAccount(data) {
+    return request({
+      url: "/user/Account/batchCreate",
+      method: "post",
+      data,
+      requestPolicy: {
+        retryOnTimeout: false,
+      },
+    });
+  },
+  getAccountDetail(params, config = {}) {
+    return request({ ...config, url: "/user/Account/detail", method: "get", params });
+  },
+  updateAccount(data) {
+    return request({ url: "/user/Account/update", method: "post", data });
+  },
+  getAccountSecurity(params, config = {}) {
+    return request({
+      ...config,
+      url: "/user/Account/security",
+      method: "get",
+      params,
+      requestPolicy: {
+        retryOnTimeout: false,
+        redirectOnNetworkError: false,
+      },
+    });
+  },
+  logoutAccountSessions(data, config = {}) {
+    return request({
+      ...config,
+      url: "/user/Account/logoutSessions",
+      method: "post",
+      data,
+      requestPolicy: {
+        retryOnTimeout: false,
+        redirectOnNetworkError: false,
+      },
+    });
+  },
+  enableAccount(data) {
+    return request({ url: "/user/Account/enable", method: "post", data });
+  },
+  disableAccount(data) {
+    return request({ url: "/user/Account/disable", method: "post", data });
+  },
+  sendAccountActivation(data) {
+    return request({ url: "/user/Account/sendActivation", method: "post", data });
+  },
+  getAccountActivationDetail(params, config = {}) {
+    return request({
+      ...config,
+      url: "/user/AccountActivation/detail",
+      method: "get",
+      params,
+      requestPolicy: {
+        retryOnTimeout: false,
+        redirectOnNetworkError: false,
+        sendAuthToken: false,
+      },
+    });
+  },
+  activateAccount(data) {
+    return request({
+      url: "/user/AccountActivation/activate",
+      method: "post",
+      data,
+      requestPolicy: {
+        retryOnTimeout: false,
+        redirectOnNetworkError: false,
+        sendAuthToken: false,
+      },
+    });
+  },
+  batchEnableAccount(data) {
+    return request({ url: "/user/account/batchEnable", method: "post", data });
+  },
+  batchDisableAccount(data) {
+    return request({ url: "/user/account/batchDisable", method: "post", data });
+  },
+  getTeamRolePermissions(config = {}) {
+    return request({ ...config, url: "/user/TeamRole/permissions", method: "get" });
+  },
+  getTeamRoleDetail(params, config = {}) {
+    return request({ ...config, url: "/user/TeamRole/detail", method: "get", params });
+  },
+  createTeamRole(data) {
+    return request({ url: "/user/TeamRole/create", method: "post", data });
+  },
+  updateTeamRole(data) {
+    return request({ url: "/user/TeamRole/update", method: "post", data });
+  },
+  enableTeamRole(data) {
+    return request({ url: "/user/TeamRole/enable", method: "post", data });
+  },
+  disableTeamRole(data) {
+    return request({ url: "/user/TeamRole/disable", method: "post", data });
+  },
+  getTeamGroupList(params, config = {}) {
+    return request({ ...config, url: "/user/TeamGroup/index", method: "get", params });
+  },
+  getTeamGroupDetail(params, config = {}) {
+    return request({ ...config, url: "/user/TeamGroup/detail", method: "get", params });
+  },
+  createTeamGroup(data) {
+    return request({ url: "/user/TeamGroup/create", method: "post", data });
+  },
+  updateTeamGroup(data) {
+    return request({ url: "/user/TeamGroup/update", method: "post", data });
+  },
+  enableTeamGroup(data) {
+    return request({ url: "/user/TeamGroup/enable", method: "post", data });
+  },
+  disableTeamGroup(data) {
+    return request({ url: "/user/TeamGroup/disable", method: "post", data });
+  },
+  batchEnableTeamGroup(data) {
+    return request({ url: "/user/team-group/batchEnable", method: "post", data });
+  },
+  batchDisableTeamGroup(data) {
+    return request({ url: "/user/team-group/batchDisable", method: "post", data });
   },
 };

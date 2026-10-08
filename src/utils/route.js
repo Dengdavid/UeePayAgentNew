@@ -4,6 +4,16 @@ import { useRoute,useRouter } from 'vue-router'
 
 const ROUTE_DATA_TYPES = ['query', 'params']
 const RETURN_ROUTE_CONSUMER_NAMES = ['login', 'register']
+export const isRecoveryRoute = route => ['login', 'error_403', 'error_404', 'error_451', 'error_500'].includes(route.name)
+export const getMenuRouteName = (route) => {
+  let current = route
+  const visited = new Set()
+  while (current.meta?.direct && current.meta.hidden !== false && router.hasRoute(current.meta.direct) && !visited.has(current.name)) {
+    visited.add(current.name)
+    current = router.resolve({ name: current.meta.direct })
+  }
+  return current.name
+}
 const hasDynamicIdParam = route => route.matched.some(
   record => /(^|\/):id(\/|$)/.test(record.path)
 )

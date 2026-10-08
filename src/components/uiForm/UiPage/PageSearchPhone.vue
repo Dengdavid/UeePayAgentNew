@@ -1,5 +1,5 @@
 <template>
- <Drawer title="搜索" placement="bottom" height="90dvh" :closable="true" v-model="show">
+ <Drawer :title="$t('uiCommon.search')" placement="bottom" height="90dvh" :closable="true" v-model="show">
   <Form class="drawerBox" label-position="top" :model="pageSearch">
     <FormItemBox :label="item.label"  v-for="item in data" :key="item.prop">
       <UiFormItem  :row="pageSearch"   :title="item.label" v-bind="{
@@ -9,8 +9,8 @@
     </FormItemBox>
   </Form>
   <div class="demo-drawer-footer">
-    <Button style="margin-right: 8px" @click="reset">重置</Button>
-    <Button type="primary" @click="search">搜索</Button>
+    <Button style="margin-right: 8px" @click="reset">{{ $t('uiCommon.reset') }}</Button>
+    <Button type="primary" @click="search">{{ $t('uiCommon.search') }}</Button>
   </div>
   </Drawer>
 </template>

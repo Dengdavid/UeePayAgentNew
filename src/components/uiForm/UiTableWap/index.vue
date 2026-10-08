@@ -1,7 +1,10 @@
 <template>
   <div class="ui-table-wap list-b-12">
     <div class="ui-table-wap-item" v-for="(item,rowIndex) in tbody" :key="getRowKey(item,rowIndex)" @click.stop="handleSelect(item,rowIndex)">
-      <div class="ui-table-wap-item-header" v-if="columns.title">
+      <div class="ui-table-wap-item-header" v-if="columns.title || canSelect">
+        <Checkbox v-if="canSelect" :model-value="selectedKeys.has(getRowKey(item,rowIndex))" :disabled="loading || item._disabled" @click.stop @on-change="toggleSelection(item,rowIndex,$event)">
+          <span class="selection-label">{{ $t('button.select') }} {{ item[columns.title] || getRowKey(item,rowIndex) }}</span>
+        </Checkbox>
         <div class="title">
           <slot v-if="$slots[columns.title]" :name="columns.title" :row="item" :index="rowIndex" />
           <h3 v-else>{{ item[columns.title] }}</h3>
@@ -42,7 +45,7 @@
         </dl>
       </div>
       <div  class="ui-table-wap-item-footer" v-if="c_actions(item)?.length>0 && !isSelect">
-        <Button type="text" :class="c_fun(item,action,'class')" :style="c_fun(item,action,'style')" :disabled="c_fun(item,action,'disabled')" :loading="item.loading  && loadingLabel===c_fun(item,action,'label')" :icon="action.icon" v-for="(action,index) in visibleActions(item)" :key="action.key || index" @click.stop="onClick(action,item,index)">
+        <Button type="text" :title="c_fun(item,action,'tooltip')" :class="c_fun(item,action,'class')" :style="c_fun(item,action,'style')" :disabled="c_fun(item,action,'disabled')" :loading="item.loading  && loadingLabel===c_fun(item,action,'label')" :icon="action.icon" :custom-icon="action.customIcon" v-for="(action,index) in visibleActions(item)" :key="action.key || index" @click.stop="onClick(action,item,index)">
           {{ c_fun(item,action,'label') }}
         </Button>
         <Dropdown
@@ -63,6 +66,7 @@
               <DropdownItem
                 v-for="(action,index) in overflowActions(item)"
                 :key="action.key || index"
+                :title="c_fun(item,action,'tooltip')"
                 :disabled="c_fun(item,action,'disabled')"
                 :class="c_fun(item,action,'class')"
                 :style="c_fun(item,action,'style')"
@@ -79,7 +83,8 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { hasPermission } from '@/utils/permission.js'
+import { computed, ref, watch, onBeforeUnmount } from 'vue'
 const props = defineProps({
   thead:{
     type: Array,
@@ -94,6 +99,10 @@ const props = defineProps({
     default: false,
   },
   actions:{
+    type: Array,
+    default: ()=>[],
+  },
+  batchBtns:{
     type: Array,
     default: ()=>[],
   },
@@ -137,6 +146,7 @@ const itemValue=(item,row)=>{
 }
 const c_actions=(row)=>{
   return props.actions.filter(action=>{
+    if (!hasPermission(action.permission)) return false
     if(typeof action.show==='function'){
       return action.show(row)
     }
@@ -159,6 +169,7 @@ const getRowKey=(row,index)=>{
   return value ?? index
 }
 const onClick=(action,row,index)=>{
+  if (!hasPermission(action.permission) || c_fun(row,action,'disabled')) return
   if(typeof action.click==='function'){
     action.loading=true
     loadingLabel.value=c_fun(row,action,'label')
@@ -187,13 +198,45 @@ const columns=computed(()=>{
     rowList:rowList
   }
 })
-const emit=defineEmits(['select'])
+const emit=defineEmits(['select','selectionChange'])
+const canSelect=computed(()=>!props.isSelect && props.batchBtns.some(button=>hasPermission(button.permission)))
+const selectedKeys=ref(new Set())
+const selectableRows=computed(()=>props.tbody.filter(row=>!row._disabled))
+const selectedRows=computed(()=>canSelect.value ? props.tbody.filter((row,index)=>!row._disabled && selectedKeys.value.has(getRowKey(row,index))) : [])
+const allSelected=computed(()=>selectableRows.value.length>0 && selectedRows.value.length===selectableRows.value.length)
+const clearSelection=()=>{
+  selectedKeys.value=new Set()
+}
+const toggleSelection=(row,index,selected)=>{
+  if(!canSelect.value || props.loading || row._disabled) return
+  const keys=new Set(selectedKeys.value)
+  if(selected) keys.add(getRowKey(row,index))
+  else keys.delete(getRowKey(row,index))
+  selectedKeys.value=keys
+}
+const toggleSelectAll=(selected)=>{
+  if(!canSelect.value || props.loading) return
+  selectedKeys.value=new Set(selected ? props.tbody.flatMap((row,index)=>row._disabled ? [] : [getRowKey(row,index)]) : [])
+}
+watch(()=>props.tbody,clearSelection,{ flush:'sync' })
+watch(canSelect,clearSelection)
+watch(selectedRows,rows=>emit('selectionChange',rows),{ immediate:true, flush:'sync' })
+onBeforeUnmount(()=>emit('selectionChange',[]))
+defineExpose({ clearSelection, toggleSelectAll, allSelected, selectableRows })
 const handleSelect=(row,index)=>{
   emit('select',row,index)
 }
 </script>
 <style lang="less" scoped>
 .ui-table-wap{
+  .selection-label{
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
   .ui-table-wap-item{
     border: var(--ui-border-subtle);
     border-radius:var(--ui-radius-sm);
@@ -211,6 +254,8 @@ const handleSelect=(row,index)=>{
       justify-content: space-between;
       background: #f8f9fa;
       .title{
+        flex: 1;
+        min-width: 0;
         h3{
           font-size: 14px;
           font-weight: 600;

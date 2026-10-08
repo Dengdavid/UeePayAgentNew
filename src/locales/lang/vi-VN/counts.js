@@ -16,4 +16,6 @@ export default {
   riskLevelElevated: 'cao hơn',
   riskLevelCritical: 'cực kỳ cao',
   currentRiskLevel: 'Cấp rủi ro hiện thời:{level}',
+
+  noPermission: 'Bạn chưa có quyền thực hiện thao tác này. Vui lòng liên hệ quản trị viên để được cấp quyền.',
 }

@@ -8,14 +8,14 @@
         </Tooltip>
       </div>
       <FormItem prop="firstName">
-        <FormInput v-model="firstName" :placeholder="$t('card.index.opening.firstNamePlaceholder')" :disabled="disabled" />
+        <FormInput v-disable-autofill v-model="firstName" :placeholder="$t('card.index.opening.firstNamePlaceholder')" :disabled="disabled" />
       </FormItem>
     </Col>
 
     <Col :xs="24" :sm="12">
       <div class="field-label is-hidden-mobile">&nbsp;</div>
       <FormItem prop="lastName">
-        <FormInput v-model="lastName" :placeholder="$t('card.index.opening.lastNamePlaceholder')" :disabled="disabled" />
+        <FormInput v-disable-autofill v-model="lastName" :placeholder="$t('card.index.opening.lastNamePlaceholder')" :disabled="disabled" />
       </FormItem>
     </Col>
 
@@ -35,12 +35,14 @@
 
     <Col :xs="24" :sm="12">
       <div class="field-label is-hidden-mobile">&nbsp;</div>
-      <FormItem prop="email">
+      <FormItem ref="emailFormItemRef" prop="email">
         <FormEmail
+          v-disable-autofill
           :data="emailData"
           data-name="email"
           :placeholder="$t('card.index.opening.emailPlaceholder')"
           :disabled="disabled"
+          @on-select="handleEmailSelect"
         />
       </FormItem>
     </Col>
@@ -50,7 +52,17 @@
 <script setup>
 import FormEmail from '@/components/form/FormEmail/index.vue'
 import PhoneInput from '@/components/utils/phone-input.vue'
-import { computed, reactive, watch } from 'vue'
+import { computed, nextTick, reactive, ref, watch } from 'vue'
+
+// 使用独立标记，避免浏览器将开卡字段匹配到已保存的地址资料。
+const disableAutofill = (el) => {
+  el.querySelector('input')?.setAttribute('autocomplete', 'ueepay-card-application')
+}
+const vDisableAutofill = {
+  beforeMount: disableAutofill,
+  mounted: disableAutofill,
+  updated: disableAutofill,
+}
 
 const props = defineProps({
   modelValue: {
@@ -89,6 +101,12 @@ const phoneCode = createFieldModel('phoneCode')
 
 // FormEmail 使用 data + dataName 契约，通过局部对象隔离对子组件 props 的修改。
 const emailData = reactive({ email: '' })
+const emailFormItemRef = ref(null)
+
+const handleEmailSelect = async () => {
+  await nextTick()
+  emailFormItemRef.value?.validate('blur')
+}
 
 watch(
   () => props.modelValue.email,

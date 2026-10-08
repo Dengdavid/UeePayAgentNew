@@ -1,49 +1,66 @@
 <template>
-  <UiPage isNotTitle>
-    <div class="card-layout">
+  <UiPage v-if="can('view')" :padding="0" isNotTitle>
+    <div class="card-layout" :class="{ 'is-shared': shared }">
         <div class="card-left">
             <div class="card-preview">
                 <BankCard
                     :card="displayCard"
                     :masked="!isPrivateVisible"
                     :private-loading="privateLoading"
+                    :can-view-private="can('private')"
                     @toggle-private="handleTogglePrivate"
                 />
                 <div v-if="statusMeta" class="card-status-floating">
-                    <span
-                        class="status-pill"
-                        :class="[
-                            `status-pill--${statusMeta.type}`,
-                            { 'status-pill--processing': statusMeta.processing }
-                        ]"
+                    <UITag
+                        solid
+                        :title="statusMeta.label"
+                        :type="statusMeta.type"
+                        :class="{ 'is-processing': statusMeta.processing }"
                         role="status"
-                    >
-                        <span class="status-pill-dot" aria-hidden="true"></span>
-                        {{ statusMeta.label }}
-                    </span>
+                    />
                 </div>
             </div>
             <div
                 class="card-action"
-                :class="{ 'is-keyboard-open': isKeyboardOpen }"
+                :class="{ 'is-keyboard-open': isKeyboardOpen, 'is-shared': shared }"
                 :style="{ '--keyboard-offset': `${keyboardOffset}px` }"
             >
-                <div class="btn" :class="{ disabled: actionDisabled('into') }" :title="intoActionText" :aria-label="intoActionText" @click="handleOpenInto">
-                    <Icon custom="iconfont icon-recharge" :size="24" />
-                    <div class="text">{{ intoActionText }}</div>
-                </div>
-                <div class="btn ui-text-warning" :class="{ disabled: actionDisabled('out') }" :title="outActionText" :aria-label="outActionText" @click="handleOpenOut">
-                    <Icon custom="iconfont icon-withdraw" :size="24" />
-                    <div class="text">{{ outActionText }}</div>
-                </div>
-                <div class="btn ui-text-dot" :class="{ disabled: actionDisabled('frozen') }" :title="frozenActionText" :aria-label="frozenActionText" @click="handleFrozen">
-                    <Icon custom="iconfont icon-freeze" :size="24" />
-                    <div class="text">{{ frozenActionText }}</div>
-                </div>
-                <div class="btn ui-text-error" :class="{ disabled: actionDisabled('writeOff') }" :title="writeOffActionText" :aria-label="writeOffActionText" @click="handleWriteOff">
-                    <Icon custom="iconfont icon-write-off" :size="24" />
-                    <div class="text">{{ writeOffActionText }}</div>
-                </div>
+                <Tooltip v-if="shared" class="action-tooltip" :disabled="canWallet('transfer')" :content="$t('counts.noPermission')" placement="top" transfer>
+                    <div class="btn btn-into" :class="{ disabled: !canWallet('transfer') || walletActionsDisabled }" @click="handleOpenWallet('transfer')" :aria-disabled="!canWallet('transfer') || walletActionsDisabled">
+                        <Icon custom="iconfont icon-recharge" :size="24" />
+                        <div class="text">{{ $t('card.index.sharedManagement.transfer') }}</div>
+                    </div>
+                </Tooltip>
+                <Tooltip v-if="shared" class="action-tooltip" :disabled="canWallet('collect')" :content="$t('counts.noPermission')" placement="top" transfer>
+                    <div class="btn btn-out ui-text-warning" :class="{ disabled: !canWallet('collect') || walletActionsDisabled }" @click="handleOpenWallet('collect')" :aria-disabled="!canWallet('collect') || walletActionsDisabled">
+                        <Icon custom="iconfont icon-withdraw" :size="24" />
+                        <div class="text">{{ $t('card.index.sharedManagement.collect') }}</div>
+                    </div>
+                </Tooltip>
+                <Tooltip v-if="!shared" class="action-tooltip" :disabled="can('recharge')" :content="$t('counts.noPermission')" placement="top" transfer>
+                    <div class="btn btn-into" :class="{ disabled: actionDisabled('into') }" :aria-label="intoActionText" @click="handleOpenInto" :aria-disabled="actionDisabled('into')">
+                        <Icon custom="iconfont icon-recharge" :size="24" />
+                        <div class="text">{{ intoActionText }}</div>
+                    </div>
+                </Tooltip>
+                <Tooltip v-if="!shared" class="action-tooltip" :disabled="can('withdraw')" :content="$t('counts.noPermission')" placement="top" transfer>
+                    <div class="btn btn-out ui-text-warning" :class="{ disabled: actionDisabled('out') }" :aria-label="outActionText" @click="handleOpenOut" :aria-disabled="actionDisabled('out')">
+                        <Icon custom="iconfont icon-withdraw" :size="24" />
+                        <div class="text">{{ outActionText }}</div>
+                    </div>
+                </Tooltip>
+                <Tooltip class="action-tooltip" :disabled="can(Number(card.account_status) === 0 ? 'suspend' : 'enable')" :content="$t('counts.noPermission')" placement="top" transfer>
+                    <div class="btn btn-freeze ui-text-dot" :class="{ disabled: actionDisabled('frozen') }" :aria-label="frozenActionText" @click="handleFrozen" :aria-disabled="actionDisabled('frozen')">
+                        <Icon custom="iconfont icon-freeze" :size="24" />
+                        <div class="text">{{ frozenActionText }}</div>
+                    </div>
+                </Tooltip>
+                <Tooltip class="action-tooltip" :disabled="can('destroy')" :content="$t('counts.noPermission')" placement="top" transfer>
+                    <div class="btn btn-write-off ui-text-error" :class="{ disabled: actionDisabled('writeOff') }" :aria-label="writeOffActionText" @click="handleWriteOff" :aria-disabled="actionDisabled('writeOff')">
+                        <Icon custom="iconfont icon-write-off" :size="24" />
+                        <div class="text">{{ writeOffActionText }}</div>
+                    </div>
+                </Tooltip>
             </div>
         </div>
 
@@ -51,8 +68,9 @@
             <div class="card-tools">
                 <div class="card-tools-actions">
                     <Button class="tool-btn tool-btn--secondary" size="default" icon="md-card" :title="$t('card.index.detail.overview.paymentExample')" @click="exampleModalRef.open()">{{ $t('card.index.detail.overview.paymentExample') }}</Button>
-                    <Button v-if="isPrivateVisible" class="tool-btn tool-btn--secondary" size="default" icon="md-copy" :title="$t('card.index.detail.overview.copyCardInfo')" @click="handleCopyCard">{{ $t('card.index.detail.overview.copyCardInfo') }}</Button>
-                    <div v-if="card.physical" class="physical-actions">
+                    <Button v-if="!shared && can('update')" class="tool-btn tool-btn--secondary" type="default" icon="md-settings" :title="$t('card.index.detail.overview.messageSettings')" @click="openPupMessage(card)">{{ $t('card.index.detail.overview.messageSettings') }}</Button>
+                    <Button v-if="isPrivateVisible" class="tool-btn tool-btn--secondary" size="default" custom-icon="iconfont icon-fuzhi" :title="$t('card.index.detail.overview.copyCardInfo')" @click="handleCopyCard">{{ $t('card.index.detail.overview.copyCardInfo') }}</Button>
+                    <div v-if="!shared && can('update') && card.physical" class="physical-actions">
                         <Button v-if="card.deliver_status === 0" class="tool-btn physical-btn" type="primary" shape="circle" :title="$t('card.index.detail.overview.applyPhysicalCard')" @click="handleGoPhysical">{{ $t('card.index.detail.overview.applyPhysicalCard') }}</Button>
                         <Button v-if="card.deliver_status > 1 && card.physical_status !== 2" class="tool-btn physical-btn" type="primary" shape="circle" :title="$t('card.index.detail.overview.activatePhysicalCard')" @click="handleGoActivation">{{ $t('card.index.detail.overview.activatePhysicalCard') }}</Button>
                         <Button v-if="card.deliver_status === 1 || card.deliver_status === 2" class="tool-btn physical-btn" type="primary" shape="circle" :title="$t('card.index.detail.overview.cardProduction')" disabled>{{ $t('card.index.detail.overview.cardProduction') }}</Button>
@@ -61,12 +79,18 @@
                     </div>
                 </div>
                 <div class="card-tools-meta">
-                    <Button class="tool-btn tool-btn--secondary" type="default" icon="md-settings" :title="$t('card.index.detail.overview.messageSettings')" @click="openPupMessage(card)">{{ $t('card.index.detail.overview.messageSettings') }}</Button>
+                    <span class="card-type">
+                        <span class="card-type-icon" aria-hidden="true">
+                            <Icon v-if="shared" custom="iconfont icon-feiyong" :size="12" />
+                            <Icon v-else custom="iconfont icon-yinhangka-m" :size="12" />
+                        </span>
+                        <span class="card-type-name">{{ shared ? $t('card.index.sharedCard') : $t('card.index.regularCard') }}</span>
+                    </span>
                 </div>
             </div>
 
             <div class="card-summary-panel">
-                <CardTotal ref="cardTotalRef" :card="card" :refreshing="balanceLoading || balanceSyncing" @refresh="handleRefreshBalance" />
+                <CardTotal ref="cardTotalRef" :card="card" :shared="shared" :refreshing="balanceLoading || balanceSyncing" @refresh="handleRefreshBalance" />
                 <div class="cardholder-info">
                     <div class="cardholder-info-grid">
                         <div class="info-row info-row--primary">
@@ -81,13 +105,17 @@
                                 <div class="info-label">{{ $t('card.index.detail.overview.cardLabel') }}</div>
                                 <div class="info-value">
                                     <span class="info-text">{{ card.label || '--' }}</span>
-                                    <button v-if="card.id && card.status !== -1" class="info-action" type="button" @click="handleEdit">{{ $t('card.index.detail.overview.edit') }}</button>
+                                    <Tooltip v-if="card.id && card.status !== -1" :disabled="can('update')" :content="$t('counts.noPermission')" placement="top" transfer>
+                                        <span class="edit-tooltip-trigger" :tabindex="can('update') ? undefined : 0" :aria-label="can('update') ? undefined : $t('counts.noPermission')">
+                                            <button class="info-action" type="button" :disabled="!can('update')" @click="handleEdit">{{ $t('card.index.detail.overview.edit') }}</button>
+                                        </span>
+                                    </Tooltip>
                                 </div>
                             </div>
                             <div class="info-item info-item--scene">
                                 <div class="info-label">{{ $t('card.index.detail.overview.usageScenario') }}</div>
                                 <div class="info-value info-value--scene">
-                                    <SceneBox :card="card" @onConfirm="emit('reload')" />
+                                    <SceneBox :shared="shared" :card="card" @onConfirm="emit('reload')" />
                                 </div>
                             </div>
                         </div>
@@ -96,14 +124,14 @@
                                 <div class="info-label">{{ $t('card.index.detail.overview.phone') }}</div>
                                 <div class="info-value">
                                     <span class="info-text">{{ card.holder_phone ? `+${card.holder_phone_code} ${phoneText}` : '--' }}</span>
-                                    <button class="info-action" type="button" @click="contactModalRef.open(card, 'phone')">{{ $t('card.index.detail.overview.edit') }}</button>
+                                    <button v-if="can('update')" class="info-action" type="button" @click="contactModalRef.open(card, 'phone')">{{ $t('card.index.detail.overview.edit') }}</button>
                                 </div>
                             </div>
                             <div class="info-item">
                                 <div class="info-label">{{ $t('card.index.detail.overview.email') }}</div>
                                 <div class="info-value">
                                     <span class="info-text">{{ card.holder_email || '--' }}</span>
-                                    <button v-if="card.id" class="info-action" type="button" @click="contactModalRef.open(card, 'email')">{{ $t('card.index.detail.overview.edit') }}</button>
+                                    <button v-if="card.id && can('update')" class="info-action" type="button" @click="contactModalRef.open(card, 'email')">{{ $t('card.index.detail.overview.edit') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -124,13 +152,15 @@
     </div>
   </UiPage>
 
-    <IntoModal ref="intoModalRef" @on-update="handleTransferUpdate('transferIn', $event)" />
-    <OutModal ref="outModalRef" @on-update="handleTransferUpdate('transferOut', $event)" />
+    <IntoModal v-if="can('recharge')" ref="intoModalRef" @on-update="handleTransferUpdate('transferIn', $event)" />
+    <OutModal v-if="can('withdraw')" ref="outModalRef" @on-update="handleTransferUpdate('transferOut', $event)" />
+    <WalletCollectModal v-if="canWallet('collect')" ref="walletCollectRef" v-model:busy="walletBusy" @success="emit('reload')" />
+    <WalletTransferModal v-if="canWallet('transfer')" ref="walletTransferRef" v-model:busy="walletBusy" @success="emit('reload')" />
     <PaymentExampleModal ref="exampleModalRef" />
-    <CardPinModal ref="pinModalRef" @success="emit('reload')" />
+    <CardPinModal v-if="!shared && can('update')" ref="pinModalRef" @success="emit('reload')" />
     <CardDeliverModal ref="deliverModalRef" />
-    <CardContactModal ref="contactModalRef" @success="emit('reload')" />
-    <PupMessage ref="messageModalRef" @confirm="emit('reload')" />
+    <CardContactModal :shared="shared" v-if="can('update')" ref="contactModalRef" @success="emit('reload')" />
+    <PupMessage v-if="can('update')" ref="messageModalRef" @confirm="emit('reload')" />
 </template>
 
 <script setup>
@@ -142,24 +172,36 @@ import CardContactModal from '@/views/card/detail/components/CardContactModal.vu
 import CardDeliverModal from '@/views/card/detail/components/CardDeliverModal.vue'
 import CardPinModal from '@/views/card/detail/components/CardPinModal.vue'
 import PaymentExampleModal from '@/views/card/detail/components/PaymentExampleModal.vue'
-import IntoModal from '@/views/card/components/IntoModal.vue'
-import OutModal from '@/views/card/components/OutModal.vue'
+import IntoModal from '@/views/card/prepaid/components/IntoModal.vue'
+import OutModal from '@/views/card/prepaid/components/OutModal.vue'
+import WalletCollectModal from '@/views/card/share/wallet/components/WalletCollectModal.vue'
+import WalletTransferModal from '@/views/card/share/wallet/components/WalletTransferModal.vue'
+import { getApi } from '@/utils/api.js'
 import PupMessage from '@/views/ucenter/components/PupMessage.vue'
 import { cardApi } from '@/api'
-import { confirm, confirmInput, message } from '@/utils/message.js'
+import { confirm, confirmInput, message, showRequestError } from '@/utils/message.js'
 import { toRoute } from '@/utils/route.js'
 import { useKeyboardViewportOffset } from '@/composables/useKeyboardViewportOffset.js'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { Copy, Message } from 'view-ui-plus'
 import Decimal from 'decimal.js'
+import { hasCardPermission, hasPermission } from '@/utils/permission'
 import { t } from '@/utils'
 
 const props = defineProps({
     card: { type: Object, default: () => ({}) },
-    loading: Boolean
+    shared: { type: Boolean, default: false },
+    loading: { type: Boolean, default: false }
 })
+const can = action => hasCardPermission(action, props.shared)
+const canWallet = action => props.shared && can('view') && hasPermission('shared_wallet.view') && hasPermission(`shared_wallet.${action}`)
 const emit = defineEmits(['update:card', 'reload'])
 
+const walletCollectRef = ref(null)
+const walletTransferRef = ref(null)
+const walletBusy = ref(false)
+const walletOpening = ref(false)
+const walletActionsDisabled = computed(() => props.loading || walletOpening.value || walletBusy.value || submitting.value || Boolean(pendingAction.value) || !props.card.id || !props.card.shared_wallet_id)
 const intoModalRef = ref(null)
 const outModalRef = ref(null)
 const exampleModalRef = ref(null)
@@ -227,7 +269,8 @@ const phoneText = computed(() => (props.card.holder_phone || '').replace(/(\d{4}
 const copy = (text) => Copy({ text })
 const isSameCard = (cardId) => Boolean(cardId) && String(cardId) === String(props.card.id)
 const actionDisabled = (type) => {
-    if (submitting.value || pendingAction.value) return true
+    const permission = { into: 'recharge', out: 'withdraw', frozen: Number(props.card.account_status) === 0 ? 'suspend' : 'enable', writeOff: 'destroy' }[type]
+    if (!can(permission) || submitting.value || pendingAction.value || walletOpening.value || walletBusy.value) return true
     const accountStatus = Number(props.card.account_status)
     if (!props.card.id || !Number.isFinite(accountStatus)) return true
     if (accountStatus < 0) return true
@@ -241,12 +284,37 @@ const updateCard = (patch, cardId = props.card.id) => {
     emit('update:card', { ...props.card, ...patch })
     return true
 }
-const openPupMessage = (card) => messageModalRef.value?.open?.([card])
+const openPupMessage = (card) => can('update') && messageModalRef.value?.open?.([card])
 const handleOpenInto = () => {
     if (!actionDisabled('into')) intoModalRef.value?.open?.(props.card)
 }
 const handleOpenOut = () => {
     if (!actionDisabled('out')) outModalRef.value?.open?.(props.card)
+}
+const handleOpenWallet = async (action) => {
+    if (!canWallet(action) || walletActionsDisabled.value) return
+    const cardId = props.card.id
+    const walletId = String(props.card.shared_wallet_id)
+    const isCurrent = () => !unmounted && isSameCard(cardId) && String(props.card.shared_wallet_id) === walletId && canWallet(action)
+    walletOpening.value = true
+    try {
+        const wallet = await getApi('/vcc/SharedWallet/detail', { shared_wallet_id: walletId })
+        if (!isCurrent()) return
+        const walletStatus = wallet?.status == null ? null : Number(wallet.status)
+        const errorKey = !wallet ? 'walletDetailMissing'
+            : String(wallet.id) !== walletId ? 'walletMismatch'
+            : walletStatus === 1 ? 'walletDisabledAction'
+            : walletStatus === 2 ? 'walletLockedAction'
+            : walletStatus !== 0 ? 'walletStatusInvalid' : null
+        if (errorKey) {
+            message(t(`card.index.sharedManagement.${errorKey}`, { name: wallet?.name == null || wallet.name === '' ? '-' : wallet.name, action: t(`card.index.sharedManagement.${action}`) }), 'error')
+            return
+        }
+        const modal = action === 'collect' ? walletCollectRef : walletTransferRef
+        await modal.value?.open({ ...wallet, id: walletId })
+    } catch (error) { showRequestError(error) } finally {
+        walletOpening.value = false
+    }
 }
 const waitForStatusPoll = (interval = STATUS_POLL_INTERVAL) => new Promise((resolve) => {
     statusPollingResolve = resolve
@@ -274,7 +342,7 @@ const waitForCardStatus = async (cardId, targetStatus, transitionToken) => {
         await waitForStatusPoll()
         if (transitionToken !== statusTransitionToken) return null
         try {
-            const result = await cardApi.vccInfo({ cardId })
+            const result = await (props.shared ? cardApi.sharedCardInfo : cardApi.vccInfo)({ cardId })
             if (transitionToken !== statusTransitionToken) return null
             const accountStatusMatched = Number(result?.account_status) === targetStatus
             const cardStatusMatched = result?.status == null || Number(result.status) === targetStatus
@@ -284,7 +352,9 @@ const waitForCardStatus = async (cardId, targetStatus, transitionToken) => {
             } else {
                 stableCount = 0
             }
-        } catch {
+        } catch (error) {
+            if (transitionToken !== statusTransitionToken) return null
+            showRequestError(error)
             stableCount = 0
         }
     }
@@ -306,7 +376,7 @@ const waitForBalanceChange = async (cardId, initialAvailable, transitionToken) =
         if (attempt > 0) await waitForStatusPoll(BALANCE_POLL_INTERVAL)
         if (transitionToken !== statusTransitionToken) return null
         try {
-            const result = await cardApi.vccBalance({ cardId })
+            const result = await (props.shared ? cardApi.sharedCardInfo : cardApi.vccBalance)({ cardId })
             if (transitionToken !== statusTransitionToken) return null
             const currentBalance = decimalBalance(result?.available)
             if (currentBalance.equals(initialBalance)) {
@@ -321,7 +391,9 @@ const waitForBalanceChange = async (cardId, initialAvailable, transitionToken) =
                 stableCount = 1
             }
             if (stableCount >= STATUS_STABLE_COUNT) return result
-        } catch {
+        } catch (error) {
+            if (transitionToken !== statusTransitionToken) return null
+            showRequestError(error)
             stableBalance = null
             stableCount = 0
         }
@@ -334,9 +406,7 @@ const runStatusTransition = async ({
     statusLabel,
     loadingText,
     targetStatus,
-    request,
-    successText,
-    errorText
+    request
 }) => {
     const transitionToken = ++statusTransitionToken
     pendingAction.value = { key, statusLabel }
@@ -360,13 +430,8 @@ const runStatusTransition = async ({
             return
         }
         if (!updateCard(nextCard, cardId)) return
-        message(successText)
         emit('reload', { detail: false })
-    } catch (error) {
-        if (transitionToken === statusTransitionToken && !unmounted) {
-            message(error?.msg || errorText, 'error')
-        }
-    } finally {
+    } catch (error) { showRequestError(error) } finally {
         closeRequestLoading()
         if (transitionToken === statusTransitionToken) {
             pendingAction.value = null
@@ -407,14 +472,14 @@ const handleFrozen = async () => {
     const freezing = accountStatus === 0
     const confirmed = await confirm(
         freezing
-            ? `<p>${t('card.index.detail.overview.freezeWarning')}</p>`
+            ? `<p>${t(props.shared ? 'card.index.detail.overview.sharedFreezeWarning' : 'card.index.detail.overview.freezeWarning')}</p>`
             : `<p>${t('card.index.detail.overview.unfreezeNotice')}</p>`,
         freezing
             ? { title: t('card.index.detail.overview.confirmFreeze'), okText: t('card.index.detail.overview.reconsider'), cancelText: t('card.index.detail.overview.continueFreeze'), resolveCancel: true }
             : { title: t('card.index.detail.overview.confirmUnfreeze'), okText: t('card.index.detail.overview.confirm'), cancelText: t('card.index.detail.overview.cancel') }
     )
     if (freezing ? confirmed : !confirmed) return
-    if (!isSameCard(id)) return
+    if (!can(freezing ? 'suspend' : 'enable') || !isSameCard(id)) return
 
     await runStatusTransition({
         cardId: id,
@@ -423,10 +488,8 @@ const handleFrozen = async () => {
         loadingText: freezing ? t('card.index.detail.overview.submittingFreeze') : t('card.index.detail.overview.submittingUnfreeze'),
         targetStatus: freezing ? 1 : 0,
         request: () => freezing
-            ? cardApi.vccSuspend({ cardId: id })
-            : cardApi.vccEnable({ cardId: id }),
-        successText: freezing ? t('card.index.detail.overview.freezeSuccess') : t('card.index.detail.overview.unfreezeSuccess'),
-        errorText: freezing ? t('card.index.detail.overview.freezeFailed') : t('card.index.detail.overview.unfreezeFailed')
+            ? (props.shared ? cardApi.sharedCardSuspend : cardApi.vccSuspend)({ cardId: id })
+            : (props.shared ? cardApi.sharedCardEnable : cardApi.vccEnable)({ cardId: id })
     })
 }
 const handleWriteOff = async () => {
@@ -437,33 +500,30 @@ const handleWriteOff = async () => {
         { title: t('card.index.detail.overview.confirmClose'), okText: t('card.index.detail.overview.reconsider'), cancelText: t('card.index.detail.overview.confirmClosing'), resolveCancel: true }
     )
     if (confirmed) return
-    if (!isSameCard(cardId)) return
+    if (!can('destroy') || !isSameCard(cardId)) return
     await runStatusTransition({
         cardId,
         key: 'writeOff',
         statusLabel: t('card.index.detail.overview.closeProcessing'),
         loadingText: t('card.index.detail.overview.submittingClose'),
         targetStatus: 2,
-        request: () => cardApi.vccDestroy({ cardId }),
-        successText: t('card.index.detail.overview.closeSuccess'),
-        errorText: t('card.index.detail.overview.closeFailed')
+        request: () => (props.shared ? cardApi.sharedCardDestroy : cardApi.vccDestroy)({ cardId })
     })
 }
 const handleEdit = () => {
-    if (!props.card.id) return
+    if (!can('update') || !props.card.id) return
     const cardId = props.card.id
     confirmInput(t('card.index.detail.overview.label'), props.card.label || '', { allowEmpty: true }).then(async ({ value, close }) => {
         try {
-            await cardApi.vccLabel({ cardId, label: value })
+            if (!can('update') || !isSameCard(cardId)) return
+            await (props.shared ? cardApi.sharedCardLabel : cardApi.vccLabel)({ cardId, label: value })
             if (!updateCard({ label: value }, cardId)) {
                 close()
                 return
             }
             message(t('card.index.detail.overview.editSuccess'))
             close()
-        } catch (error) {
-            message(error?.msg || t('card.index.detail.overview.editFailed'), 'error')
-        }
+        } catch (error) { showRequestError(error) }
     })
 }
 const clearPrivateInfo = () => {
@@ -492,7 +552,7 @@ const clearClipboard = async () => {
     })
 }
 const handleTogglePrivate = async () => {
-    if (!props.card.id || privateLoading.value) return
+    if (!can('private') || !props.card.id || privateLoading.value) return
     if (isPrivateVisible.value) {
         clearPrivateInfo()
         const cleared = await clearClipboard()
@@ -503,21 +563,21 @@ const handleTogglePrivate = async () => {
     const requestId = ++privateRequestId
     privateLoading.value = true
     try {
-        const result = await cardApi.vccPrivate({ cardId })
-        if (requestId !== privateRequestId || !isSameCard(cardId)) return
+        const result = await (props.shared ? cardApi.sharedCardPrivate : cardApi.vccPrivate)({ cardId })
+        if (!can('private') || requestId !== privateRequestId || !isSameCard(cardId)) return
         privateCardInfo.value = result || {}
         isPrivateVisible.value = true
     } catch (error) {
         if (requestId === privateRequestId && isSameCard(cardId)) {
             clearPrivateInfo()
-            message(error?.msg || t('card.index.detail.overview.privateInfoFailed'), 'error')
+            showRequestError(error)
         }
     } finally {
         if (requestId === privateRequestId) privateLoading.value = false
     }
 }
 const handleCopyCard = () => {
-    if (!isPrivateVisible.value) return
+    if (!can('private') || !isPrivateVisible.value) return
     const { card_no, expire_date, cvv } = privateCardInfo.value
     copy([
         `${t('card.index.detail.overview.cardNumber')}: ${card_no || '--'}`,
@@ -527,20 +587,16 @@ const handleCopyCard = () => {
     ].join('\n'))
 }
 const handleRefreshBalance = async () => {
-    if (!props.card.id || balanceLoading.value || balanceSyncing.value || pendingAction.value) return
+    if (!can('view') || !props.card.id || balanceLoading.value || balanceSyncing.value || pendingAction.value) return
     const cardId = props.card.id
     const requestId = ++balanceRequestId
     balanceLoading.value = true
     try {
-        const result = await cardApi.vccBalance({ cardId })
+        const result = await (props.shared ? cardApi.sharedCardInfo : cardApi.vccBalance)({ cardId })
         if (requestId !== balanceRequestId || !isSameCard(cardId)) return
-        updateCard({ available: result.available }, cardId)
+        updateCard(props.shared ? { sharedWallet: result.sharedWallet } : { available: result.available }, cardId)
         await cardTotalRef.value?.refresh?.()
-    } catch (error) {
-        if (requestId === balanceRequestId && isSameCard(cardId)) {
-            message(error?.msg || t('card.index.detail.overview.refreshBalanceFailed'), 'error')
-        }
-    } finally {
+    } catch (error) { showRequestError(error) } finally {
         if (requestId === balanceRequestId) balanceLoading.value = false
     }
 }
@@ -555,6 +611,7 @@ onBeforeUnmount(() => {
     clearPrivateInfo()
 })
 watch(() => props.card, clearPrivateInfo)
+watch(() => can('private'), allowed => { if (!allowed) clearPrivateInfo() }, { flush: 'sync' })
 watch(() => props.card.id, (cardId, previousCardId) => {
     if (previousCardId && cardId !== previousCardId) {
         balanceRequestId += 1
@@ -565,9 +622,57 @@ watch(() => props.card.id, (cardId, previousCardId) => {
 </script>
 
 <style scoped lang="less">
+.edit-tooltip-trigger {
+    display: inline-flex;
+    :deep(button:disabled) { pointer-events: none; }
+}
+
 .card-layout {
-  position: relative;
-  display: flex;
+    position: relative;
+    display: flex;
+    padding: var(--ui-space-16);
+    background: var(--ui-color-surface);
+
+    &.is-shared {
+        .card-type {
+            color: #9254de;
+            background: color-mix(in srgb, #9254de 12%, var(--ui-color-surface));
+        }
+        .card-type-icon { background: var(--ui-gradient-purple-blue); }
+    }
+}
+.card-type {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    box-sizing: border-box;
+    min-height: 26px;
+    overflow: hidden;
+    border-end-start-radius: var(--ui-radius-md);
+    color: color-mix(in srgb, var(--ui-color-orange-500) 55%, var(--ui-color-text));
+    background: color-mix(in srgb, var(--ui-color-orange-500) 14%, var(--ui-color-surface));
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+    text-align: center;
+    white-space: nowrap;
+
+    &-icon {
+        display: flex;
+        flex-shrink: 0;
+        width: 26px;
+        align-self: stretch;
+        align-items: center;
+        justify-content: center;
+        color: var(--ui-color-text-inverse);
+        background: var(--ui-gradient-warning-wide);
+    }
+    &-name {
+        flex-shrink: 0;
+        padding: 3px 10px;
+    }
 }
 .card-left {
     display: flex;
@@ -592,36 +697,14 @@ watch(() => props.card.id, (cardId, previousCardId) => {
     z-index: 2;
     display: block;
 
-    .status-pill {
-        display: inline-flex;
-        height: var(--ui-size-26);
-        min-width: 58px;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        padding: var(--ui-padding-0-10);
-        border: 1px solid rgba(255, 255, 255, .28);
-        border-radius: var(--ui-radius-full);
-        color: var(--ui-color-text-inverse);
-        font-size: 12px;
-        font-weight: 500;
-        line-height: 24px;
-        letter-spacing: .02em;
-        pointer-events: none;
-        box-shadow: var(--ui-shadow-card-tooltip);
-
-        &--success { background: rgba(94, 176, 40, .92); }
-        &--warning { background: rgba(255, 121, 25, .92); }
-        &--error { background: rgba(237, 64, 20, .92); }
-        &--processing .status-pill-dot { animation: status-pill-pulse 1.2s ease-in-out infinite; }
+    :deep(.is-processing::before) {
+        animation: status-pill-pulse 1.2s ease-in-out infinite;
     }
-    .status-pill-dot {
-        width: 5px;
-        height: 5px;
-        flex: none;
-        border-radius: var(--ui-radius-circle);
-        background: currentColor;
-        box-shadow: var(--ui-shadow-card-focus-on-dark);
+
+    @media (prefers-reduced-motion: reduce) {
+        :deep(.is-processing::before) {
+            animation: none;
+        }
     }
 }
 @keyframes status-pill-pulse {
@@ -646,6 +729,16 @@ watch(() => props.card.id, (cardId, previousCardId) => {
         display: flex;
         align-items: center;
         gap: 8px;
+    }
+    &-actions { flex: 1; flex-wrap: wrap; min-width: 0; }
+    &-meta {
+        position: relative;
+        top: calc(-1 * var(--ui-space-16));
+        inset-inline-end: calc(-1 * var(--ui-space-16));
+        align-self: flex-start;
+        flex-shrink: 0;
+        gap: 24px;
+        margin-inline-start: auto;
     }
     .tool-btn--secondary {
         min-height: 34px;
@@ -687,11 +780,31 @@ watch(() => props.card.id, (cardId, previousCardId) => {
     pointer-events: auto;
 }
 .card-action {
+    .action-tooltip {
+        width: 94px;
+        min-width: 0;
+
+        :deep(.ivu-tooltip-rel) { display: block; height: 100%; }
+        .btn { width: 100%; }
+    }
+
     display: flex;
     flex: 1;
     align-items: stretch;
     justify-content: space-between;
     margin-top: 10px;
+
+    &.is-shared {
+        gap: 10px;
+
+        .action-tooltip { flex: 1; width: auto; }
+
+        .btn {
+            flex: 1;
+            min-width: 0;
+            width: auto;
+        }
+    }
 
     .btn {
         display: flex;
@@ -710,10 +823,10 @@ watch(() => props.card.id, (cardId, previousCardId) => {
         transition: opacity .3s;
 
         &:hover { opacity: .8; }
-        &:first-child { color: var(--ui-color-text-inverse); border-color: var(--primary-color); background: var(--primary-color); }
-        &:nth-child(2) { border-color: #fff1e6; }
-        &:nth-child(3) { border-color: #fff2db; }
-        &:nth-child(4) { border-color: #fdefef; }
+        &.btn-into { color: var(--ui-color-text-inverse); border-color: var(--primary-color); background: var(--primary-color); }
+        &.btn-out { border-color: #fff1e6; }
+        &.btn-freeze { border-color: #fff2db; }
+        &.btn-write-off { border-color: #fdefef; }
         &.disabled { opacity: .2; cursor: not-allowed; }
         .text {
             width: 100%;
@@ -755,8 +868,9 @@ watch(() => props.card.id, (cardId, previousCardId) => {
     .info-value--scene, .info-value--address { align-items: flex-start; }
     .info-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .info-value--address .info-text { overflow: visible; text-overflow: clip; white-space: normal; overflow-wrap: anywhere; }
+    .info-action:disabled { color: var(--ui-color-text-muted); cursor: not-allowed; }
     .info-action { flex-shrink: 0; padding: 0; border: 0; color: var(--primary-color); font: inherit; line-height: 20px; background: transparent; cursor: pointer; }
-    .info-action:hover, .info-action:focus-visible { color: var(--ui-color-primary); text-decoration: underline; outline: none; }
+    .info-action:not(:disabled):hover, .info-action:not(:disabled):focus-visible { color: var(--ui-color-primary); text-decoration: underline; outline: none; }
 }
 .physical-btn {
     border: 0;
@@ -768,7 +882,19 @@ watch(() => props.card.id, (cardId, previousCardId) => {
 @media (max-width: 768px) {
     .card-layout {
         flex-direction: column;
-        padding: 0 0 calc(92px + env(safe-area-inset-bottom));
+        padding: 40px 8px calc(100px + env(safe-area-inset-bottom));
+    }
+    .card-type {
+        position: absolute;
+        top: 0;
+        inset-inline-end: 0;
+        max-width: 100%;
+        margin: 0;
+    }
+    .card-tools-meta {
+        position: static;
+        top: auto;
+        inset-inline-end: auto;
     }
     .card-left { flex: none; width: 100%; margin-right: 0; }
     .card-preview { width: 100%; height: auto; aspect-ratio: 397 / 249; }
@@ -819,6 +945,8 @@ watch(() => props.card.id, (cardId, previousCardId) => {
             pointer-events: none;
         }
 
+        .action-tooltip { flex: 1; width: auto; }
+
         .btn {
             position: relative;
             z-index: 1;
@@ -834,10 +962,10 @@ watch(() => props.card.id, (cardId, previousCardId) => {
             background: transparent;
             transition: color .18s ease, background-color .18s ease, opacity .18s ease, transform .18s ease;
 
-            &:first-child { color: var(--primary-color); background: transparent; }
-            &:nth-child(2) { color: var(--ui-color-warning); background: transparent; }
-            &:nth-child(3) { color: #e99a00; background: transparent; }
-            &:nth-child(4) { color: var(--ui-color-error-strong); background: transparent; }
+            &.btn-into { color: var(--primary-color); background: transparent; }
+            &.btn-out { color: var(--ui-color-warning); background: transparent; }
+            &.btn-freeze { color: #e99a00; background: transparent; }
+            &.btn-write-off { color: var(--ui-color-error-strong); background: transparent; }
             &:active:not(.disabled) {
                 transform: scale(.96);
                 background: #f7f8fa;
@@ -868,8 +996,17 @@ watch(() => props.card.id, (cardId, previousCardId) => {
         background: transparent;
 
         &-actions,
-        &-meta,
         .physical-actions { display: contents; }
+        &-meta {
+            grid-column: 1 / -1;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            min-width: 0;
+            margin-inline-start: 0;
+
+            .tool-btn { width: auto; }
+            &:not(:has(.tool-btn)) { display: contents; }
+        }
         .tool-btn {
             display: inline-flex;
             align-items: center;

@@ -16,4 +16,6 @@ export default {
   riskLevelElevated: 'plus haut',
   riskLevelCritical: 'extrêmement élevé',
   currentRiskLevel: 'Niveau de risque actuel:{level}',
+
+  noPermission: 'Vous n’avez pas encore l’autorisation d’effectuer cette action. Veuillez contacter votre administrateur pour demander l’accès.',
 }

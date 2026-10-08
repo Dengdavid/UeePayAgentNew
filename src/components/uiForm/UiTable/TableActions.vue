@@ -1,18 +1,34 @@
 <template>
   <div class="action-list">
     <template v-for="(action, actionIndex) in rowActions" :key="action.key || actionIndex">
-      <Button
-        v-if="actionsMax && (actionIndex < actionsMax - 1 || rowActions.length === actionsMax)"
-        :loading="row.loading && loadingLabel === getActionValue(action, 'label')"
-        :disabled="getActionValue(action, 'disabled')"
-        type="text"
-        class="table-action-button"
-        :class="getActionValue(action, 'class')"
-        :style="getActionValue(action, 'style')"
-        @click="handleClick(action)"
-      >
-        {{ getActionValue(action, 'label') }}
-      </Button>
+      <template v-if="actionsMax && (actionIndex < actionsMax - 1 || rowActions.length === actionsMax)">
+        <Tooltip v-if="getActionValue(action, 'tooltip')" :content="getActionValue(action, 'tooltip')" placement="top" transfer>
+          <span class="action-tooltip-trigger" tabindex="0" :aria-label="getActionValue(action, 'tooltip')">
+            <Button
+              :loading="row.loading && loadingLabel === getActionValue(action, 'label')"
+              :disabled="getActionValue(action, 'disabled')"
+              type="text"
+              class="table-action-button"
+              :class="getActionValue(action, 'class')"
+              :style="getActionValue(action, 'style')"
+              @click="handleClick(action)"
+            >
+              {{ getActionValue(action, 'label') }}
+            </Button>
+          </span>
+        </Tooltip>
+        <Button v-else
+          :loading="row.loading && loadingLabel === getActionValue(action, 'label')"
+          :disabled="getActionValue(action, 'disabled')"
+          type="text"
+          class="table-action-button"
+          :class="getActionValue(action, 'class')"
+          :style="getActionValue(action, 'style')"
+          @click="handleClick(action)"
+        >
+          {{ getActionValue(action, 'label') }}
+        </Button>
+      </template>
     </template>
     <Dropdown
       v-if="rowActions.length > actionsMax"
@@ -35,7 +51,10 @@
               :style="getActionValue(action, 'style')"
               @click.stop="handleClick(action)"
             >
-              {{ getActionValue(action, 'label') }}
+              <Tooltip v-if="getActionValue(action, 'tooltip')" :content="getActionValue(action, 'tooltip')" placement="top" transfer style="display: block">
+                <span tabindex="0" :aria-label="getActionValue(action, 'tooltip')">{{ getActionValue(action, 'label') }}</span>
+              </Tooltip>
+              <template v-else>{{ getActionValue(action, 'label') }}</template>
             </DropdownItem>
           </template>
         </DropdownMenu>
@@ -46,6 +65,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { hasPermission } from '@/utils/permission.js'
 
 const props = defineProps({
   row: {
@@ -74,6 +94,7 @@ const getActionValue = (action, key) => {
 
 const rowActions = computed(() => {
   return props.actions.filter(action => {
+    if (!hasPermission(action.permission)) return false
     if (typeof action.show === 'function') {
       return action.show(props.row)
     }
@@ -82,6 +103,7 @@ const rowActions = computed(() => {
 })
 
 const handleClick = action => {
+  if (!hasPermission(action.permission) || getActionValue(action, 'disabled')) return
   if (typeof action.click === 'function') {
     action.loading = true
     loadingLabel.value = getActionValue(action, 'label')
@@ -91,6 +113,13 @@ const handleClick = action => {
 </script>
 
 <style lang="less" scoped>
+.action-tooltip-trigger {
+  display: inline-flex;
+  cursor: not-allowed;
+
+  :deep(button:disabled) { pointer-events: none; }
+}
+
 .action-list{
   margin:0 -6px;
   display: flex;

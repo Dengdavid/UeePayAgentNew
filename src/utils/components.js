@@ -53,6 +53,9 @@ import UiTable from "@/components/uiForm/UiTable/index.vue";
 import UiDot from "@/components/uiForm/UiDot/index.vue";
 import UiAffix from "@/components/uiForm/UiAffix/index.vue";
 import UILoading from "@/components/uiForm/UILoading/index.vue";
+import FormRemoteSelect from "@/components/form/FormRemoteSelect/index.vue";
+import UiMoney from "@/components/uiForm/UiMoney/index.vue";
+import UITag from "@/components/uiForm/UITag/index.vue";
 export {
   FormAddList,
   FormAffix,
@@ -109,4 +112,7 @@ export {
   UiDot,
   UiAffix,
   UILoading,
+  FormRemoteSelect,
+  UiMoney,
+  UITag,
 };

@@ -259,7 +259,10 @@ const handleErrorResponse = (request, error, requestConfig) => {
     error.code === 'ERR_NETWORK_CHANGED'
   ) {
     if (config?.requestPolicy?.errorHandling === 'local') return Promise.reject(error)
-    handleNetworkError(error)
+    handleNetworkError(error, {
+      redirect: config?.__requestMeta?.redirectOnNetworkError !== false,
+    })
+    error.errorHandled = true
   }
 
   return Promise.reject(error.response?.data || error)

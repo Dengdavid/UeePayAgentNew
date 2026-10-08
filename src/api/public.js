@@ -10,8 +10,8 @@ export default {
     return request({ url: '/user/auth/getChatLink', method: 'get' })
   },
   // 获取配置信息
-  getConfig() {
-    return request({ url: '/user/auth/getConfig', method: 'get' })
+  getConfig(config = {}) {
+    return request({ ...config, url: '/user/auth/getConfig', method: 'get' })
   },
   // 获取国家与城市数据
   getAreaDatas() {

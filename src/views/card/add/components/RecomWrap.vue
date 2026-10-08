@@ -55,14 +55,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, reactive, watch } from 'vue'
-import { getApi, message, t } from '@/utils'
+import { showRequestError } from '@/utils/message.js'
+import { ref, onMounted, onBeforeUnmount, computed, reactive } from 'vue'
+import { getApi, t } from '@/utils'
 import CardTag from './card-tag-small.vue'
 import { Spin, Icon, Button } from 'view-ui-plus'
 
 const loading = ref(false)
 
 const props = defineProps({
+  shared: {
+    type: Boolean,
+    default: false
+  },
   bins: {
     type: Array,
     default: () => []
@@ -80,6 +85,8 @@ const options =reactive({
 const sceneCategoryId=ref("")
 const sceneName=ref("")
 let bindRequestId=0
+let sceneLoadPromise
+let alive = true
 const c_scene=(id)=>{
   if(options.sceneCategory?.length>0){
     return options.sceneCategory.find(item=>item.id==id)
@@ -99,7 +106,7 @@ const c_recomBins=(recomBins=[],bins=[])=>{
   return newArr
 }
 const recommendedBins=computed(()=>c_recomBins(options.bind,props.bins))
-const emit=defineEmits(["on-bin",'showBinBtn'])
+const emit=defineEmits(["on-bin"])
 const onBin=(item,index)=>{
   emit("on-bin",item.bin,index)
 }
@@ -115,12 +122,14 @@ const clearScene=()=>{
 const getSceneCategoryList = async () => {
   loading.value = true
   try {
-    const res = await getApi("/vcc/getConsumptionScenes")
+    const res = await getApi(props.shared ? '/vcc/SharedCard/getConsumptionScenes' : '/vcc/getConsumptionScenes')
+    if (!alive) return
     options.sceneCategory = res?.tree || []
     options.bind=[]
   } catch (error) {
+    if (!alive) return
+    showRequestError(error)
     options.sceneCategory=[]
-    message(error?.msg || t('card.index.opening.recommendation.loadScenesFailed'), 'error')
   } finally {
     loading.value = false
   }
@@ -148,15 +157,15 @@ const getBindList = async (name) => {
   const requestId=++bindRequestId
   loading.value = true
   try {
-    const res = await getApi("/vcc/scene", { scene: name })
-    if(requestId!==bindRequestId || sceneName.value!==name){
+    const res = await getApi(props.shared ? '/vcc/SharedCard/scene' : '/vcc/scene', { scene: name })
+    if(!alive || requestId!==bindRequestId || sceneName.value!==name){
       return
     }
     options.bind = Array.isArray(res) ? res : Object.values(res || {})
   } catch (error) {
-    if(requestId===bindRequestId){
+    if(alive && requestId===bindRequestId){
+      showRequestError(error)
       options.bind=[]
-      message(error?.msg || t('card.index.opening.recommendation.loadBinsFailed'), 'error')
     }
   } finally {
     if(requestId===bindRequestId){
@@ -164,14 +173,24 @@ const getBindList = async (name) => {
     }
   }
 }
-watch(
-  [recommendedBins, sceneName],
-  ([bins, scene])=>emit('showBinBtn', bins.map(bin=>bin.id), Boolean(scene)),
-  { immediate: true }
-)
-onMounted(()=>{
-  getSceneCategoryList()
+// 回填场景标识后重新加载匹配结果，避免使用离开前的卡段数据。
+const restoreSelection = async (selection) => {
+  if (!selection?.categoryId) return
+  await sceneLoadPromise
+  if (!alive) return
+  const category = options.sceneCategory.find(item => item.id === selection.categoryId)
+  if (!category) return
+  getSceneList(category)
+  if (options.scene.some(item => item.name === selection.name)) await getBindList(selection.name)
+}
+defineExpose({
+  getSelection: () => ({ categoryId: sceneCategoryId.value, name: sceneName.value }),
+  restoreSelection,
 })
+onMounted(()=>{
+  sceneLoadPromise = getSceneCategoryList()
+})
+onBeforeUnmount(() => { alive = false; bindRequestId += 1 })
 </script>
 
 <style scoped lang="less">

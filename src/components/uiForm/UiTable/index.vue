@@ -1,6 +1,6 @@
 <template>
   <div class="ui-table">
-    <Table :columns="columns" :loading="loading" :height="isSelect ? 600 : ''" :data="tbody" :row-key="rowKey">
+    <Table ref="tableRef" :columns="columns" :loading="loading" :height="isSelect ? 600 : ''" :data="tbody" :row-key="rowKey" @on-selection-change="onSelectionChange">
       <template v-for="item in slotKeys" #[item.prop||item.key]="{ row, index }" :key="item.prop || item.key">
         <slot
           v-if="$slots[item.prop || item.key]"
@@ -10,7 +10,7 @@
         />
         <ColumnsItemType v-else :data="item" :row="row" />
       </template>
-      <template v-if="actions.length > 0" #action="{ row, index }">
+      <template v-if="showActionsColumn" #action="{ row, index }">
         <Button v-if="isSelect" type="text" @click="handleSelect(row, index)">{{ $t('button.select') }}</Button>
         <TableActions
           v-else
@@ -27,7 +27,8 @@
 <script setup>
 import ColumnsItemType from './ColumnsItemType.vue'
 import TableActions from './TableActions.vue'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { hasPermission } from '@/utils/permission.js'
 import { t } from '@/utils'
 
 const props = defineProps({
@@ -40,6 +41,10 @@ const props = defineProps({
     default: () => [],
   },
   actions: {
+    type: Array,
+    default: () => [],
+  },
+  batchBtns: {
     type: Array,
     default: () => [],
   },
@@ -105,12 +110,16 @@ const getActionValue = (action, key, row) => {
 }
 const getVisibleActions = row => {
   return props.actions.filter(action => {
+    if (!hasPermission(action.permission)) return false
     if (typeof action.show === 'function') {
       return row ? action.show(row) : true
     }
     return action.show !== false
   })
 }
+const showActionsColumn = computed(() => props.actions.length > 0 && (
+  props.isSelect || props.tbody.some(row => getVisibleActions(row).length > 0)
+))
 const getDisplayedActions = (row) => {
   if (props.isSelect) {
     return {
@@ -225,7 +234,7 @@ const columns = computed(() => {
     return column
   })
 
-  if (props.actions.length > 0) {
+  if (showActionsColumn.value) {
     tableColumns.push({
       slot: 'action',
       title: t('button.operation'),
@@ -234,13 +243,31 @@ const columns = computed(() => {
       fixed: 'right',
     })
   }
+  if (!props.isSelect && props.batchBtns.some(button => hasPermission(button.permission))) {
+    tableColumns.unshift({
+      type: 'selection',
+      width: 60,
+      align: 'center',
+      fixed: 'left',
+    })
+  }
   return tableColumns
 })
 
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'selectionChange'])
 const handleSelect = (row, index) => {
   emit('select', row, index)
 }
+const tableRef = ref(null)
+const onSelectionChange = rows => emit('selectionChange', rows)
+const clearSelection = () => tableRef.value?.selectAll(false)
+const toggleSelectAll = () => tableRef.value?.selectAll(true)
+const toggleReversalSelection = () => {
+  props.tbody.forEach((row, index) => {
+    if (!row._disabled) tableRef.value?.toggleSelect(index)
+  })
+}
+defineExpose({ clearSelection, toggleSelectAll, toggleReversalSelection })
 </script>
 
 <style lang="less" scoped>

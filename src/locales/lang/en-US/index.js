@@ -18,6 +18,7 @@ import login from './login.js'
 import forgotPassword from './forgot-password.js'
 import pageLogin from './page-login.js'
 import ucenterAccount from './ucenter-account.js'
+import auditLog from './audit-log.js'
 import agent from './agent.js'
 import exception from './exception.js'
 import finance from './finance.js'
@@ -52,6 +53,7 @@ export default {
   forgotPassword,
   pageLogin,
   ucenterAccount,
+  auditLog,
   agent,
   exception,
   finance,

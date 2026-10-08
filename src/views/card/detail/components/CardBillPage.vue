@@ -1,28 +1,21 @@
 <template>
-  <UiPage ref="pageRef" :data="pageData" row-key="id" isNotTitle :title="t('card.detail.billsTitle')" :padding="isPhone ? 16 : 0">
-      <template #number="{ row }">
-          <CardNumber
-              :value="maskCardNumber(row.card_no)"
-              :bin="row.bin || row.card_bin"
-              :type="row.network || ''"
-              :encrypt="false"
-          />
-      </template>
-  </UiPage>
+  <UiPage v-if="hasCardPermission('transaction', props.shared)" ref="pageRef" :data="pageData" row-key="id" isNotTitle :title="t('card.detail.billsTitle')" :padding="isPhone ? 16 : 0" />
 </template>
 
 <script setup>
-import CardNumber from '@/components/ui/card-number.vue'
 import { cardApi } from '@/api'
 import { formatDate } from '@/libs/tools.js'
-import { copyCard, maskCardNumber, statusKeyMap, statusOptions, transactionStatusValues, transactionTypeValues } from '@/utils/card.js'
+import { copyCard, statusKeyMap, statusOptions, transactionStatusValues, transactionTypeValues } from '@/utils/card.js'
 import { postApi } from '@/utils/api.js'
-import { message } from '@/utils/message.js'
+import { message, showRequestError } from '@/utils/message.js'
+import { hasCardPermission } from '@/utils/permission'
 import { t } from '@/utils'
 import { computed, ref, watch } from 'vue'
 import { subMonths } from 'date-fns'
 import { isPhone } from '@/utils/device.js'
 const props = defineProps({
+    shared: { type: Boolean, default: false },
+    sharedWalletId: [String, Number],
     cardId: {
         type: [String, Number],
         required: true
@@ -34,6 +27,7 @@ const endDate = new Date()
 const startDate = subMonths(endDate, 1)
 const searchForm = ref({
     cardId: props.cardId,
+    ...(props.shared ? { shared_wallet_id: props.sharedWalletId } : {}),
     type: '',
     status: '',
     times: [startDate, endDate],
@@ -58,10 +52,10 @@ const getStatusOptions = () => Object.fromEntries(
 )
 
 const handleExport = async () => {
-    if (exportLoading.value) return
+    if (!hasCardPermission('export', props.shared) || !hasCardPermission('transaction', props.shared) || exportLoading.value) return
     exportLoading.value = true
     try {
-        await postApi('/vcc/transactionExport', {
+        await postApi(props.shared ? '/vcc/SharedCard/transactionExport' : '/vcc/transactionExport', {
             cardId: props.cardId,
             startTime: searchForm.value.startTime,
             endTime: searchForm.value.endTime,
@@ -69,33 +63,29 @@ const handleExport = async () => {
             status: searchForm.value.status
         })
         message(t('card.index.bills.exportCreated'))
-    } catch (error) {
-        message(error?.msg || t('card.index.bills.exportFailed'), 'error')
-    } finally {
+    } catch (error) { showRequestError(error) } finally {
         exportLoading.value = false
     }
 }
 const handleSyncCard = async () => {
-    if (!props.cardId || syncLoading.value) return
+    if (!hasCardPermission('sync', props.shared) || !props.cardId || syncLoading.value) return
     syncLoading.value = true
     try {
-        await cardApi.vccCardSync({ cardId: props.cardId })
+        await (props.shared ? cardApi.sharedCardSync : cardApi.vccCardSync)({ cardId: props.cardId })
         message(t('card.index.bills.syncSubmitted'))
         reset()
         emit('reload')
-    } catch (error) {
-        message(error?.msg || t('card.index.bills.syncFailed'), 'error')
-    } finally {
+    } catch (error) { showRequestError(error) } finally {
         syncLoading.value = false
     }
 }
 
 const pageData = computed(() => ({
-    apiUrl: '/vcc/transaction',
+    apiUrl: props.shared ? '/vcc/SharedCard/transaction' : '/vcc/transaction',
     statusKey: 'type',
     status: [
         { label: t('card.index.common.all'), value: '' },
-        ...transactionTypeValues.map((value) => ({
+        ...transactionTypeValues.filter((value) => !props.shared || !['TransferIn', 'TransferOut'].includes(value)).map((value) => ({
             value,
             label: getTransactionTypeLabel(value)
         }))
@@ -115,8 +105,8 @@ const pageData = computed(() => ({
         }
     ],
     btns: [
-        { label: t('card.index.bills.export'), icon: 'md-download', loading: exportLoading.value, click: handleExport },
-        { label: t('card.index.bills.sync'), icon: 'md-cloud-download', loading: syncLoading.value, click: handleSyncCard }
+        { label: t('card.index.bills.export'), icon: 'md-download', loading: exportLoading.value, disabled: !hasCardPermission('export', props.shared) || !hasCardPermission('transaction', props.shared), tooltip: !hasCardPermission('export', props.shared) || !hasCardPermission('transaction', props.shared) ? t('counts.noPermission') : '', click: handleExport },
+        { label: t('card.index.bills.sync'), icon: 'md-cloud-download', loading: syncLoading.value, disabled: !hasCardPermission('sync', props.shared), tooltip: !hasCardPermission('sync', props.shared) ? t('counts.noPermission') : '', click: handleSyncCard }
     ],
     labelWidth: 76,
     thead: [
@@ -124,13 +114,6 @@ const pageData = computed(() => ({
           label: t('card.index.bills.transactionTime'),
           prop: 'transaction_time',
           width: 180,
-        },
-        {
-          label: t('card.index.common.cardNumber'),
-          prop: 'number',
-          width: 210,
-          type: 'slot',
-          wapType: 'title'
         },
         {
           label: t('card.index.bills.type'),
@@ -143,10 +126,11 @@ const pageData = computed(() => ({
         {
           label: t('card.index.common.amount'),
           prop: 'amount',
+          unit: '$',
           width: 150,
-          value: (row) => `${row.amount ?? '-'} ${row.currency ?? ''}`.trim()
+          value: (row) => row.amount ?? '-'
         },
-        { label: t('card.index.common.fee'), prop: 'fee', width: 120 },
+        { label: t('card.index.common.fee'), prop: 'fee', unit: '$', width: 120 },
         {
           label: t('card.index.common.status'),
           prop: 'status',
@@ -159,7 +143,7 @@ const pageData = computed(() => ({
         { label: t('card.index.common.detail'), prop: 'detail', minWidth: 180 }
     ],
     actions: [
-        { label: t('card.index.bills.copy'), icon: 'ios-copy-outline', click: (row) => copyCard(row) }
+        { label: t('card.index.bills.copy'), customIcon: 'iconfont icon-fuzhi', click: (row) => copyCard(row) }
     ]
 }))
 
@@ -168,8 +152,9 @@ const search = () => pageRef.value?.search?.()
 
 defineExpose({ reset, search })
 
-watch(() => props.cardId, (cardId) => {
+watch([() => props.cardId, () => props.sharedWalletId], ([cardId, sharedWalletId]) => {
     searchForm.value.cardId = cardId
+    if (props.shared) searchForm.value.shared_wallet_id = sharedWalletId
     pageRef.value?.reset?.()
 })
 </script>

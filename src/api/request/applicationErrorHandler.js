@@ -39,7 +39,7 @@ export function handleLogout(message) {
   return true
 }
 
-export function handleNetworkError(error) {
+export function handleNetworkError(error, { redirect = true } = {}) {
   const url = error.config?.url || ''
   const isPollingApi = url.includes('/user/unReadMessageCount')
 
@@ -47,6 +47,6 @@ export function handleNetworkError(error) {
     Message.error('轮询接口网络错误')
   } else {
     Message.error('网络连接失败，请检查网络设置')
-    router.push({ name: 'error_404' })
+    if (redirect) router.push({ name: 'error_404' })
   }
 }

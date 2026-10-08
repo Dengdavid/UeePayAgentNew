@@ -24,7 +24,8 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { cardApi } from '@/api'
-import { message } from '@/utils/message.js'
+import { message, showRequestError } from '@/utils/message.js'
+import { hasCardPermission } from '@/utils/permission'
 import { t } from '@/utils'
 
 const emit = defineEmits(['success'])
@@ -69,14 +70,13 @@ const pup = reactive({
     {
       label: t('card.index.detail.pin.confirm'),
       click: async (currentPup) => {
+        if (!hasCardPermission('update', false)) { currentPup.loading = false; return }
         try {
           await cardApi.updatePin({ cardId: cardId.value, pin: currentPup.form.pin })
           message(t('card.index.detail.pin.success'))
           currentPup.status = false
           emit('success')
-        } catch (error) {
-          message(error?.msg || t('card.index.detail.pin.failed'), 'error')
-        } finally {
+        } catch (error) { showRequestError(error) } finally {
           currentPup.loading = false
         }
       },
@@ -85,7 +85,7 @@ const pup = reactive({
 })
 
 const open = (card) => {
-  if (!card?.id) return
+  if (!hasCardPermission('update', false) || !card?.id) return
   cardId.value = card.id
   pup.form = defaultForm()
   pup.status = true

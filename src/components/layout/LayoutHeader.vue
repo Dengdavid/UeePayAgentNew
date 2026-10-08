@@ -183,6 +183,7 @@ import { storeToRefs } from 'pinia'
 import { copyText } from '@/utils/dataInfo.js'
 import { confirm, message } from '@/utils/message.js'
 import { clearBrowserCache } from '@/utils/preferences.js'
+import { hasMenuPermission } from '@/utils/permission.js'
 import { toRoute, useRoute } from '@/utils/route.js'
 import { t } from '@/utils/index.js'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
@@ -229,6 +230,7 @@ const accountMenuTitle = (item) => t(
   item.meta.menuTitleKey || item.meta.titleKey,
 ) || item.meta.title
 const showAccountMenu = (item) => {
+  if (!hasMenuPermission(item)) return false
   if (!item?.meta?.need_auth) return true
   return Boolean(user.value?.[item.meta.need_auth] || menuPermissions.value?.[item.meta.need_auth])
 }

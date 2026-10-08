@@ -33,17 +33,18 @@ export const useAppStore = defineStore('appStore', {
     }
   },
   actions: {
-    async init() {
+    async init(config = {}) {
       // 获取代理商公告
       // this.getNotice()
       // 获取配置信息
-      await this.getConfig()
+      await this.getConfig(config)
     },
     // 获取配置信息
-    async getConfig() {
+    async getConfig(config = {}) {
       await publicApi
-        .getConfig()
+        .getConfig(config)
         .then((res) => {
+          if (config.signal?.aborted) return
           this.configUnavailable = res === ''
           this.configDatas = res || {}
           if (!res) {
@@ -52,6 +53,7 @@ export const useAppStore = defineStore('appStore', {
           this.customerUrl=res.customer_link
         })
         .catch((err) => {
+          if (config.signal?.aborted) return
           if (err?.data === '' && ![-100, 410, 429, 451].includes(err?.code)) {
             this.configUnavailable = true
             this.configDatas = {}

@@ -16,4 +16,6 @@ export default {
   riskLevelElevated: 'daha yüksek',
   riskLevelCritical: 'son derece yüksek',
   currentRiskLevel: 'Mevcut risk seviyesi:{level}',
+
+  noPermission: 'Henüz bu işlemi yapma yetkiniz yok. Yetki talep etmek için lütfen yöneticinizle iletişime geçin.',
 }

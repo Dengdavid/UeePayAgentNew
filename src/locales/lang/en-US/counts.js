@@ -16,4 +16,6 @@ export default {
   riskLevelElevated: 'Elevated',
   riskLevelCritical: 'Critical',
   currentRiskLevel: 'Current risk level: {level}',
+
+  noPermission: 'You do not yet have permission to perform this action. Please contact your administrator to request access.',
 }

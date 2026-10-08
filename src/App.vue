@@ -56,7 +56,7 @@ import { isPhone, updateIsPhone } from '@/utils/device.js'
 import { useAppStore, useAppStoreRefs, useUserStore } from '@/utils/store.js'
 import Cookies from 'js-cookie'
 import { Modal } from 'view-ui-plus'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { tokenName } from "@systemConfig";
 
@@ -109,22 +109,47 @@ const closeNotice = () => {
 }
 
 
-onMounted(async () => {
-  syncViewport()
-  window.addEventListener('resize', syncViewport)
+let appInitController = null
+
+const initializeApp = async () => {
+  appInitController?.abort()
+  if (route.meta.skipAppInit) {
+    pageLoading.value = false
+    return
+  }
+  const controller = new AbortController()
+  appInitController = controller
   try {
     const token = Cookies.get(tokenName)
     if (token) {
       await userStore.init()
     }
-    await appStore.init()
+    if (controller.signal.aborted || route.meta.skipAppInit) return
+    await appStore.init({ signal: controller.signal })
   } finally {
     await nextTick()
+    if (appInitController === controller) pageLoading.value = false
+  }
+}
+
+onMounted(async () => {
+  syncViewport()
+  window.addEventListener('resize', syncViewport)
+  await initializeApp()
+})
+
+watch(() => route.meta.skipAppInit, async (skipAppInit, previousSkipAppInit) => {
+  if (skipAppInit) {
+    appInitController?.abort()
     pageLoading.value = false
+  } else if (previousSkipAppInit) {
+    pageLoading.value = true
+    await initializeApp()
   }
 })
 
 onBeforeUnmount(() => {
+  appInitController?.abort()
   window.removeEventListener('resize', syncViewport)
 })
 </script>

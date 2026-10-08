@@ -16,4 +16,6 @@ export default {
   riskLevelElevated: 'สูงกว่า',
   riskLevelCritical: 'สูงมาก',
   currentRiskLevel: 'ระดับความเสี่ยงปัจจุบัน:{level}',
+
+  noPermission: 'คุณยังไม่มีสิทธิ์ดำเนินการนี้ โปรดติดต่อผู้ดูแลระบบเพื่อขอสิทธิ์',
 }

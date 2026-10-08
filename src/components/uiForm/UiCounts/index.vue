@@ -24,7 +24,7 @@
             <Icon custom="iconfont icon-question"></Icon>
             <template #content>
               <template v-if="item.countType==='available_balance'">
-                <p>{{ t('header.frozenAmount') }}: ${{ formatNum(user?.freeze_amount ?? 0) }}</p>
+                <p>{{ t('header.frozenAmount') }}: <UiMoney :value="user?.freeze_amount ?? 0" /></p>
                 <p>{{ t('header.frozenDate') }}: {{ user?.freezed_at ?? '-' }}</p>
               </template>
               <div v-html="tips(data,item)" v-else></div>
@@ -33,24 +33,26 @@
         </div>
         <div class="ui-counts-item-value">
           <div class="ui-counts-item-value-number">
-            <div class="unit" v-if="item.type==='money'">$</div>
-            <div class="unit" v-else-if="['rate','level_rate'].includes(item.type)">≈</div>
+            <div class="unit" v-if="['rate','level_rate'].includes(item.type)">≈</div>
             <div class="number">
-              <div class="loading" v-if="loading">-</div>
+              <UiMoney v-if="item.type==='money'" :value="moneyValue(data, item)" :decimals="item.decimals" :loading="loading" empty-text="-" v-font="24" />
+              <div class="loading" v-else-if="loading">-</div>
+              <div v-else-if="countsValue(data,item,item.prop) === '∞'" v-font="24">∞</div>
               <CountUp
                 v-else
+                :key="countDecimals(data,item)"
                 :end="countsValue(data,item,item.prop)"
                 :options="{ useGrouping: false }"
                 :duration="1"
-                :decimals="item.decimals ?? 3"
+                :decimals="countDecimals(data,item)"
                 ref="count"
                 v-font="24"
               />
             </div>
-            <div class="numberSub" v-if="item.propSub">/ {{ countsValue(data,item,item.propSub) }}</div>
+            <div class="numberSub" v-if="item.propSub && item.showPropSub !== false">/ {{ loading ? '-' : countsValue(data,item,item.propSub) }}</div>
             <div class="unit" v-if="['rate','level_rate'].includes(item.type)">%</div>
             <div class="unit" v-if="item.unit">{{item.unit}}</div>
-            <template  v-if="item.countType==='available_balance'">
+            <template  v-if="item.countType==='available_balance' || item.refresh">
               <Icon type="ios-loading"  class="icon-load" v-if="loading"></Icon>
               <Icon type="md-refresh" v-else @click="refreshBtn"/>
             </template>
@@ -59,22 +61,29 @@
             <template v-for="(btn,btnIndex) in visibleBtns(item)" :key="btn.type || btnIndex">
               <Divider type="vertical" v-if="btnIndex>0 && visibleBtns(item)?.[btnIndex-1]?.type"/>
               <Tooltip
-                v-if="btn.type === 'tips'"
-                :content="typeof btn.tips === 'function' ? btn.tips(data) : btn.tips"
+                v-if="btn.type === 'tips' || (btn.type && btn.tooltip)"
+                :content="btn.tooltip || (typeof btn.tips === 'function' ? btn.tips(data) : btn.tips)"
                 :placement="isPhone ? 'top-end' : 'top'"
                 :max-width="btn.maxWidth || 320"
                 :transfer-class-name="isPhone ? 'ui-counts-mobile-tooltip' : ''"
                 transfer
               >
-                <div class="btn-item tips" :title="buttonTitle(btn)">
+                <div
+                  class="btn-item"
+                  :class="[btn.type, { 'is-disabled': btn.disabled }]"
+                  :title="buttonTitle(btn)"
+                  :aria-disabled="btn.disabled || undefined"
+                  @click.stop="btn.type !== 'tips' && !btn.disabled && btn.click?.(data)"
+                >
                   {{ buttonLabel(btn) }}
                 </div>
               </Tooltip>
               <div
                 class="btn-item"
-                :class="btn.type"
+                :class="[btn.type, { 'is-disabled': btn.disabled }]"
                 :title="buttonTitle(btn)"
-                @click.stop="btn.click?.(data)"
+                :aria-disabled="btn.disabled || undefined"
+                @click.stop="!btn.disabled && btn.click?.(data)"
                 v-else-if="btn.type"
               >
                 {{ buttonLabel(btn) }}
@@ -88,6 +97,7 @@
             </template>
           </div>
         </div>
+        <slot name="item-footer" :item="item" />
       </div>
     </div>
     <div class="btn" v-if="$slots.default">
@@ -98,6 +108,8 @@
 
 <script setup>
 import {  computed } from 'vue'
+import Decimal from 'decimal.js'
+import UiMoney from '@/components/uiForm/UiMoney/index.vue'
 import { useUserStoreRefs } from '@/utils/store'
 import { isPhone } from '@/utils/device'
 import { t } from '@/utils'
@@ -135,16 +147,33 @@ const formatNum =  (value) => {
   value = value.toString().replace(/,/g, '')
   return Number(value) || 0
 }
+const moneyValue = (row, item) => {
+  const raw = row?.[item.prop]
+  const value = typeof raw === 'string' ? raw.replace(/,/g, '') : raw
+  if (value == null || value === '') return null
+  if (item.min != null) {
+    try {
+      if (new Decimal(value).lt(item.min)) return item.defaultValue ?? 0
+    } catch {
+      return null
+    }
+  }
+  return value
+}
 const countsValue=(row,item,prop)=>{
   if(props.loading){
     return 0
   }
   const value=formatNum(row?.[prop || item.prop] ?? 0)
+  if (item.propSub && formatNum(row?.[item.propSub]) === -1) return '∞'
   if((item.min || item.min===0) && value < item.min){
     return item?.defaultValue ?? 0
   }
   return value
 }
+const countDecimals = (data, item) => ['rate', 'level_rate'].includes(item.type)
+  ? new Decimal(countsValue(data, item, item.prop)).decimalPlaces()
+  : item.decimals ?? 3
 const level=(data,item)=>{
 if(item.tipsType!=='level_rate') return {}
 const number = Number(data?.[item?.prop] || 0)
@@ -190,8 +219,7 @@ const buttonTitle=(btn)=>{
   gap:var(--gap);
   border-radius:var(--ui-radius-3);
   &.isBg{
-    background: #f3f6ff;
-    margin: -15px -15px -6px;
+    background: var(--ui-gradient-summary);
     .ui-counts-list{
       .ui-counts-item{
         background: none;
@@ -254,7 +282,9 @@ const buttonTitle=(btn)=>{
             font-size: 14px;
           }
           .number{
-            font-weight: 600;
+            display: inline-flex;
+            align-items: baseline;
+            font-weight: var(--ui-font-weight-bold);
             font-size: 24px;
             color: var(--ui-color-neutral-900);
             .loading{
@@ -292,6 +322,11 @@ const buttonTitle=(btn)=>{
             }
             &:hover{
               text-decoration: underline;
+            }
+            &.is-disabled {
+              color: var(--ui-color-neutral-500);
+              cursor: not-allowed;
+              text-decoration: none;
             }
           }
           .text-item{

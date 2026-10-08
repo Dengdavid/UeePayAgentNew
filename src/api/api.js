@@ -23,12 +23,12 @@ export const getString = (url, data) => {
 
   return params.length > 0 ? `${url}?${params.join('&')}` : url
 }
-export const get = async (url, data) => {
+export const get = async (url, data, config = {}) => {
   const _string = getString(url, {
     ...data,
     total: undefined,
   })
-  const res= await request({ url: _string, method: 'get', data })
+  const res= await request({ ...config, url: _string, method: 'get', data })
   return res
 }
 

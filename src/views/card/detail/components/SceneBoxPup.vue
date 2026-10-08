@@ -185,11 +185,12 @@
 
 <script setup>
   import { ref, reactive, computed, nextTick } from 'vue'
-  import { message,confirm } from '@/utils/message'
+  import { message,confirm, showRequestError } from '@/utils/message'
   import { getApi } from '@/utils/api'
   import { t } from '@/utils/index.js'
   import { isPhone } from '@/utils/device.js'
   const props = defineProps({
+    shared: { type: Boolean, default: false },
     binId:{
       type:[String,Number],
       default:''
@@ -435,10 +436,10 @@
   //获取bin配置
   const getBin=async(form)=>{
     try {
-      const res=await getApi('/vcc/bin/currentRule',form)
+      const res=await getApi(props.shared ? '/vcc/SharedCard/currentRule' : '/vcc/bin/currentRule',form)
       return res || {}
     } catch (err) {
-      message(err,'error')
+      showRequestError(err)
       return {}
     }
   }
@@ -568,11 +569,7 @@
         }
         binRow.value=binRes
       }
-    } catch (err) {
-      if (requestId === openRequestId && pup.status) {
-        message(err?.msg || t('card.detail.sceneBox.loadFailed'), 'error')
-      }
-    } finally {
+    } catch (error) { showRequestError(error) } finally {
       if (requestId === openRequestId) pup.loading=false
     }
   }

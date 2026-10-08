@@ -12,6 +12,7 @@ import { t } from '@/utils'
 import { locale } from '@/locales/set.js'
 import { tokenName } from "@systemConfig";
 import { useAppStore } from '@/store/app.js'
+import { hasRoutePermission } from '@/utils/permission.js'
 const routeNames = (arr) => {
   const _arr = []
   arr.map((item) => {
@@ -54,7 +55,7 @@ const updateDocumentTitle = (route) => {
 }
 
 router.beforeEach(async (to) => {
-  if (useAppStore().configUnavailable && !errorRouteNames.has(to.name)) {
+  if (useAppStore().configUnavailable && !errorRouteNames.has(to.name) && !to.meta.skipAppInit) {
     return { name: 'error_403', replace: true }
   }
   const token = Cookies.get(tokenName)
@@ -77,6 +78,14 @@ router.beforeEach(async (to) => {
     if (!userStore.user.is_admin) {
       return { name: 'error_404', replace: true }
     }
+  }
+
+  if (to.meta.permissionCodes?.length || to.meta.disallowSubAccount) {
+    const userStore = resolveUserStore()
+    if (!userStore.user?.id) await userStore.getUserInfo()
+    if (!Cookies.get(tokenName)) return { name: 'login', replace: true }
+    if (useAppStore().configUnavailable) return { name: 'error_403', replace: true }
+    if (!hasRoutePermission(to)) return { name: 'error_403', replace: true }
   }
 
   updateDocumentTitle(to)

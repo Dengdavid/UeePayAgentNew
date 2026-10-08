@@ -1,21 +1,28 @@
 <template>
-  <div class="ui-tabs">
+  <div v-if="visibleTabs.length" class="ui-tabs">
     <slot/>
-    <button v-show="canScrollPrev" type="button" class="ui-tabs-scroll ui-tabs-scroll--prev" aria-label="向左查看更多" @click="scrollTabs(-1)">
-      <Icon type="ios-arrow-back" />
-    </button>
-    <div class="ui-tabs-list" ref="tabsListRef" :class="{ hasPrev: canScrollPrev, hasNext: canScrollNext, 'is-scrollable': tabsOverflow }" @scroll.passive="updateScrollButtons">
-      <div class="ui-tabs-list-item" :class="{
-        active:activeTab===item.name
-      }" v-for="item in data" :key="item.name" @click="changeTab(item)">
-        <p>{{ item.title }}</p>
+    <template v-if="visibleTabs.length>1 || $slots.right">
+      <button v-show="canScrollPrev" type="button" class="ui-tabs-scroll ui-tabs-scroll--prev" :aria-label="$t('uiCommon.scrollPrevious')" @click="scrollTabs(-1)">
+        <Icon type="ios-arrow-back" />
+      </button>
+      <div class="ui-tabs-list" ref="tabsListRef" :class="{ hasPrev: canScrollPrev, hasNext: canScrollNext, 'is-scrollable': tabsOverflow }" @scroll.passive="updateScrollButtons">
+        <div class="ui-tabs-list-item" :class="{
+          active:activeTab===item.name
+        }" v-for="item in visibleTabs" :key="item.name" @click="changeTab(item)">
+          <p>{{ item.title }}</p>
+        </div>
+        <div v-if="$slots.right" class="ui-tabs-right">
+          <slot name="right" />
+        </div>
       </div>
-    </div>
-    <button v-show="canScrollNext" type="button" class="ui-tabs-scroll ui-tabs-scroll--next" aria-label="向右查看更多" @click="scrollTabs(1)">
-      <Icon type="ios-arrow-forward" />
-    </button>
+      <button v-show="canScrollNext" type="button" class="ui-tabs-scroll ui-tabs-scroll--next" :aria-label="$t('uiCommon.scrollNext')" @click="scrollTabs(1)">
+        <Icon type="ios-arrow-forward" />
+      </button>
+    </template>
     <div class="ui-tabs-tbody" ref="tbodyRef">
        <component
+         v-if="activeItem"
+         ref="activeComponentRef"
          :is="activeItem?.component"
          v-bind="componentProps"
          v-on="componentEvents"
@@ -26,10 +33,13 @@
 
 <script setup>
 import { computed, ref, nextTick, onBeforeUnmount, onMounted, watch } from 'vue'
-import { useRoute, useRouter, clearQuery } from '@/utils/route'
+import { onBeforeRouteLeave } from 'vue-router'
+import { hasPermission } from '@/utils/permission'
+import { useRoute, useRouter } from '@/utils/route'
 const route = useRoute()
 const router = useRouter()
 const props = defineProps({
+  returnState: Object,
   data: {
     type: Array,
     default: ()=>[],
@@ -39,23 +49,34 @@ const props = defineProps({
     default: false,
   }
 })
-const emit = defineEmits(['init'])
+// 多个权限码表示必须同时具备；未配置 permission 的 Tab 保持原有行为。
+const visibleTabs = computed(() => props.data.filter(item => {
+  const permissions = Array.isArray(item.permission) ? item.permission : [item.permission]
+  return permissions.every(hasPermission)
+}))
+const emit = defineEmits(['init', 'change'])
 const init=()=>{
   emit('init')
 }
 const getDefaultTab = () => {
   const queryTab = route.query?.type
-  if (props.data?.some(item => item.name === queryTab)) {
+  if (visibleTabs.value.some(item => item.name === queryTab)) {
     return queryTab
   }
-  const routeTab = props.data?.find(item => (item.routeName || item.name) === route.name)
+  if (visibleTabs.value.some(item => item.name === props.returnState?.activeTab)) {
+    return props.returnState.activeTab
+  }
+  const routeTab = visibleTabs.value.find(item => (item.routeName || item.name) === route.name)
   if (routeTab) {
     return routeTab.name
   }
-  return props.data?.[0]?.name
+  return visibleTabs.value[0]?.name
 }
 const activeTab = ref(getDefaultTab());
-const activeItem = computed(() => props.data?.find(item => item.name === activeTab.value))
+onBeforeRouteLeave(() => {
+  if (props.returnState) props.returnState.activeTab = activeTab.value
+})
+const activeItem = computed(() => visibleTabs.value.find(item => item.name === activeTab.value))
 const componentProps = computed(() => ({
   ...(activeItem.value?.props || {}),
   ...(activeItem.value?.passActive === false ? {} : { active: activeTab.value }),
@@ -72,6 +93,7 @@ const componentEvents = computed(() => {
   }
 })
 
+const activeComponentRef = ref(null)
 const tbodyRef = ref(null)
 const tabsListRef = ref(null)
 const canScrollPrev = ref(false)
@@ -115,8 +137,10 @@ const scrollInto=()=>{
   })
 }
 const changeTab=(item)=>{
-  if(item.name===activeTab.value) return
+  if (!visibleTabs.value.some(tab => tab.name === item.name) || item.name === activeTab.value) return
+  if (activeComponentRef.value?.beforeTabLeave?.() === false) return
   activeTab.value=item.name
+  if (props.returnState) props.returnState.activeTab = item.name
   if(item.to){
     router.push(item.to)
     return
@@ -125,9 +149,12 @@ const changeTab=(item)=>{
     router.push({ name: item.routeName })
     return
   }
-  if(route.query){
-    clearQuery()
-  }
+  router.replace({
+    name: route.name,
+    params: route.params,
+    query: { ...route.query, type: item.name },
+    hash: route.hash,
+  })
   // scrollInto()
 }
 
@@ -143,9 +170,9 @@ watch(
 
 // Tab 内动态 props/events 更新时不重置当前选中项，仅在配置确实移除当前 Tab 时回退。
 watch(
-  () => props.data?.map(item => `${item.name}:${item.routeName || ''}`).join('|'),
+  () => visibleTabs.value.map(item => `${item.name}:${item.routeName || ''}`).join('|'),
   () => {
-    if (props.data?.some(item => item.name === activeTab.value)) return
+    if (visibleTabs.value.some(item => item.name === activeTab.value)) return
     activeTab.value = getDefaultTab()
   }
 )
@@ -154,7 +181,7 @@ onMounted(() => {
   window.addEventListener('resize', handleTabsResize)
   nextTick(updateScrollButtons)
   // 如果链接带有 type 参数，说明是从其他地方跳过来专门看这个 Tab 的，自动滚动过去
-  if (route.query.type) {
+  if (route.query.type && !props.returnState?.activeTab) {
     // 稍微延迟确保页面和父容器滚动条已经完全挂载完毕
     setTimeout(() => {
      scrollInto()
@@ -163,11 +190,14 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => window.removeEventListener('resize', handleTabsResize))
-watch(() => props.data?.length, () => {
+watch(() => visibleTabs.value.length, () => {
   tabsOverflow.value = true
   nextTick(updateScrollButtons)
 })
-watch(activeTab, scrollActiveTabIntoView)
+watch(activeTab, (name) => {
+  emit('change', name)
+  scrollActiveTabIntoView()
+}, { flush: 'sync' })
 
 </script>
 <style lang="less" scoped>
@@ -185,6 +215,14 @@ watch(activeTab, scrollActiveTabIntoView)
     gap:var(--gap);
     background: var(--ui-tabs-background);
     border-bottom: 1px var(--ui-tabs-border-color) solid;
+    .ui-tabs-right{
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-inline-start: auto;
+      min-width: 0;
+      padding-inline-start: var(--ui-space-8);
+    }
     .ui-tabs-list-item{
       padding: var(--ui-space-2) var(--ui-space-8);
       box-sizing: border-box;

@@ -3,7 +3,7 @@
     <div class="left">
       <dl>
         <dt>
-          <span>{{ $t('card.index.detail.statistics.availableBalance') }}</span>
+          <span>{{ shared ? $t('card.index.detail.statistics.sharedWalletBalance') : $t('card.index.detail.statistics.availableBalance') }}</span>
           <button
             class="refresh-btn"
             :class="{ refreshing }"
@@ -12,12 +12,18 @@
             :aria-label="refreshing ? $t('card.index.detail.statistics.refreshingBalance') : $t('card.index.detail.statistics.refreshBalance')"
             @click="refresh"
           >
-            <Icon type="md-refresh" size="18" />
+            <Icon type="md-refresh" size="14" />
           </button>
         </dt>
-        <dd>
-          <span class="unit">$</span>
-          <span class="money">{{ card.available ?? '0.000' }}</span>
+        <dd :class="{ 'shared-balance': shared }">
+          <span class="money"><UiMoney :value="shared ? card.sharedWallet?.amount : card.available ?? '0.000'" :loading="refreshing" tone="negative" empty-text="$-" /></span>
+        </dd>
+        <dd v-if="shared" class="wallet-owner">
+          <span class="wallet-owner-label">{{ $t('card.index.detail.statistics.associatedWallet') }}</span>
+          <button v-if="canViewWallet" class="wallet-link" type="button" :title="walletName" @click="openWallet">
+            <span class="wallet-name">{{ walletName }}</span>
+          </button>
+          <span v-else class="wallet-name" :title="walletName">{{ walletName }}</span>
         </dd>
       </dl>
     </div>
@@ -37,15 +43,14 @@
           <Icon type="ios-arrow-forward" />
         </button>
       </div>
-      <div class="card-dlText">
+      <div class="card-dlText" :class="{ 'is-shared': shared }">
         <dl v-for="item in list" :key="item.key">
           <dt :title="`${dayTypeName}${$t(item.labelKey)}`">
             <span>{{ dayTypeName }}{{ $t(item.labelKey) }}：</span>
           </dt>
           <dd class="ui-text-grey" v-if="loading">{{ $t('card.index.detail.statistics.loading') }}</dd>
           <dd class="list-r-2" v-else>
-            <span class="unit">$</span>
-            <span class="money">{{ stats[item.key] ?? '0.000' }}</span>
+            <UiMoney class="money" :value="stats[item.key] ?? 0" />
           </dd>
         </dl>
        </div>
@@ -54,12 +59,15 @@
 </template>
 
 <script setup>
+import { showRequestError } from '@/utils/message.js'
 import { cardApi } from '@/api'
-import { message } from '@/utils/message.js'
 import { format, subMonths, subDays, startOfWeek, startOfMonth, endOfMonth } from 'date-fns'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { t } from '@/utils'
+import { toRoute } from '@/utils/route'
+import { hasPermission } from '@/utils/permission'
   const props = defineProps({
+      shared: { type: Boolean, default: false },
       card:{
         type:Object,
         default:()=>({})
@@ -69,6 +77,12 @@ import { t } from '@/utils'
         default: false
       }
   });
+  const walletName = computed(() => props.card.sharedWallet?.name || '-')
+  const canViewWallet = computed(() => props.shared && !!props.card.shared_wallet_id && hasPermission('shared_wallet.view'))
+  const openWallet = () => {
+    if (!canViewWallet.value) return
+    toRoute('cardSharedWalletDetail', { id: String(props.card.shared_wallet_id) }, 'params')
+  }
   const stats = ref({})
   const dayType=ref('today')
   const formatType='yyyy-MM-dd'
@@ -133,7 +147,7 @@ import { t } from '@/utils'
     return labelKey ? t(labelKey) : ''
   })
   const loading=ref(false)
-  const list=[
+  const list=computed(() => [
     {
       labelKey:'card.index.detail.statistics.consumption',
       key:'total_consumption',
@@ -150,7 +164,7 @@ import { t } from '@/utils'
       labelKey:'card.index.detail.statistics.transferOut',
       key:'total_out',
     }
-  ]
+  ].filter(item => !props.shared || !['total_in', 'total_out'].includes(item.key)))
   const changeDayType=(item, event)=>{
     dayType.value=item.value
     event?.currentTarget?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
@@ -167,7 +181,7 @@ import { t } from '@/utils'
     const requestId = ++statisticsRequestId
     loading.value=true
     try {
-      const result = await cardApi.vccInfoStatistics({
+      const result = await (props.shared ? cardApi.sharedCardInfoStatistics : cardApi.vccInfoStatistics)({
         cardId,
         startTime:startTime?`${startTime} 00:00:00`:'',
         endTime:endTime?`${endTime} 23:59:59`:'',
@@ -176,9 +190,7 @@ import { t } from '@/utils'
       stats.value = result || {}
       return stats.value
     } catch (err) {
-      if (requestId === statisticsRequestId && String(cardId) === String(props.card.id)) {
-        message(err?.msg || err || t('card.index.detail.statistics.operationFailed'), 'error')
-      }
+      if (requestId === statisticsRequestId && String(cardId) === String(props.card.id)) showRequestError(err)
       return null
     } finally {
       if (requestId === statisticsRequestId) loading.value=false
@@ -242,6 +254,8 @@ import { t } from '@/utils'
 
     dl{
       margin: 0;
+      min-width: 0;
+      width: 100%;
 
       dt{
         display: flex;
@@ -252,8 +266,8 @@ import { t } from '@/utils'
       .refresh-btn{
         position: relative;
         display: inline-flex;
-        width: var(--ui-size-30);
-        height: var(--ui-size-30);
+        width: 24px;
+        height: 24px;
         margin-left: 4px;
         padding: 0;
         align-items: center;
@@ -293,12 +307,41 @@ import { t } from '@/utils'
       dd{
         margin-top: 4px;
         line-height: 42px;
-      }
-    }
 
-    .unit{
-      margin-right: 3px;
-      color: var(--ui-color-text);
+        &.shared-balance{
+          line-height: 40px;
+
+          .money{ display: block; line-height: inherit; }
+        }
+
+        &.wallet-owner{
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          min-width: 0;
+          margin-top: 0;
+          font-size: 12px;
+          line-height: 20px;
+          color: var(--ui-color-text-muted);
+        }
+      }
+      .wallet-owner-label{ flex-shrink: 0; }
+      .wallet-name{ min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .wallet-link{
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        color: var(--ui-color-primary);
+        background: transparent;
+        font: inherit;
+        cursor: pointer;
+
+        :deep(.ivu-icon){ flex-shrink: 0; }
+        &:hover .wallet-name{ text-decoration: underline; }
+      }
     }
 
     .money{
@@ -411,6 +454,10 @@ import { t } from '@/utils'
     }
 
     .card-dlText{
+      &.is-shared{
+        flex: 1;
+      }
+
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: var(--m);
@@ -438,6 +485,8 @@ import { t } from '@/utils'
           flex-shrink: 0;
           color: #303642;
           font-weight: 500;
+
+          :deep(.ui-money-currency){ font-size: inherit; }
         }
       }
     }

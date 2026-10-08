@@ -2,6 +2,7 @@ import router, { setRouterUserStoreResolver } from '@/router/index.js'
 import pinia from '@/store/index.js'
 import { useUserStore } from '@/store/user.js'
 import { vClickOutside } from '@/utils/clickOutside.js'
+import { hasPermission } from '@/utils/permission.js'
 import ViewUIPlus from 'view-ui-plus'
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -14,6 +15,7 @@ Object.entries(FormComponents).forEach(([name, component]) => {
 });
 // store
 app.use(pinia)
+app.config.globalProperties.$hasPermission = hasPermission
 setRouterUserStoreResolver(() => useUserStore(pinia))
 
 // 初始化多语言
@@ -40,6 +42,7 @@ app.directive('click-outside', vClickOutside)
 const mountApp = async () => {
   await initializeLocaleMessages()
   app.use(router)
+  await router.isReady()
   app.mount('#app')
 }
 

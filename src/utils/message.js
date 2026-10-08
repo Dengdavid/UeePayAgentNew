@@ -20,6 +20,15 @@ export const message = (text, type = 'success',confing={}) => {
   });
 };
 
+export const showRequestError = (error, config = {}) => {
+  if (!error || error.silent || error.cancelled || error.errorHandled || error.msg === 'SILENT_ERROR' || error.code === 'ERR_CANCELED') return;
+  const content = typeof error.msg === 'string' && error.msg.trim()
+    ? error.msg
+    : t(['ERR_NETWORK', 'ERR_NETWORK_CHANGED'].includes(error.code) ? 'uiCommon.networkError' : 'uiCommon.loadFailed');
+  message(content, 'error', config);
+  if (typeof error === 'object' && Object.isExtensible(error)) error.errorHandled = true;
+};
+
 //确认弹窗
 export const confirm=(text,options={})=>{
   return new Promise((resolve, reject) => {

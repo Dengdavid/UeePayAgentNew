@@ -15,6 +15,8 @@ const resolveRequestPolicy = (config, requestConfig) => {
 
   return {
     retryOnTimeout: requestPolicy.retryOnTimeout ?? safeMethods.has(method),
+    redirectOnNetworkError: requestPolicy.redirectOnNetworkError !== false,
+    sendAuthToken: requestPolicy.sendAuthToken !== false,
     maxAttempts: Math.min(
       Math.max(
         Number.isFinite(configuredAttempts)
@@ -82,6 +84,7 @@ export function installRequestInterceptor(request, requestConfig) {
     const meta = createRequestMeta(config, policy)
 
     meta.retryOnTimeout = policy.retryOnTimeout
+    meta.redirectOnNetworkError = policy.redirectOnNetworkError
 
     config.headers = config.headers || {}
     config.headers['Accept-Language'] = locale.value
@@ -91,8 +94,10 @@ export function installRequestInterceptor(request, requestConfig) {
     if(hostname){
         config.headers.Domain =isLocalHost(hostname)?domainURL:hostname;
     }
-    if (token) {
+    if (token && policy.sendAuthToken) {
       config.headers.token = token
+    } else if (!policy.sendAuthToken) {
+      delete config.headers.token
     }
 
     return registerPendingRequest(

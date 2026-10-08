@@ -1,26 +1,41 @@
 <template>
-  <UiPage ref="pageRef" :data="data" row-key="id" isNotTitle>
+  <UiPage v-if="hasCardPermission('trade.view', props.shared)" ref="pageRef" :data="data" :return-state="returnState" row-key="id" isNotTitle>
+    <template #sharedWallet="{ row }">
+      <span v-if="!hasPermission('shared_wallet.view')">{{ row.sharedWallet?.name || '--' }}</span>
+      <Button v-else type="text" :disabled="!row.shared_wallet_id" @click="row.shared_wallet_id && hasPermission('shared_wallet.view') && toRoute('cardSharedWalletDetail', { id: String(row.shared_wallet_id) }, 'params')">{{ row.sharedWallet?.name || '--' }}</Button>
+    </template>
     <template #number="{ row }">
-      <CardNumber :value="row.bin" :bin="row.bin" :type="row?.card_bin?.network" :encrypt="false" />
+      <CardNumber :value="row.bin" :bin="row.bin" :card-id="row.card_id" :type="props.shared ? 'share' : 'prepaid'" :network="row?.card_bin?.network" :encrypt="false" />
     </template>
   </UiPage>
 </template>
 
 <script setup>
+import { showRequestError } from '@/utils/message.js'
 import { computed, ref } from 'vue'
 import CardNumber from '@/components/ui/card-number.vue'
-import { cardApi } from '@/api'
+import { hasCardPermission, hasPermission } from '@/utils/permission'
 import { confirm, message, t } from '@/utils'
 import { toRoute } from '@/utils/route.js'
 import { isPhone } from '@/utils/device.js'
 
-defineProps({
+const props = defineProps({
+  returnState: Object,
+  tabBtns: { type: Array, default: () => [] },
+  apiUrl: { type: String, required: true },
+  shared: { type: Boolean, default: false },
+  cancelRequest: { type: Function, required: true },
+  urgeRequest: { type: Function, required: true },
+  syncRequest: { type: Function },
+  showPreload: { type: Boolean, default: true },
+  searchParams: { type: Object, default: () => ({}) },
   active: {
     type: String,
     default: '',
   },
 })
 
+const permissionPrefix = computed(() => props.shared ? 'shared_card' : 'card')
 const pageRef = ref(null)
 const submitting = ref(false)
 
@@ -38,41 +53,41 @@ const statusOptionMap = Object.fromEntries(
 
 const reload = () => pageRef.value?.reset()
 
-const runAction = async (request, successText, fallbackError) => {
-  if (submitting.value) return
+const runAction = async (permission, request, successText) => {
+  if (!hasCardPermission('trade.view', props.shared) || !hasCardPermission(permission, props.shared) || submitting.value) return
   submitting.value = true
   try {
     const result = await request()
     message(successText)
     reload()
-  } catch (error) {
-    message(error?.msg || fallbackError, 'error')
-  } finally {
+  } catch (error) { showRequestError(error) } finally {
     submitting.value = false
   }
 }
 
 const handleCancel = (row) => {
-  if (submitting.value) return
+  if (!hasCardPermission('trade.cancel', props.shared) || submitting.value) return
   confirm(t('card.index.records.cancelConfirm'), {
     title: t('card.index.records.cancelTitle'),
     okText: t('card.index.records.confirmCancel'),
     cancelText: t('card.index.records.reconsider'),
   }).then(() => runAction(
-    () => cardApi.vccTradeCancel({ id: row.id }),
-    t('card.index.records.cancelSuccess'),
-    t('card.index.records.cancelFailed')
+    'trade.cancel',
+    () => props.cancelRequest({ id: row.id }),
+    t('card.index.records.cancelSuccess')
   ))
 }
 
 const data = computed(() => ({
-  apiUrl: '/vcc/trade',
+  apiUrl: props.apiUrl,
   status: [
     { label: t('card.index.common.all'), value: '' },
     ...statusOptions.map(({ value, label }) => ({ value, label })),
   ],
   search: {
     type: 'Create',
+    ...(props.shared ? { shared_wallet_id: '' } : {}),
+    ...props.searchParams,
     startTime: '',
     endTime: '',
   },
@@ -84,13 +99,24 @@ const data = computed(() => ({
       endKey: 'endTime',
       width: 230,
     },
+    ...(props.shared ? [{
+      label: t('card.index.sharedManagement.title'),
+      prop: 'shared_wallet_id',
+      type: 'remote-select',
+      apiUrl: '/vcc/SharedWallet/dataList',
+      labelKey: 'name',
+      valueKey: 'id',
+      multiple: false,
+      width: 200,
+    }] : []),
   ],
   labelWidth: 76,
   thead: [
     { label: t('card.index.records.applicationTime'), prop: 'created_at', minWidth: 170},
     { label: t('card.index.common.cardBin'), prop: 'number', type: 'slot', minWidth: 180, wapType: 'title'  },
-    { label: t('card.index.records.preload'), prop: 'amount', width: 120 },
-    { label: t('card.index.records.cardFee'), prop: 'open', width: 120 },
+    ...(props.shared ? [{ label: t('card.index.sharedManagement.title'), prop: 'sharedWallet', type: 'slot', minWidth: 160 }] : []),
+    ...(props.showPreload ? [{ label: t('card.index.records.preload'), prop: 'amount', width: 120 }] : []),
+    { label: `${t('card.index.records.cardFee')} ($)`, prop: 'open', width: 120 },
     {
       label: t('card.index.common.status'),
       prop: 'status',
@@ -102,52 +128,45 @@ const data = computed(() => ({
     },
     { label: t('card.index.records.completedTime'), prop: 'updated_at', minWidth: 170 },
   ],
-  btns: [
-    {
-      label: t('card.index.openCardQuickly'),
-      icon: 'md-add',
-      hidden:()=>isPhone.value,
-      click: () => toRoute('cardAdd'),
-    },
-  ],
+  btns: isPhone.value ? [...props.tabBtns] : [],
   actions: [
     {
-      label: t('card.index.records.openAgain'),
+      label: t('card.index.records.openAgain'), permission: `${permissionPrefix.value}.create`,
       show: (row) => [-2, -1].includes(Number(row.status)),
-      click: () => toRoute('cardAdd'),
+      click: () => hasCardPermission('create', props.shared) && toRoute(props.shared ? 'sharedCardAdd' : 'cardAdd'),
     },
     {
-      label: t('card.index.records.urgeReview'),
+      label: t('card.index.records.urgeReview'), permission: `${permissionPrefix.value}.trade.urge`,
       show: (row) => Number(row.status) === 1,
       disabled: () => submitting.value,
       click: (row) => runAction(
-        () => cardApi.vccTradeUrge({ id: row.id }),
-        t('card.index.records.urgeSuccess'),
-        t('card.index.records.urgeFailed')
+        'trade.urge',
+        () => props.urgeRequest({ id: row.id }),
+        t('card.index.records.urgeSuccess')
       ),
     },
     {
-      label: t('card.index.records.cancelOpening'),
+      label: t('card.index.records.cancelOpening'), permission: `${permissionPrefix.value}.trade.cancel`,
       class: 'action-warning',
       show: (row) => Number(row.status) === 2,
       disabled: () => submitting.value,
       click: handleCancel,
     },
     {
-      label: t('card.index.records.updateProgress'),
+      label: t('card.index.records.updateProgress'), permission: `${permissionPrefix.value}.trade.sync`,
       show: (row) => Number(row.status) === 3,
-      disabled: () => submitting.value,
-      click: (row) => runAction(
-        () => cardApi.vccTradeSync({ id: row.id }),
-        t('card.index.records.syncSuccess'),
-        t('card.index.records.syncFailed')
-      ),
+      disabled: () => !props.syncRequest || submitting.value,
+      click: props.syncRequest ? (row) => runAction(
+        'trade.sync',
+        () => props.syncRequest({ id: row.id }),
+        t('card.index.records.syncSuccess')
+      ) : undefined,
     },
     {
-      label: t('card.index.records.viewCard'),
+      label: t('card.index.records.viewCard'), permission: `${permissionPrefix.value}.view`,
       class: 'action-default',
       show: (row) => Number(row.status) === 9,
-      click: (row) => toRoute('cardDetail', { id: row.card_id }, 'params'),
+      click: (row) => hasCardPermission('view', props.shared) && toRoute(props.shared ? 'sharedCardDetail' : 'cardDetail', { id: row.card_id }, 'params'),
     },
   ],
 }))

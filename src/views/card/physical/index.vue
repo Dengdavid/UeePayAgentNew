@@ -11,10 +11,10 @@
 </template>
 
 <script setup>
+import { showRequestError } from '@/utils/message.js'
 import MailingAddress from "./components/MailingAddress.vue";
 import { ref,onMounted,reactive } from "vue";
 import { postApi } from "@/utils/api";
-import { message } from "@/utils/message";
 import { isPhone } from '@/utils/device'
 const pageRightStyle=ref({
   width:'350px',
@@ -32,9 +32,7 @@ const getBins=()=>{
   pageRef.value.loading=true
   postApi('/vcc/bins').then((res)=>{
     bins.value=res
-  }).catch((err)=>{
-    message(err?.msg,'error')
-  }).finally(()=>{
+  }).catch(showRequestError).finally(()=>{
     pageRef.value.loading=false
   })
 }

@@ -191,6 +191,8 @@ import dayjs from 'dayjs'
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { toRoute,useRoute } from '@/utils/route.js'
 import { ucenterRoutes } from '@/router/router.js'
+import { hasMenuPermission } from '@/utils/permission.js'
+import { getMenuRouteName } from '@/utils/route.js'
 const route = useRoute()
 import { message,confirm } from '@/utils/message.js'
 import { getApi } from '@/utils/api.js'
@@ -219,10 +221,12 @@ const activeRouteNames = computed(() => {
   const direct = route.meta?.direct
   return new Set([
     route.name,
+    getMenuRouteName(route),
     ...(Array.isArray(direct) ? direct : [direct]),
   ].filter(Boolean))
 })
 const showAccountMenu = (item) => {
+  if (!hasMenuPermission(item)) return false
   if (!item?.meta?.need_auth) return true
   return Boolean(user.value?.[item.meta.need_auth] || menuPermissions.value?.[item.meta.need_auth])
 }

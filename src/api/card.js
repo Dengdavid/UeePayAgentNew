@@ -18,8 +18,8 @@ export default {
     return request({ url: '/vcc/create', method: 'post', data })
   },
   // 卡片详情
-  vccInfo(data) {
-    return request({ url: '/vcc/info', method: 'post', data })
+  vccInfo(data, config = {}) {
+    return request({ ...config, url: '/vcc/info', method: 'post', data })
   },
   // 同步卡片和账单
   vccCardSync(data) {
@@ -175,5 +175,62 @@ export default {
   // 提交来源渠道
   sourceChannel(data) {
     return request({ url: '/user/sourceChannel', method: 'post', data })
-  }
+  },
+  sharedCardBins() {
+    return request({ url: '/vcc/SharedCard/bins', method: 'post' })
+  },
+  sharedCardCreate(data) {
+    return request({ url: '/vcc/SharedCard/create', method: 'post', data })
+  },
+  sharedCardInfo(data) {
+    return request({ url: '/vcc/SharedCard/info', method: 'post', data })
+  },
+  sharedCardInfoStatistics(data) {
+    return request({ url: '/vcc/SharedCard/cardInfoStatistics', method: 'post', data })
+  },
+  sharedCardPrivate(data) {
+    return request({ url: '/vcc/SharedCard/private', method: 'post', data })
+  },
+  sharedCardSync(data) {
+    return request({ url: '/vcc/SharedCard/cardSync', method: 'post', data })
+  },
+  sharedCardLabel(data) {
+    return request({ url: '/vcc/SharedCard/label', method: 'post', data })
+  },
+  sharedCardSuspend(data) {
+    return request({ url: '/vcc/SharedCard/suspend', method: 'post', data })
+  },
+  sharedCardEnable(data) {
+    return request({ url: '/vcc/SharedCard/enable', method: 'post', data })
+  },
+  sharedCardDestroy(data) {
+    return request({ url: '/vcc/SharedCard/destroy', method: 'post', data })
+  },
+  sharedTradeUrge(data) {
+    return request({ url: '/vcc/SharedTrade/urge', method: 'post', data })
+  },
+  sharedTradeCancel(data) {
+    return request({ url: '/vcc/SharedTrade/cancel', method: 'post', data })
+  },
+  sharedTradeSync(data) {
+    return request({ url: '/vcc/SharedTrade/sync', method: 'post', data })
+  },
+  getSharedWalletStatistics(config = {}) {
+    return request({ ...config, url: '/vcc/SharedWallet/statistics', method: 'get' })
+  },
+  createSharedWallet(data) {
+    return request({ url: '/vcc/SharedWallet/create', method: 'post', data })
+  },
+  editSharedWallet(data) {
+    return request({ url: '/vcc/SharedWallet/edit', method: 'post', data })
+  },
+  setSharedWalletStatus(data) {
+    return request({ url: data.status === 0 ? '/vcc/SharedWallet/enable' : '/vcc/SharedWallet/disable', method: 'post', data })
+  },
+  transferSharedWallet(data) {
+    return request({ url: '/vcc/SharedWallet/transfer', method: 'post', data })
+  },
+  collectSharedWallet(data) {
+    return request({ url: '/vcc/SharedWallet/collect', method: 'post', data })
+  },
 }

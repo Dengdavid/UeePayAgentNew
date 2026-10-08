@@ -16,4 +16,6 @@ export default {
   riskLevelElevated: '더 높은',
   riskLevelCritical: '매우 높음',
   currentRiskLevel: '현재 위험 수준:{level}',
+
+  noPermission: '아직 이 작업을 수행할 권한이 없습니다. 관리자에게 권한 부여를 요청해 주세요.',
 }

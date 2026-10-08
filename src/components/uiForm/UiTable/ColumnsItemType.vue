@@ -6,6 +6,9 @@
     <template v-if="['dot'].includes(data.type || data.formType)">
       <UiDot v-model="row[data.prop]" :valueText="row?.[`${data.prop}_text`]" :options="data.options"/>
     </template>
+    <template v-else-if="['members'].includes(data.type || data.formType)">
+      <UIArrMembers :data="row[data.prop]" name-key="nickname" :summary="false" v-bind="data"/>
+    </template>
     <template v-else-if="data.value">
       {{typeof data.value==='function' ? data.value(row):data.value}}
     </template>
@@ -30,6 +33,7 @@
 
 <script setup>
 import UiDot from '@/components/uiForm/UiDot/index.vue'
+import UIArrMembers from '@/components/uiForm/UIArrMembers/index.vue'
 const props = defineProps({
   row:{
     type: Object,

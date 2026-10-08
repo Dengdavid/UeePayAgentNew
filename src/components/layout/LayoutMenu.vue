@@ -7,7 +7,7 @@
       <div
         class="account-menu-item"
         :class="{
-          active:(route.meta.direct || route.name)===item.name
+          active:getMenuRouteName(route)===item.name
         }"
         @click="handleGoPage(item.name)"
         v-for="item in accountMenus"
@@ -15,7 +15,7 @@
          v-show="showAccountMenu(item)"
         :title="accountMenuTitle(item)"
       >
-        <span class="iconfont" :class="item.meta?.menuIcon || 'icon-CRMEB-xiadanjianshu-mianxing'"></span>
+        <IconBox :icon="item.meta?.menuIcon || 'icon-CRMEB-xiadanjianshu-mianxing'" :size="18" />
         <span class="account-menu-title">{{ accountMenuTitle(item) }}</span>
       </div>
       <div
@@ -101,7 +101,8 @@ import LogoBox from '@/views/components/LogoBox/index.vue'
 import { ucenterRoutes} from '@/router/router.js'
 import { computed,ref,onMounted} from 'vue'
 import Decimal from 'decimal.js'
-import { toRoute} from '@/utils/route.js'
+import { toRoute, getMenuRouteName } from '@/utils/route.js'
+import { hasMenuPermission } from '@/utils/permission.js'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 import { useUserStore, useUserStoreRefs } from '@/utils/store.js'
@@ -137,6 +138,7 @@ const accountMenuTitle = (item) => {
 
 
 const showAccountMenu = (item) => {
+  if (!hasMenuPermission(item)) return false
   if (!item?.meta?.need_auth) return true
   return Boolean(user.value?.[item.meta.need_auth] || menuPermissions.value?.[item.meta.need_auth])
 }

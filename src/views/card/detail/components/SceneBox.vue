@@ -8,20 +8,26 @@
       <Tooltip v-if="sceneItems.length" :content="sceneTooltip" placement="top" theme="light" :max-width="320" transfer>
         <span class="scene-count">{{ $t('card.detail.sceneBox.sceneCount', { count: sceneItems.length }) }}</span>
       </Tooltip>
-      <Button class="scene-edit" type="text" @click="opnePup(card)">{{ $t('card.detail.sceneBox.edit') }}</Button>
+      <Tooltip :disabled="hasCardPermission('update', shared)" :content="$t('counts.noPermission')" placement="top" transfer>
+        <span class="edit-tooltip-trigger" :tabindex="hasCardPermission('update', shared) ? undefined : 0" :aria-label="hasCardPermission('update', shared) ? undefined : $t('counts.noPermission')">
+          <Button class="scene-edit" type="text" :disabled="!hasCardPermission('update', shared)" @click="opnePup(card)">{{ $t('card.detail.sceneBox.edit') }}</Button>
+        </span>
+      </Tooltip>
     </div>
-    <SceneBoxPup :cardId="cardId" :driver="cardDriver" ref="pupRef" @onConfirm="onConfirm"/>
+    <SceneBoxPup v-if="hasCardPermission('update', shared)" :shared="shared" :cardId="cardId" :driver="cardDriver" ref="pupRef" @onConfirm="onConfirm"/>
   </div>
 </template>
 
 <script setup>
+import { showRequestError } from '@/utils/message.js'
   import { computed, ref } from 'vue'
+  import { hasCardPermission } from '@/utils/permission'
   import { postApi } from '@/utils/api'
-  import { message } from '@/utils/message'
-  import { t } from '@/utils/index.js'
+    import { t } from '@/utils/index.js'
   import { useCardStoreRefs } from '@/utils/store.js'
   import SceneBoxPup from './SceneBoxPup.vue'
   const props = defineProps({
+    shared: { type: Boolean, default: false },
     card:{
       type:Object,
       default:()=>{
@@ -52,6 +58,7 @@
   const cardId=ref('')
   const pupRef=ref(null)
   const opnePup=(row)=>{
+    if (!hasCardPermission('update', props.shared)) return
     const {consumption_scene_type:type,consumption_scene_config:config}=row
     cardId.value = row.id
     pupRef.value?.open({
@@ -61,8 +68,9 @@
   }
   const emit = defineEmits(['onConfirm']);
   const onConfirm=(form)=>{
+    if (!hasCardPermission('update', props.shared)) return
     const {type,config}=form
-    postApi('/vcc/updateConsumptionScene',{
+    postApi(props.shared ? '/vcc/SharedCard/updateConsumptionScene' : '/vcc/updateConsumptionScene',{
       cardId:cardId.value,
       type:type,
       categoryIds:config.categoryIds.map(item=>item.id) || [],
@@ -70,15 +78,18 @@
     }).then((res) => {
       pupRef.value?.close()
       emit('onConfirm')
-    }).catch(err => {
-      message(err?.msg || err || t('card.detail.sceneBox.settingFailed'),'error')
-    }).finally(() => {
+    }).catch(showRequestError).finally(() => {
       pupRef.value?.buttonLoading()
     })
   }
 </script>
 
 <style scoped lang="less">
+.edit-tooltip-trigger {
+  display: inline-flex;
+  :deep(button:disabled) { pointer-events: none; }
+}
+
 .sceneBox{
   flex: 1;
   min-width: 0;
@@ -142,8 +153,10 @@
     line-height: 26px;
     border-radius: var(--ui-radius-sm);
 
-    &:hover,
-    &:focus-visible {
+    &:disabled { color: var(--ui-color-text-muted); }
+
+    &:not(:disabled):hover,
+    &:not(:disabled):focus-visible {
       background: rgba(43, 92, 217, 0.08);
     }
   }

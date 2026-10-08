@@ -1,11 +1,11 @@
 <template>
-  <div class="ui-page" ref="pageRef" :class="{
-    isNotBg:isNotBg || $slots.pageRight,
+  <div v-if="!tabs?.length || visibleTabs.length" class="ui-page" ref="pageRef" :class="{
+    isNotBg:isNotBg || isBackTitle || $slots.pageRight || isContentBg,
     isAuto:isAuto && !isPhone,
     isOverflowX: isPhone,
     isMx: isMx,
   }" :style="{
-    padding:isPhone || $slots.pageRight || isNotBg?'':typeof padding==='number'? padding+'px': padding,
+    padding:isPhone || $slots.pageRight || isNotBg || isContentBg?'':typeof padding==='number'? padding+'px': padding,
   }">
     <template v-if="certificationShow && isCertificationBlocked()">
       <PageCertification/>
@@ -16,16 +16,18 @@
       }" v-if="theadShow">
         <div  class="title" v-if="!props.isNotTitle || isPhone">
           <template v-if="isBack || (route.meta?.isAppDetail && isPhone)">
-            <div class="back" @click="goBack(fallback)">
+            <div class="back" @click="backHandler ? backHandler() : goBack(fallback)">
                 <Icon type="ios-arrow-back" :size="16" />
                 <span>{{ $t('button.back') }}</span>
             </div>
             <Divider type="vertical" />
           </template>
-          <p :title="pageTitle" v-if="$slots.pageRight || isNotBg">{{ pageTitle }}</p>
+          <slot name="title-icon" />
+          <p :title="pageTitle" v-if="titleSize ? titleSize === 'small' : $slots.pageRight || isNotBg">{{ pageTitle }}</p>
           <h3 :title="pageTitle" v-else>{{ pageTitle }}</h3>
           <Icon type="md-refresh" :class="{ 'demo-spin-icon-load': loading }" color="var(--ui-color-primary)" :size="16" @click="reset" v-if="data?.apiUrl  && !isPhone"/>
         </div>
+        <PageActions :data="tabShowBtns" v-if="tabShowBtns?.length>0  && !isSelect && !isPhone"/>
         <Button @click="countsShow=!countsShow" size="small" icon="ios-podium"  type="default" v-if="$slots.counts && isPhone">{{ countsTitle }}</Button>
         <Button
           v-if="$slots.pageRight && isPhone"
@@ -35,11 +37,16 @@
           :title="pageRightTitle"
           @click="countsShow=!countsShow"
         >{{ pageRightTitle }}</Button>
-        <PageActions :data="data?.btns" :statusValue="statusValue" v-if="(data?.searchThead?.length===0 || !data?.searchThead) && !isSelect && !isPhone"/>
-        <div class="ui-page-thead-arefresh"  v-if="data?.thead?.length>0 && !isPhone">
-          <Button type="default" icon="md-sync" :loading="loading" @click="search">{{ $t('button.refresh') }}</Button>
-        </div>
+        <template  v-if="(data?.searchThead?.length===0 || !data?.searchThead) && !isSelect && !isPhone">
+          <PageActions :data="pageBtns" :statusValue="statusValue"/>
+          <div class="ui-page-thead-arefresh" v-if="data?.thead?.length>0">
+            <Button type="default" icon="md-sync" :loading="loading" @click="search">{{ $t('button.refresh') }}</Button>
+          </div>
+        </template>
       </div>
+      <div class="ui-page-content" :class="{ 'has-background': isContentBg }" :style="{
+        padding: isContentBg ? (typeof padding === 'number' ? padding + 'px' : padding) : undefined,
+      }">
       <div class="ui-page-tip" v-if="$slots.tip">
         <slot name="tip"></slot>
       </div>
@@ -63,7 +70,7 @@
           <slot name="tbody"></slot>
       </div>
       <div class="ui-page-status" v-if="data?.status?.length>0">
-          <button v-show="canScrollStatusPrev" type="button" class="status-scroll status-scroll--prev" aria-label="向左查看更多状态" @click="scrollStatus(-1)">
+          <button v-show="canScrollStatusPrev" type="button" class="status-scroll status-scroll--prev" :aria-label="$t('uiCommon.scrollStatusPrevious')" @click="scrollStatus(-1)">
             <Icon type="ios-arrow-back" />
           </button>
           <div class="ui-page-status-list" ref="statusListRef" :class="{ hasPrev: canScrollStatusPrev, hasNext: canScrollStatusNext, 'is-scrollable': statusOverflow }" @scroll.passive="updateStatusScrollButtons">
@@ -73,17 +80,41 @@
               <span class="label">{{ item.label }}</span>
             </div>
           </div>
-          <button v-show="canScrollStatusNext" type="button" class="status-scroll status-scroll--next" aria-label="向右查看更多状态" @click="scrollStatus(1)">
+          <button v-show="canScrollStatusNext" type="button" class="status-scroll status-scroll--next" :aria-label="$t('uiCommon.scrollStatusNext')" @click="scrollStatus(1)">
             <Icon type="ios-arrow-forward" />
           </button>
         </div>
         <div class="ui-page-search" v-if="data?.searchThead?.length>0 && !isPhone">
-          <PageSearch :data="data?.searchThead" :pageSearch="pageSearch" @search="reset"/>
-          <PageActions :data="data?.btns" :statusValue="statusValue" v-if="!isSelect"/>
-          <Button type="default" icon="md-sync" :loading="loading" @click="search" v-if="data?.searchThead.length>0">{{ $t('button.refresh') }}</Button>
+          <PageSearch :data="searchThead" :pageSearch="pageSearch" @search="reset"/>
+          <div class="ui-page-search-actions">
+            <template v-if="!isSelect">
+              <PageActions :data="pageBtns" :statusValue="statusValue" />
+            </template>
+            <Button type="default" icon="md-sync" :loading="loading" @click="search" v-if="data?.searchThead.length>0">{{ $t('button.refresh') }}</Button>
+          </div>
         </div>
-        <div class="ui-page-tab" v-if="tabs?.length>0">
-          <UiTabs :data="tabs" @init="init" ></UiTabs>
+        <div v-if="batchBtns.length>0" class="batch-btn">
+          <Checkbox v-if="isPhone && !isSelect" :model-value="tableWapRef?.allSelected || false" :indeterminate="selectionArr.length > 0 && !tableWapRef?.allSelected" :disabled="loading || !tableWapRef?.selectableRows?.length" @on-change="tableWapRef?.toggleSelectAll($event)">
+            {{ $t('ucenterAccount.memberPicker.selectAllInList') }}
+          </Checkbox>
+          <div class="title">
+            <i18n-t keypath="uiCommon.selectedCount" scope="global">
+              <template #count><span class="text-smg">{{ selectionArr?.length || 0 }}</span></template>
+            </i18n-t>
+          </div>
+          <Button type="text" @click="clearSelection" v-if="selectionArr?.length>0">{{ $t('uiCommon.clearSelection') }}</Button>
+          <PageBatchBtns :data="batchBtns" :selectionArr="selectionArr"/>
+        </div>
+        <div class="ui-page-tab" v-if="visibleTabs.length>0">
+          <UiTabs :data="visibleTabs" :return-state="returnState" @init="init" @change="emit('tab-change', $event)">
+            <template v-if="tabSearchThead.length" #right>
+              <PageTabSearch :data="tabSearchThead" :pageSearch="tabSearchValues" @search="applyTabSearch">
+                <template v-if="$slots['tab-search-option']" #option="slotProps">
+                  <slot name="tab-search-option" v-bind="slotProps" />
+                </template>
+              </PageTabSearch>
+            </template>
+          </UiTabs>
         </div>
         <div class="ui-page-tbdoy" :class="{
           noPadding:padding==0
@@ -105,14 +136,14 @@
                   <slot name="tbody"></slot>
                 </div>
                 <template v-if="isPhone">
-                    <UiTableWap v-bind="data" :tbody="tbody" :isSelect="isSelect" :loading="loading" :row-key="tableRowKey" @select="select">
+                    <UiTableWap v-bind="data" ref="tableWapRef" :tbody="tbody" :isSelect="isSelect" :loading="loading" :row-key="tableRowKey" @select="select" @selectionChange="selectionChange">
                       <template v-for="item in tableSlotItems" #[item.prop||item.key]="slotProps" :key="item.prop||item.key">
                         <slot :name="item.prop||item.key" v-bind="slotProps"/>
                       </template>
                     </UiTableWap>
                 </template>
                 <template v-else>
-                    <UiTable v-bind="data" :tbody="tbody" :isSelect="isSelect" :loading="loading" :row-key="tableRowKey" @select="select">
+                    <UiTable v-bind="data" ref="tableRef" :tbody="tbody" :isSelect="isSelect" :loading="loading" :row-key="tableRowKey" @select="select" @selectionChange="selectionChange">
                       <template v-for="item in tableSlotItems" #[item.prop||item.key]="slotProps" :key="item.prop||item.key">
                         <slot :name="item.prop||item.key" v-bind="slotProps"/>
                       </template>
@@ -145,9 +176,9 @@
               </div>
             </template>
           </div>
-          <Spin fix v-if="loading && (isPhone || data?.notPage)" ></Spin>
+          <Spin fix v-if="loading && (isPhone || data?.notPage || $slots.item)" ></Spin>
           <div class="drift-group" :class="{ 'is-hidden': isScrolling }" :style="{
-            bottom: data?.btns?.length>0?'220px':'140px'
+            bottom: footerBtns.length>0?'220px':'140px'
           }" v-if="isPhone  && !isMx">
             <div class="drift-item back-top"  @click="openSearch" v-if="data?.searchThead?.length>0  && !isSelect">
               <Icon type="ios-search" />
@@ -160,24 +191,25 @@
             </div>
           </div>
         </div>
-        <div class="ui-page-footer" v-if="isPhone && (data?.btns?.length>0 || btns?.length>0) && !isSelect">
-          <template  v-for="(item, index) in [
-            ...data?.btns || [],
-            ...btns || [],
-          ]" :key="index">
+        <div class="ui-page-footer" v-if="isPhone && footerBtns.length>0 && !isSelect">
+          <template  v-for="(item, index) in footerBtns" :key="index">
             <Button
               v-if="typeof item.hidden === 'function' ? item.hidden(statusValue) : true"
               :type="item.type || 'primary'"
               size="large"
               long
               :icon="item.icon"
-              @click="item.click"
+              :title="item.tooltip"
+              :loading="Boolean(item.loading)"
+              :disabled="Boolean(item.loading) || item.disabled === true"
+              @click="!item.loading && item.disabled !== true && item.click($event)"
             >
               {{ item.label }}
             </Button>
           </template>
         </div>
       </template>
+      </div>
     </template>
   </div>
   <div class="pupBox" v-if="$slots.pup">
@@ -197,10 +229,12 @@ import UiEmptyBox from '@/components/uiForm/UiEmptyBox/index.vue'
 import UiTable from '@/components/uiForm/UiTable/index.vue'
 import UiTableWap from '@/components/uiForm/UiTableWap/index.vue'
 import PageActions from './PageActions.vue'
+import PageBatchBtns from './PageBatchBtns.vue'
 import PageSearch from './PageSearch.vue'
+import PageTabSearch from './PageTabSearch.vue'
 import PageSearchPhone from './PageSearchPhone.vue'
 import PageCertification from './PageCertification.vue'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue'
+import { computed, inject, nextTick, onBeforeUnmount, onMounted, provide, ref, useSlots, watch } from 'vue'
 import { isPhone } from '@/utils/device.js'
 import { useUserStore, useUserStoreRefs } from '@/utils/store'
 import { useCountsDrawer } from './composables/useCountsDrawer.js'
@@ -208,12 +242,15 @@ import { useMobileScroll } from './composables/useMobileScroll.js'
 import { usePageRequest } from './composables/usePageRequest.js'
 import { usePageRightSticky } from './composables/usePageRightSticky.js'
 import { t } from '@/utils'
+import { hasPermission } from '@/utils/permission.js'
 const { user } = useUserStoreRefs()
 const userStore = useUserStore()
-import { useRoute, goBack } from '@/utils/route'
+import { useRoute, goBack, toRoute } from '@/utils/route'
+import { Button } from 'view-ui-plus'
 const route = useRoute()
 const slots = useSlots()
 const props = defineProps({
+  returnState: Object,
   data:{
     type: Object,
     default: () => ({ notPage: true }),
@@ -225,11 +262,26 @@ const props = defineProps({
   tabs:{
     type: Array,
   },
+  tabSearch:{
+    type: Object,
+    default: () => ({}),
+  },
+  tabBtns:{
+    type: Array,
+  },
+  forbiddenRedirect:{
+    type: Boolean,
+    default: false,
+  },
   btns:{
     type: Array,
   },
   title:{
     type: String,
+  },
+  titleSize:{
+    type: String,
+    validator: value => ['small', 'large'].includes(value),
   },
   countsTitle:{
     type: String,
@@ -242,7 +294,14 @@ const props = defineProps({
     type: Object,
     default: () => ({ name: 'home' }),
   },
+  backHandler: {
+    type: Function,
+  },
   isBack:{
+    type: Boolean,
+    default: false,
+  },
+  isBackTitle:{
     type: Boolean,
     default: false,
   },
@@ -279,6 +338,42 @@ const props = defineProps({
     default: 16,
   }
 })
+// 公共搜索仅作用于当前 Tabs 的下一层 UiPage，不传入更深层的嵌套页面。
+const inheritedTabSearch = inject('uiPageTabSearch', ref({}))
+const tabSearchThead = computed(() => isPhone.value ? [] : props.tabSearch.searchThead || [])
+const tabSearchValues = ref({ ...(props.tabSearch.search || {}) })
+const tabSearchParams = ref(tabSearchThead.value.length ? { ...tabSearchValues.value } : {})
+provide('uiPageTabSearch', tabSearchParams)
+const applyTabSearch = () => {
+  tabSearchParams.value = { ...tabSearchValues.value }
+}
+const sharedSearch = computed(() => isPhone.value ? {} : inheritedTabSearch.value)
+const searchThead = computed(() => (props.data?.searchThead || []).filter(item => !Object.hasOwn(sharedSearch.value, item.prop)))
+const visibleTabs = computed(() => (props.tabs || []).filter(tab => {
+  const permissions = Array.isArray(tab.permission) ? tab.permission : [tab.permission]
+  return permissions.every(hasPermission)
+}))
+watch(() => props.forbiddenRedirect && props.tabs?.length > 0 && visibleTabs.value.length === 0, (forbidden) => {
+  if (forbidden) toRoute('error_403', {}, 'query', { replace: true })
+}, { immediate: true })
+const pageBtns = computed(() => (props.data?.btns || []).filter(button => hasPermission(button.permission)))
+const tabShowBtns = computed(() => (props.tabBtns || []).filter(button => hasPermission(button.permission)))
+const batchBtns = computed(() => (props.data?.batchBtns || []).filter(button => hasPermission(button.permission)))
+const footerBtns = computed(() => [...pageBtns.value, ...(props.btns || []).filter(button => hasPermission(button.permission))])
+const selectionArr=ref([])
+const selectionChange=(rows)=>{
+  selectionArr.value=rows
+}
+const clearSelection=()=>{
+  selectionArr.value=[]
+  if(isPhone.value){
+    tableWapRef.value?.clearSelection?.()
+  }else{
+    tableRef.value?.clearSelection?.()
+  }
+}
+const tableRef=ref(null)
+const tableWapRef=ref(null)
 const pageTitle = computed(() => props.title || (route.meta.titleKey ? t(route.meta.titleKey) : route.meta.title) || '')
 const {
   pageRef,
@@ -308,13 +403,14 @@ const theadShow=computed(()=>{
     return false
   }
   if(props.isNotTitle && !isPhone.value){
-    if(props.data?.btns?.length>0 && (!props.data?.searchThead || props.data?.searchThead?.length===0)){
+    if(pageBtns.value.length>0 && (!props.data?.searchThead || props.data?.searchThead?.length===0)){
       return true
     }
     return false
   }
   return true
 })
+const isContentBg = computed(() => props.titleSize === 'small' && theadShow.value && !isPhone.value && !props.isNotBg && !props.isBackTitle && !slots.pageRight)
 const tableSlotItems=computed(()=>(props.data?.thead || []).filter((item)=>slots[item.prop || item.key]))
 const tableRowKey=computed(()=>props.rowKey || props.data?.rowKey || 'id')
 const certificationShow=ref(true)
@@ -352,8 +448,11 @@ const {
   handleChangePageSize,
   more,
   cancelActiveRequest,
-} = usePageRequest({ props, isPhone, isCertificationBlocked, scrollToTop })
-const emit=defineEmits(['select','init'])
+  restore,
+  getSearchParams,
+} = usePageRequest({ props, isPhone, isCertificationBlocked, scrollToTop, scrollBody, sharedSearch })
+watch(tbody, clearSelection, { flush: 'sync' })
+const emit=defineEmits(['select','init','tab-change'])
 const statusListRef = ref(null)
 const canScrollStatusPrev = ref(false)
 const canScrollStatusNext = ref(false)
@@ -378,6 +477,7 @@ const handleStatusResize = () => {
   nextTick(updateStatusScrollButtons)
 }
 const handleStatusClick = (value, event) => {
+  props.data?.onStatusChange?.(value)
   setStatus(value)
   event.currentTarget?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
 }
@@ -404,8 +504,10 @@ watch(() => user.value?.auth_status, (status, oldStatus) => {
 //暴露方法
 defineExpose({
   reset,
+  clearSelection,
   loading,
   search,
+  getSearchParams,
   openPageRight,
 })
 onMounted(async () => {
@@ -421,7 +523,8 @@ onMounted(async () => {
   }
   // 从未认证变为已认证时由上方 auth_status 监听器触发，避免重复请求。
   if(!wasCertificationBlocked){
-    search()
+    if (props.returnState) await restore()
+    else search()
   }
 })
 onBeforeUnmount(() => {
@@ -441,8 +544,44 @@ watch(() => props.data?.status?.length, () => {
   gap: var(--ui-page-gap);
   position: relative;
   width: 100%;
+  .batch-btn{
+    background: var(--ui-color-surface-hover);
+    padding: var(--ui-space-8) var(--ui-space-12);
+    border-radius: var(--ui-radius-3);
+    display: flex;
+    height: 48px;
+    gap: 8px;
+    align-items: center;
+    > .title,
+    > :deep(.ivu-btn){
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+  }
   &.isOverflowX{
     overflow-x:inherit;
+    .batch-btn{
+      height: auto;
+      min-height: 48px;
+      flex-wrap: wrap;
+      gap: var(--ui-space-8);
+      > :deep(.ivu-checkbox-wrapper){
+        margin-inline: 0;
+      }
+      > .title{
+        white-space: nowrap;
+      }
+      > :deep(.ivu-btn){
+        padding-inline: var(--ui-space-4);
+      }
+      :deep(.ui-page-status-btn){
+        flex: 0 0 auto;
+        margin-inline-start: auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--ui-space-8);
+      }
+    }
   }
   &.isAuto{
     max-width: 1200px;
@@ -450,6 +589,15 @@ watch(() => props.data?.status?.length, () => {
   }
   &:not(.isNotBg){
     background: var(--ui-color-surface);
+  }
+  .ui-page-content{
+    display: contents;
+    &.has-background{
+      display: flex;
+      flex-direction: column;
+      gap: var(--ui-page-gap);
+      background: var(--ui-color-surface);
+    }
   }
   .ui-page-flex{
     display: flex;
@@ -487,12 +635,23 @@ watch(() => props.data?.status?.length, () => {
   }
   .ui-page-search{
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: var(--ui-space-8);
+    .ui-page-search-actions{
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      gap: var(--ui-space-8);
+    }
   }
   .ui-page-thead{
     display: flex;
     align-items: center;
+    .ui-page-thead-arefresh{
+      flex: 1;
+      display: flex;
+      justify-content: end;
+    }
     .title{
       flex: 1;
       min-width: 0;
@@ -526,11 +685,6 @@ watch(() => props.data?.status?.length, () => {
           font-weight: var(--ui-font-weight-regular);
         }
       }
-    }
-    .ui-page-thead-arefresh{
-      flex: 1;
-      display: flex;
-      justify-content: end;
     }
   }
   .ui-page-status{
@@ -639,9 +793,8 @@ watch(() => props.data?.status?.length, () => {
     }
     .ui-page-thead{
       height:var(--ui-size-48);
-      padding: 0 var(--ui-space-8);
+      padding: 0 var(--ui-space-12);
       background: var(--ui-color-surface);
-      border-bottom: 1px #eee solid;
       .ui-page-thead-action{
         display: inline-flex;
         flex: 0 1 30%;
@@ -660,7 +813,7 @@ watch(() => props.data?.status?.length, () => {
           white-space: nowrap;
         }
       }
-      &+.ui-page-status{
+      &+.ui-page-content > .ui-page-status:first-child{
         margin-top:0;
       }
     }

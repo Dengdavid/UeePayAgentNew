@@ -17,9 +17,11 @@
 import { reactive, ref } from 'vue'
 import PhoneInput from '@/components/utils/phone-input.vue'
 import { cardApi } from '@/api'
-import { message } from '@/utils/message.js'
+import { message, showRequestError } from '@/utils/message.js'
+import { hasCardPermission } from '@/utils/permission'
 import { t } from '@/utils'
 
+const props = defineProps({ shared: { type: Boolean, default: false } })
 const emit = defineEmits(['success'])
 const pupRef = ref(null)
 const cardId = ref('')
@@ -46,6 +48,7 @@ const pup = reactive({
     {
       label: t('card.index.detail.contact.confirm'),
       click: async (currentPup) => {
+        if (!hasCardPermission('update', props.shared)) { currentPup.loading = false; return }
         const params = { cardId: cardId.value }
         if (mode.value !== 'email') {
           params.phone = currentPup.form.phone
@@ -57,9 +60,7 @@ const pup = reactive({
           message(t('card.index.detail.contact.success'))
           currentPup.status = false
           emit('success')
-        } catch (error) {
-          message(error?.msg || t('card.index.detail.contact.failed'), 'error')
-        } finally {
+        } catch (error) { showRequestError(error) } finally {
           currentPup.loading = false
         }
       },
@@ -68,7 +69,7 @@ const pup = reactive({
 })
 
 const open = (card, editMode = 'all') => {
-  if (!card?.id) return
+  if (!hasCardPermission('update', props.shared) || !card?.id) return
   cardId.value = card.id
   mode.value = editMode
   pup.title = editMode === 'phone' ? t('card.index.detail.contact.phoneTitle') : editMode === 'email' ? t('card.index.detail.contact.emailTitle') : t('card.index.detail.contact.title')

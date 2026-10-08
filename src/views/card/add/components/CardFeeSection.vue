@@ -3,7 +3,7 @@
     <div v-if="bin.id" class="fee-input-section mb-10">
       <h3 class="mb-20">{{ $t('card.index.opening.feeInfo.title') }}</h3>
       <Row :gutter="20">
-        <Col :xs="24" :sm="12">
+        <Col :xs="24" :sm="cradType==='prepaid'?12:24">
           <div class="mb-10">
             {{ $t('card.index.opening.feeInfo.cardQuantity') }}<span class="ui-text-grey">（{{ $t('cardTag.cardsUnit') }}）</span>
           </div>
@@ -29,13 +29,12 @@
             </template>
             <span>{{ $t('card.index.opening.feeInfo.remainingAvailableSlots') }}</span>
             <span class="ui-text-warning">
-              {{ maxNum === Infinity ? $t('card.index.opening.feeInfo.unlimited') : maxNum }}
+              {{ maxNum === Infinity ? '∞' : maxNum }}
             </span>
             <span>{{ $t('cardTag.cardUnit', { count: maxNum === Infinity ? 2 : maxNum }) }}</span>
           </p>
         </Col>
-
-        <Col :xs="24" :sm="12">
+        <Col :xs="24" :sm="12" v-if="cradType==='prepaid'">
           <div class="mb-10 flex-b-c mt-10-mobile">
             <p>
               {{ $t('card.index.opening.feeInfo.transferInAmount') }}
@@ -66,6 +65,8 @@
         </Col>
       </Row>
     </div>
+
+    <slot />
 
     <Teleport to="body" :disabled="!isPhone">
       <div
@@ -118,7 +119,7 @@
           class="fee-mobile-item"
         >
           <header>{{ $t('card.index.opening.feeInfo.cardSequence', { index: index + 1 }) }}</header>
-          <dl>
+          <dl :class="{ 'is-shared': cradType === 'share' }">
             <div>
               <dt>{{ $t('card.index.opening.feeInfo.cardOpeningFee') }}</dt>
               <dd>
@@ -132,11 +133,11 @@
                 </small>
               </dd>
             </div>
-            <div>
+            <div v-if="cradType !== 'share'">
               <dt>{{ $t('card.index.opening.feeInfo.transferInAmount') }}</dt>
               <dd>{{ row.rechargeAmount === '0.000' ? '-' : `$ ${row.rechargeAmount}` }}</dd>
             </div>
-            <div>
+            <div v-if="cradType !== 'share'">
               <dt>{{ $t('card.index.opening.feeInfo.handlingFee') }}</dt>
               <dd>
                 <span>
@@ -220,6 +221,10 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  cradType: {
+    type: String,
+    default:''
+  },
 })
 
 const emit = defineEmits(['update:number', 'update:amount', 'expense-change'])
@@ -273,7 +278,7 @@ const getFeeRule = (cardIndex, rules) => {
 
 const expenseDetails = computed(() => {
   const number = props.number ?? 0
-  const amount = props.amount ?? 0
+  const amount = props.cradType === 'prepaid' ? props.amount ?? 0 : 0
   const usedCapacity = props.usedCapacity ?? 0
   const freeCardsNums = props.freeCardsNums ?? 0
   const bin = props.bin || {}
@@ -283,7 +288,7 @@ const expenseDetails = computed(() => {
     createAmount = {
       '0-9999999': {
         fee: bin.create_amount,
-        fee_rate: 0,
+        fee_rate: 1,
       },
     }
   }
@@ -361,18 +366,17 @@ const columns = computed(() => [
     slot: 'fee',
     align: 'center',
   },
-  {
+  ...(props.cradType !== 'share' ? [{
     title: t('card.index.opening.feeInfo.transferInAmountCurrency'),
     key: 'rechargeAmount',
     slot: 'rechargeAmount',
     align: 'center',
-  },
-  {
+  }, {
     title: t('card.index.opening.feeInfo.handlingFeeWithRate', { rate: expenseDetails.value.card_depost_fee || 0 }),
     key: 'rechargeHandlingFee',
     slot: 'rechargeHandlingFee',
     align: 'center',
-  },
+  }] : []),
 ])
 
 const hasFeeDiscount = (row) => row.oldFee != null && row.fee != row.oldFee
@@ -566,6 +570,10 @@ const formatRechargeHandlingFee = (row) => {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     padding: 10px 4px;
+
+    &.is-shared {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   dl > div {

@@ -20,10 +20,10 @@
 </template>
 
 <script setup>
+import { showRequestError } from '@/utils/message.js'
 import { reactive, ref } from 'vue'
 import { Copy } from 'view-ui-plus'
 import { cardApi } from '@/api'
-import { message } from '@/utils/message.js'
 import { t } from '@/utils'
 
 const pupRef = ref(null)
@@ -49,7 +49,7 @@ const open = async (card) => {
     pup.form = await cardApi.vccDeliverInfo({ cardId: card.id }) || defaultForm()
   } catch (error) {
     pup.status = false
-    message(error?.msg || t('card.index.detail.delivery.queryFailed'), 'error')
+    showRequestError(error)
   } finally {
     pup.loading = false
   }

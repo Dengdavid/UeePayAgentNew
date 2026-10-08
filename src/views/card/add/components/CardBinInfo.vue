@@ -3,7 +3,7 @@
     <Row class="card-info-grid">
       <Col :xs="12" :sm="6" class="card-info-item">
         <p class="ui-text-grey mb-5">{{ $t('card.index.opening.binInfo.network') }}</p>
-        <CardNumber :type="bin.network" :encrypt="false">{{ bin.network }}</CardNumber>
+        <CardNumber :network="bin.network" :encrypt="false">{{ bin.network }}</CardNumber>
       </Col>
       <Col :xs="12" :sm="6" class="card-info-item">
         <p class="ui-text-grey mb-5">{{ $t('card.index.opening.binInfo.issuerCountry') }}</p>
