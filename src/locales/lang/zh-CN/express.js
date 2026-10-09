@@ -116,6 +116,7 @@ export default {
       usa: '美国',
       corporateOnly: '该转账方式仅支持企业认证账户，请先完成认证后再试',
       balanceNotEnough: '可用余额不足',
+      amountBalanceNotEnough: '{field}超过可用余额',
       maxAmount: '金额不能大于 {max} {currency}',
       minAmount: '金额不能小于 {min} {currency}',
       c2c: 'C2C (个人对个人)',

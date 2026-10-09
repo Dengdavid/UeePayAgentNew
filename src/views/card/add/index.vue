@@ -220,7 +220,9 @@ import CardApplicantForm from './components/CardApplicantForm.vue'
 import CardFailureTips from './components/CardFailureTips.vue'
 import CardTag from './components/card-tag.vue'
 import { cardNetworks } from '@/config/data.js'
+import countryConfig from '@/config/countries.json'
 import Decimal from 'decimal.js'
+import { parsePhoneNumberFromString } from 'libphonenumber-js/mobile'
 import { useUserStore } from '@/store/user.js'
 import { storeToRefs } from 'pinia'
 import { confirm, message, showRequestError } from '@/utils/message.js'
@@ -361,6 +363,16 @@ const form = ref({
   physical: 0,
 })
 
+// 号码填写区号后的数字，确保校验值与实际提交值一致。
+const isCardholderPhoneValid = (phone, phoneCode) => {
+  const number = String(phone ?? '')
+  const code = String(phoneCode ?? '')
+  if (!/^\d+$/.test(number) || !/^\d+$/.test(code) || !countryConfig.some(country => country.phoneCode === code)) return false
+  const fullNumber = `+${code}${number}`
+  const parsed = parsePhoneNumberFromString(fullNumber, { extract: false })
+  return Boolean(parsed?.isValid() && parsed.number === fullNumber && ['MOBILE', 'FIXED_LINE_OR_MOBILE'].includes(parsed.getType()))
+}
+
 const rules = computed(() => ({
   binId: {
     required: true,
@@ -377,11 +389,20 @@ const rules = computed(() => ({
     message: t('card.index.opening.page.lastNameRequired'),
     trigger: 'blur',
   },
-  phone: {
-    required: true,
-    message: t('card.index.opening.page.phoneRequired'),
-    trigger: 'blur',
-  },
+  phone: [
+    {
+      required: true,
+      message: t('card.index.opening.page.phoneRequired'),
+      trigger: 'blur',
+    },
+    {
+      validator: (_rule, value, callback) => {
+        if (!value || isCardholderPhoneValid(value, form.value.phoneCode)) callback()
+        else callback(new Error(t('card.index.cardholder.phoneInvalid')))
+      },
+      trigger: ['blur', 'change'],
+    },
+  ],
   email: {
     type: 'email',
     required: true,
@@ -531,6 +552,7 @@ const formError = computed(() => {
   if (!_form.firstName) return t('card.index.opening.page.firstNameEmpty')
   if (!_form.lastName) return t('card.index.opening.page.lastNameEmpty')
   if (!_form.phone) return t('card.index.opening.page.phoneEmpty')
+  if (!isCardholderPhoneValid(_form.phone, _form.phoneCode)) return t('card.index.cardholder.phoneInvalid')
   if (!_form.email) return t('card.index.opening.page.emailEmpty')
   if (!_form.number || _form.number <= 0) return t('card.index.opening.page.cardQuantityEmpty')
   if (cradType.value === 'share' && !sharedWalletId.value) return t('ucenterAccount.sharedWalletBatch.select')
@@ -554,8 +576,36 @@ const isBalanceInsufficient = computed(() => cradType.value !== 'share' && balan
 const isFormDisabled = computed(() => !canCreate.value || submiting.value || !balanceState.value.valid || balanceState.value.insufficient || Boolean(formError.value))
 
 
-// 只在钱包操作往返草稿中保留当前联系字段。
+// 仅恢复允许缓存的持卡人联系字段，忽略损坏或历史冗余数据。
 const holderFields = ['firstName', 'lastName', 'phoneCode', 'phone', 'email']
+
+const getHolderFields = () => Object.fromEntries(
+  holderFields.map((field) => [field, form.value[field]]),
+)
+
+const restoreCachedHolder = () => {
+  try {
+    const cachedHolder = JSON.parse(localStorage.getItem('CARDHOLDER') || 'null')
+    if (!cachedHolder || typeof cachedHolder !== 'object') return
+    const holder = Object.fromEntries(
+      holderFields
+        .filter((field) => Object.hasOwn(cachedHolder, field))
+        .map((field) => [field, cachedHolder[field]]),
+    )
+    form.value = { ...form.value, ...holder }
+  } catch {
+    // 浏览器禁用存储或缓存内容损坏时忽略，不阻断页面初始化。
+  }
+}
+
+// 本地缓存失败不应影响当前开卡流程。
+const cacheHolder = (holder) => {
+  try {
+    localStorage.setItem('CARDHOLDER', JSON.stringify(holder))
+  } catch {
+    // 浏览器禁用存储或容量不足时忽略，下次由用户重新填写。
+  }
+}
 
 // 钱包入口只保存本页输入，不缓存接口响应、余额或费用。
 const openWalletPage = async (name) => {
@@ -654,12 +704,13 @@ watch([cradType, () => restoredSharedWalletId.value ?? route.query.shared_wallet
 }, { immediate: true, flush: 'sync' })
 onBeforeUnmount(() => { alive = false; binsRequestId += 1; clearTimeout(restoreScrollTimer) })
 
-// 初始化卡片统计、卡段列表及钱包往返草稿。
+// 初始化卡片统计、卡段列表、上次填写的联系信息及钱包往返草稿。
 const init = async () => {
   if (!canCreate.value) return
   const draft = cradType.value === 'share' && walletReturnDraft?.userId === user.value.id ? walletReturnDraft : null
   if (!draft) clearWalletDraft()
   restoringDraft.value = Boolean(draft)
+  restoreCachedHolder()
   try {
     const [, binsResult] = await Promise.allSettled([
       loadCardStats(),
@@ -784,6 +835,7 @@ const handleSubmit = async () => {
     return
   }
 
+  cacheHolder(_holder)
   message(t('card.index.opening.page.submitSuccess'))
   refreshUserInfo()
   toRoute(cradType.value === 'share' ? 'sharedCard' : 'card', { type: 'record' }, 'query', { replace: true }).catch(() => {
@@ -827,9 +879,14 @@ watch(
   { deep: true },
 )
 
+// 联系字段填写后立即保存，离开页面或退出登录后仍可恢复。
+watch(
+  () => holderFields.map((field) => form.value[field]),
+  () => cacheHolder(getHolderFields()),
+)
+
 // 页面挂载后加载开卡所需数据。
 onMounted(() => {
-  try { localStorage.removeItem('CARDHOLDER') } catch {}
   if (!canCreate.value) return
   // 认证审核结果可能已在其他页面更新，进入开卡页时重新获取用户状态。
   void userStore.getUserInfo()

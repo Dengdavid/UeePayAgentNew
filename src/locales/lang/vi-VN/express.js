@@ -116,6 +116,7 @@ export default {
       usa: 'Hoa Kỳ',
       corporateOnly: 'Phương thức chuyển này chỉ hỗ trợ các tài khoản được công ty chứng nhận. Vui lòng hoàn thành chứng nhận trước và thử lại.',
       balanceNotEnough: 'Số dư khả dụng không đủ',
+      amountBalanceNotEnough: '{field} vượt quá số dư khả dụng',
       maxAmount: 'Số tiền không thể lớn hơn {max} {currency}',
       minAmount: 'Số tiền không thể ít hơn {min} {currency}',
       c2c: 'C2C (người với người)',

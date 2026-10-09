@@ -116,6 +116,7 @@ export default {
       usa: 'Amerika Serikat',
       corporateOnly: 'Metode transfer ini hanya mendukung akun bersertifikat perusahaan. Harap selesaikan sertifikasi terlebih dahulu dan coba lagi.',
       balanceNotEnough: 'Saldo yang tersedia tidak mencukupi',
+      amountBalanceNotEnough: '{field} melebihi saldo yang tersedia',
       maxAmount: 'Jumlah tidak boleh lebih besar dari {max} {currency}',
       minAmount: 'Jumlahnya tidak boleh kurang dari {min} {currency}',
       c2c: 'C2C (orang ke orang)',

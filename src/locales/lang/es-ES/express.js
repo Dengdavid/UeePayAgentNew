@@ -116,6 +116,7 @@ export default {
       usa: 'Estados Unidos',
       corporateOnly: 'Este método de transferencia solo admite cuentas corporativas certificadas. Primero complete la certificación y vuelva a intentarlo.',
       balanceNotEnough: 'Saldo disponible insuficiente',
+      amountBalanceNotEnough: '{field} supera el saldo disponible',
       maxAmount: 'El monto no puede ser mayor que {max} {currency}',
       minAmount: 'El importe no puede ser inferior a {min} {currency}',
       c2c: 'C2C (persona a persona)',

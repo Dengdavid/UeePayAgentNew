@@ -116,6 +116,7 @@ export default {
       usa: '미국',
       corporateOnly: '이 이체 방법은 기업 인증 계좌만 지원합니다. 먼저 인증을 완료한 후 다시 시도해 주세요.',
       balanceNotEnough: '사용 가능한 잔액이 부족합니다.',
+      amountBalanceNotEnough: '{field}이 사용 가능한 잔액을 초과합니다.',
       maxAmount: '금액은 {max} {currency}보다 클 수 없습니다.',
       minAmount: '금액은 {min} {currency}보다 작을 수 없습니다.',
       c2c: 'C2C(사람 대 사람)',

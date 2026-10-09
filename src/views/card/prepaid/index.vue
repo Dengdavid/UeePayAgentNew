@@ -20,6 +20,7 @@ import { isPhone } from '@/utils/device'
 import { useCardStore, useUserStoreRefs } from '@/utils/store'
 import { hasCardPermission, hasPermission } from '@/utils/permission'
 import { computed, onMounted, ref, watch } from 'vue'
+import Decimal from 'decimal.js'
 import CardBills from '../components/CardBills.vue'
 import CardList from '../components/CardList.vue'
 import CardRecords from '../components/CardRecords.vue'
@@ -65,6 +66,14 @@ const tabBtns = computed(() => [
 ])
 const loading = ref(false)
 const stats = ref({})
+const cardSlotsUnavailable = computed(() => {
+  try {
+    const capacity = new Decimal(stats.value.available_capacity ?? 0)
+    return !capacity.isFinite() || capacity.isZero()
+  } catch {
+    return true
+  }
+})
 const countsList = computed(() => [
   {
     label: t('counts.availableBalance'),
@@ -87,14 +96,7 @@ const countsList = computed(() => [
     decimals: 0,
     tips: t('counts.unlimitedCardSlotsTip'),
     style: { background: '#f6faf5' },
-    btns: [{ label: t('counts.expandCapacity'), type: 'default', disabled: !!user.value?.parent_uid, tooltip: user.value?.parent_uid ? t('counts.noPermission') : '', click: () => toRoute('pricing') }],
-  },
-  {
-    label: t('counts.currentRate'),
-    prop: 'card_depost_fee',
-    type: 'rate',
-    style: { background: '#fff8f2' },
-    btns: [{ label: t('counts.lowerRate'), type: 'default', disabled: !!user.value?.parent_uid, tooltip: user.value?.parent_uid ? t('counts.noPermission') : '', click: () => toRoute('pricing') }],
+    btns: [{ label: t('button.openCardNow'), type: 'default', disabled: !hasPermission('card.create') || cardSlotsUnavailable.value, tooltip: !hasPermission('card.create') ? t('counts.noPermission') : '', click: () => hasPermission('card.create') && toRoute('cardAdd') }],
   },
   {
     label: t('counts.failureRate'),

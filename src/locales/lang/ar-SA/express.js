@@ -116,6 +116,7 @@ export default {
       usa: 'الولايات المتحدة',
       corporateOnly: 'طريقة النقل هذه تدعم فقط حسابات الشركات المعتمدة. يرجى إكمال الشهادة أولاً والمحاولة مرة أخرى.',
       balanceNotEnough: 'الرصيد المتاح غير كافي',
+      amountBalanceNotEnough: '{field} يتجاوز الرصيد المتاح',
       maxAmount: 'لا يمكن أن يكون المبلغ أكبر من {max} {currency}',
       minAmount: 'لا يمكن أن يكون المبلغ أقل من {min} {currency}',
       c2c: 'C2C (من شخص إلى شخص)',

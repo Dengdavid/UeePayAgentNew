@@ -91,6 +91,14 @@ const tabBtns = computed(() => [
 ])
 const loading = ref(false)
 const stats = ref({})
+const cardSlotsUnavailable = computed(() => {
+  try {
+    const capacity = new Decimal(stats.value.available_capacity ?? 0)
+    return !capacity.isFinite() || capacity.isZero()
+  } catch {
+    return true
+  }
+})
 const availableWalletCount = computed(() => {
   const limit = String(user.value?.shared_wallet_limit)
   const count = String(stats.value.wallet_count)
@@ -127,7 +135,7 @@ const countsList = computed(() => [
     defaultValue: 0,
     decimals: 0,
     tips: t('counts.unlimitedCardSlotsTip'),
-    btns: [{ label: t('counts.expandCapacity'), type: 'default', disabled: !!user.value?.parent_uid, tooltip: user.value?.parent_uid ? t('counts.noPermission') : '', click: () => toRoute('pricing') }],
+    btns: [{ label: t('button.openCardNow'), type: 'default', disabled: !hasPermission('shared_card.create') || cardSlotsUnavailable.value, tooltip: !hasPermission('shared_card.create') ? t('counts.noPermission') : '', click: () => hasPermission('shared_card.create') && toRoute('sharedCardAdd') }],
   },
   {
     label: t('card.index.sharedOverview.accountCount'),

@@ -23,10 +23,11 @@
       <div class="field-label">
         {{ $t('card.index.opening.phoneAndEmail') }}<span v-if="bin['3ds']" class="required">*</span>
       </div>
-      <FormItem prop="phone">
+      <FormItem ref="phoneFormItemRef" prop="phone">
         <PhoneInput
           v-model="phone"
           v-model:phoneCode="phoneCode"
+          digits-only
           :placeholder="$t('card.index.opening.page.phoneRequired')"
           :disabled="disabled"
         />
@@ -98,6 +99,7 @@ const firstName = createFieldModel('firstName')
 const lastName = createFieldModel('lastName')
 const phone = createFieldModel('phone')
 const phoneCode = createFieldModel('phoneCode')
+const phoneFormItemRef = ref(null)
 
 // FormEmail 使用 data + dataName 契约，通过局部对象隔离对子组件 props 的修改。
 const emailData = reactive({ email: '' })
@@ -107,6 +109,11 @@ const handleEmailSelect = async () => {
   await nextTick()
   emailFormItemRef.value?.validate('blur')
 }
+
+watch([phone, phoneCode], async () => {
+  await nextTick()
+  phoneFormItemRef.value?.validate('change')
+})
 
 watch(
   () => props.modelValue.email,

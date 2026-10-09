@@ -339,9 +339,11 @@ export const ucenterRoutes = {
       name: "express_transfer",
       meta: {
         titleKey: "express.title.expressTransfer",
+        disallowSubAccount: true,
         title: "发起速汇",
         hidden: true,
         direct: "ucenter_express",
+        isApp: true,
         isAppDetail: true,
         isCertification: true,
       },

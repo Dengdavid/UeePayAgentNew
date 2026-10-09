@@ -4,7 +4,7 @@
   }" :data="data">
     <div class="express-box">
       <Alert show-icon  type="warning">{{ $t('express.transferInfo.transferAlert') }}</Alert>
-      <Form ref="formRef" :model="form" labelPosition="top"  class="list-b-32">
+      <Form ref="formRef" :model="form" labelPosition="top"  class="list-b-32" @on-validate="handleAmountValidate">
         <FormCell :title="$t('express.transferInfo.transferConfig')" type="primary" isNotShow>
           <div class="express-list">
             <FormItemBox :label="$t('express.transferInfo.payoutCurrency')" prop="payoutCurrency" :desc="$t('express.transferInfo.payoutCurrencyDesc')" isRequired>
@@ -29,28 +29,30 @@
             <TransferFormItem :data="formData?.common" :form="form" :notKeys="['transferType','transferAmount']" :disabled="c_disabled" v-if="isShowForm"/>
           </div>
         </FormCell>
-        <FormCell :title="$t('express.transferInfo.transferAmountTitle')" type="primary" isNotShow>
-          <template #btn>
-            <div v-if="sendAmountLoading" class="sendAmountLoading">
-              <Icon type="ios-loading" size="18" class="is-loading" />
-              <span>{{ $t('express.transferInfo.calculating') }}</span>
-            </div>
-          </template>
+        <FormCell :title="$t('express.transferInfo.transferAmountTitle')" type="primary" isNotShow class="express-amount-cell">
           <div class="express-amount">
             <FormItemBox :label="$t('express.transferInfo.sendAmount')" prop="sendAmount" isRequired :rules="[sendAmountRule]">
-              <TransferInput v-model="form.sendAmount" :country="USD_OPTION.payoutCurrency" :row="USD_OPTION" :max="Number(user?.money || 0)" :disabled="c_disabled" @on-change="exchangeAmountChange($event, 'send_amount')" @on-blur="exchangeAmount($event,'send_amount')"/>
+              <TransferInput v-model="form.sendAmount" :country="USD_OPTION.payoutCurrency" :row="USD_OPTION" :max="availableSendAmount" :readonly="hasNegativeBalance" :disabled="c_disabled" @on-change="exchangeAmountChange($event, 'send_amount')" @on-blur="exchangeAmount($event,'send_amount')"/>
             </FormItemBox>
             <Icon class="icon" type="ios-arrow-round-forward" size="26"/>
             <FormItemBox :label="$t('express.transferInfo.receiveAmount')" :labelSub="`(${currencyRow?.min_quota ?? 0} ~ ${currencyRow?.max_quota ?? $t('express.transferInfo.unlimited')} ${form.payoutCurrency})`" prop="transferAmount" isRequired :rules="[transferAmountRule]">
-              <TransferInput v-model="form.transferAmount" v-model:country="form.payoutCurrency" :min="Number(currencyRow?.min_quota || 0)" :disabled="c_disabled" :max="currencyRow?.max_quota ? Number(currencyRow?.max_quota) : undefined" :row="currencyRow" @on-change="exchangeAmountChange($event, 'transfer_amount')" @on-blur="exchangeAmount($event,'transfer_amount')"/>
+              <TransferInput v-model="form.transferAmount" :readonly="hasNegativeBalance" v-model:country="form.payoutCurrency" :options="options.currency" :min="Number(currencyRow?.min_quota || 0)" :disabled="c_disabled" :max="currencyRow?.max_quota ? Number(currencyRow?.max_quota) : undefined" :row="currencyRow" @on-select="changePayoutCurrency" @on-change="exchangeAmountChange($event, 'transfer_amount')" @on-blur="exchangeAmount($event,'transfer_amount')"/>
             </FormItemBox>
           </div>
           <div class="express-amount-info">
-              <div class="left">
-                <span>{{form.merchant_order_no ? $t('express.transferInfo.currentRate') : $t('express.transferInfo.realTimeRate')}}：1 {{ USD_OPTION.payoutCurrency }} = {{ sendAmount?.rate ?? currencyRow?.exchange_rate ?? '-' }} {{ form.payoutCurrency }}</span>
+              <div class="left amount-errors" aria-live="polite">
+                <div v-if="sendAmountLoading" class="sendAmountLoading">
+                  <Icon type="ios-loading" size="18" class="is-loading" />
+                  <span>{{ $t('express.transferInfo.calculating') }}</span>
+                </div>
+                <span v-else-if="hasNegativeBalance">{{ $t('express.transferInfo.balanceNotEnough') }}</span>
+                <span v-else-if="amountErrors.sendAmount || amountErrors.transferAmount">{{ amountErrors.sendAmount || amountErrors.transferAmount }}</span>
               </div>
               <div class="right">
-                <span class="ui-text-primary">{{ $t('express.transferInfo.availableBalance') }} $ {{ user?.money || '0.000' }}</span>
+                <span>{{form.merchant_order_no ? $t('express.transferInfo.currentRate') : $t('express.transferInfo.realTimeRate')}}：1 {{ USD_OPTION.payoutCurrency }} = {{ sendAmount?.rate ?? currencyRow?.exchange_rate ?? '-' }} {{ form.payoutCurrency }}</span>
+                <Divider type="vertical" />
+                <span>{{ $t('express.transferInfo.availableBalance') }} $ {{ user?.money || '0.000' }}</span>
+                <Button size="small" type="text" icon="md-refresh" :title="$t('button.refresh')" :aria-label="$t('button.refresh')" :loading="refreshingBalance" :disabled="refreshingBalance || submitLoading" @click="refreshBalance" />
               </div>
             </div>
         </FormCell>
@@ -85,7 +87,7 @@
                 </div>
               </div>
               <div class="right">
-                <Button type="primary" :loading="submitLoading" class="submit-btn" @click="submit">
+                <Button type="primary" :loading="submitLoading" :disabled="!hasCurrentQuote" class="submit-btn" @click="submit">
                   <span>{{ $t('express.transferInfo.remitNow') }}</span>
                   <Icon type="ios-arrow-forward" />
                 </Button>
@@ -103,16 +105,17 @@
 
 <script setup>
 import { computed, ref,reactive,onMounted,onBeforeUnmount,nextTick, watch } from 'vue'
-import { useUserStoreRefs } from '@/utils/store.js'
+import { useUserStore, useUserStoreRefs } from '@/utils/store.js'
 const { user } = useUserStoreRefs()
+const userStore = useUserStore()
 import { getApi,postApi } from '@/utils/api.js'
-import { message,confirm } from '@/utils/message.js'
+import { message,confirm,showRequestError } from '@/utils/message.js'
 import { useRouteParams,useRouteQuery } from '@/utils/route.js'
 import TransferInput from './components/TransferInput.vue'
 import TransferFormItem from './components/TransferFormItem.vue'
 import UiTableSelect from '@/components/uiForm/UiTableSelect/index.vue'
 import StateIcon from '@/components/ui/state-icon.vue'
-import { debounce } from "@/libs/tools.js"
+import Decimal from 'decimal.js'
 import { toRoute } from '@/utils/route';
 import { t } from '@/utils/index.js'
 const pageRef=ref(null)
@@ -123,6 +126,31 @@ const setPageLoading = (value) => {
 const options=reactive({
   currency:[],
 })
+const amountErrors=reactive({
+  sendAmount: '',
+  transferAmount: '',
+})
+const handleAmountValidate=(prop, valid, message)=>{
+  if (Object.prototype.hasOwnProperty.call(amountErrors, prop)) {
+    amountErrors[prop] = valid ? '' : message
+  }
+}
+const refreshingBalance=ref(false)
+const refreshBalance=async ()=>{
+  if (refreshingBalance.value || submitLoading.value) return
+  refreshingBalance.value = true
+  try {
+    await userStore.getUserInfo({ throwOnError: true })
+    await nextTick()
+    if (form.sendAmount !== '' && form.sendAmount !== null && form.sendAmount !== undefined) {
+      formRef.value?.validateField('sendAmount')
+    }
+  } catch (error) {
+    showRequestError(error)
+  } finally {
+    refreshingBalance.value = false
+  }
+}
 const submitLoading=ref(false)
 const isMobileKeyboardOpen = ref(false)
 let keyboardStateTimer = null
@@ -274,7 +302,7 @@ const getDetail=async (id)=>{
       }
       fieldParams()
     }).catch((err)=>{
-      message(err?.msg,'error')
+      showRequestError(err)
       setPageLoading(false)
     }).finally(()=>{
     })
@@ -334,9 +362,7 @@ const fieldParams= ()=>{
           })
         }
       }
-    }).catch((err)=>{
-      message(err?.msg,'error')
-    }).finally(()=>{
+    }).catch(showRequestError).finally(()=>{
       setPageLoading(false)
       isShowForm.value=true
     })
@@ -347,12 +373,44 @@ const fieldParams= ()=>{
 //汇率和金额
 const sendAmount=ref({})
 const sendAmountLoading=ref(false)
+const quotedFormKey=ref('')
+const getQuoteFormKey=()=>JSON.stringify([
+  form.sendAmount, form.transferAmount, form.payoutCurrency, form.transferType, form.payoutMethod,
+])
+const hasCurrentQuote=computed(() => !sendAmountLoading.value && !hasNegativeBalance.value
+  && quotedFormKey.value !== '' && quotedFormKey.value === getQuoteFormKey())
+let exchangeTimer = null
+let exchangeController = null
+let exchangeVersion = 0
+let lastReqKey = ''
+const invalidateExchange=()=>{
+  quotedFormKey.value = ''
+  sendAmountLoading.value = false
+  clearTimeout(exchangeTimer)
+  exchangeTimer = null
+  exchangeController?.abort()
+  exchangeController = null
+  exchangeVersion += 1
+  lastReqKey = ''
+}
+const hasNegativeBalance=computed(() => new Decimal(user.value?.money || 0).lt(0))
+const availableSendAmount=computed(() => Decimal.max(user.value?.money || 0, 0).toNumber())
+watch(() => [form.payoutCurrency, form.transferType, form.payoutMethod], invalidateExchange, { flush: 'sync' })
+watch(hasNegativeBalance, (negative) => {
+  if (negative) {
+    invalidateExchange()
+    form.sendAmount = 0
+    form.transferAmount = 0
+    sendAmount.value = {}
+    sendAmountLoading.value = false
+  }
+}, { immediate: true })
 
 const sendAmountRule = {
   validator: (rule, value, callback) => {
     const money = user.value?.money;
     if (value !== '' && value !== null && value !== undefined && money !== undefined && Number(value) > Number(money)) {
-      callback(new Error(t('express.transferInfo.balanceNotEnough')));
+      callback(new Error(t('express.transferInfo.amountBalanceNotEnough', { field: t('express.transferInfo.sendAmount') })));
     } else {
       callback();
     }
@@ -378,22 +436,34 @@ const transferAmountRule = {
   trigger: 'change,blur'
 };
 
-let lastReqKey = ''
-const debouncedExchangeAmount = debounce((key) => {
-  const val = key === 'send_amount' ? form.sendAmount : form.transferAmount
-  exchangeAmount(val, key)
-}, 500)
-
 //输入框改变
 const exchangeAmountChange=(value,key)=>{
-  sendAmountLoading.value=true
-  debouncedExchangeAmount(key)
+  if (hasNegativeBalance.value) return
+  invalidateExchange()
+  last_amount.value = key
+  sendAmount.value.feePlatform = null
+  sendAmount.value.costAmount = null
+  if (value === '' || value === null || value === undefined || !Number.isFinite(Number(value)) || new Decimal(value).isZero()) {
+    exchangeAmount(value, key)
+    return
+  }
+  sendAmountLoading.value = true
+  exchangeTimer = setTimeout(() => exchangeAmount(value, key), 500)
 }
 const last_amount=ref('transfer_amount')
 //金额换算
 const exchangeAmount=(value,key)=>{
+    clearTimeout(exchangeTimer)
+    exchangeTimer = null
+    if (hasNegativeBalance.value) {
+      form.sendAmount = 0
+      form.transferAmount = 0
+      sendAmountLoading.value = false
+      return
+    }
     last_amount.value=key
-    if(!value){
+    if(value === '' || value === null || value === undefined || !Number.isFinite(Number(value)) || new Decimal(value).isZero()){
+      invalidateExchange()
       if(key==='send_amount'){
         form.transferAmount=null
       }else if(key==='transfer_amount'){
@@ -406,10 +476,12 @@ const exchangeAmount=(value,key)=>{
       return
     }
     const currentReqKey = `${value}_${key}_${form.payoutCurrency}_${form.transferType}_${form.payoutMethod}`
-    if(lastReqKey === currentReqKey) {
-      sendAmountLoading.value=false
-      return
-    }
+    if(lastReqKey === currentReqKey) return
+    invalidateExchange()
+    const version = exchangeVersion
+    const requestFormKey = getQuoteFormKey()
+    const controller = new AbortController()
+    exchangeController = controller
     sendAmountLoading.value=true
     lastReqKey = currentReqKey
 
@@ -419,7 +491,8 @@ const exchangeAmount=(value,key)=>{
       payout_method:form.payoutMethod,//支付方式
       [key]:value
     }
-     postApi('/express/exchangeAmount',formObj).then((res)=>{
+     postApi('/express/exchangeAmount',formObj, { signal: controller.signal }).then((res)=>{
+      if (version !== exchangeVersion || hasNegativeBalance.value || requestFormKey !== getQuoteFormKey()) return
       sendAmount.value={
           sendAmount:Number(res.sendAmount ?? 0),
           transferAmount:Number(res.transferAmount ?? 0),
@@ -429,17 +502,22 @@ const exchangeAmount=(value,key)=>{
       }
       if (key !== 'send_amount') form.sendAmount = Number(res.sendAmount ?? 0)
       if (key !== 'transfer_amount') form.transferAmount = Number(res.transferAmount ?? 0)
+      quotedFormKey.value = getQuoteFormKey()
       sendAmountLoading.value=false
-    }).catch((err)=>{
-      message(err?.msg,'error')
+    }).catch((error)=>{
+      if (version !== exchangeVersion) return
+      showRequestError(error)
       lastReqKey = ''
-      sendAmountLoading.value=false
     }).finally(()=>{
+      if (version !== exchangeVersion) return
+      exchangeController = null
+      sendAmountLoading.value=false
     })
 }
 //获取转帐类型
 const changeTransferType=(value,row)=>{
   if(!row) return
+  invalidateExchange()
   form.transferType=row.transfer_type_id
   form.payoutMethod=row.payout_method_id
   fieldParams()
@@ -512,7 +590,7 @@ const getCurrency=async ()=>{
       setPageLoading(false)
     }
   } catch (err) {
-    message(err?.msg, 'error')
+    showRequestError(err)
     setPageLoading(false)
   } finally {
   }
@@ -534,8 +612,10 @@ const setForm=(arr,key)=>{
   return obj
 }
 const submit=()=>{
+  if (submitLoading.value || !hasCurrentQuote.value) return
+  const quoteVersion = exchangeVersion
   formRef.value.validate(async (valid) => {
-    if (!valid) return
+    if (!valid || submitLoading.value || !hasCurrentQuote.value || quoteVersion !== exchangeVersion) return
     if(user.value?.money<sendAmount.value.costAmount){
       confirm(t('express.transferInfo.insufficientBalance'),{
         title:t('express.transferInfo.tips'),
@@ -563,9 +643,7 @@ const submit=()=>{
         localStorage.removeItem("express_form")
         message(t('express.transferInfo.submitSuccess'), 'success')
         toRoute('ucenter_express',{type:'history'})
-      }).catch(err=>{
-        message(err?.msg, 'error')
-      }).finally(()=>{
+      }).catch(showRequestError).finally(()=>{
         submitLoading.value = false
       })
   })
@@ -589,6 +667,7 @@ onMounted(()=>{
 })
 
 onBeforeUnmount(() => {
+  invalidateExchange()
   clearTimeout(keyboardStateTimer)
   document.removeEventListener('focusin', handleFocusChange)
   document.removeEventListener('focusout', handleFocusChange)
@@ -689,6 +768,8 @@ onBeforeUnmount(() => {
   margin-top: 16px;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
   justify-content: space-between;
   .left{
     display: flex;
@@ -697,10 +778,37 @@ onBeforeUnmount(() => {
   .right{
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    margin-left: auto;
     gap: 8px;
   }
 }
+.express-amount-cell{
+  .amount-errors{
+    flex-wrap: wrap;
+    gap: 8px;
+    color: var(--ui-color-error-strong);
+    font-size: var(--ui-form-helper-font-size);
+  }
+  :deep(.ivu-form-item-error-tip){
+    display: none;
+  }
+  :deep(.form_cell_title){
+    flex-wrap: wrap;
+    gap: 8px;
+    .form_cell_title_btn{
+      min-width: 0;
+      margin-left: auto;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      >span{
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+}
 .sendAmountLoading{
+  color: var(--ui-color-text);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -773,8 +881,6 @@ onBeforeUnmount(() => {
         align-items: flex-start;
         justify-content: flex-start;
         gap: 6px;
-        background: #f4f7ff;
-        padding: var(--ui-padding-8);
         .ivu-divider{
           display: none;
         }

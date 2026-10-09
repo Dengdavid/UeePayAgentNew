@@ -116,6 +116,7 @@ export default {
       usa: 'アメリカ',
       corporateOnly: 'この送金方法は、認証済みの法人アカウントのみ利用できます。認証を完了してから、もう一度お試しください。',
       balanceNotEnough: '利用可能な残高が不足しています',
+      amountBalanceNotEnough: '{field}が利用可能な残高を超えています',
       maxAmount: '金額は {max} {currency} を超えることはできません',
       minAmount: '金額は {min} {currency} 未満にすることはできません',
       c2c: 'C2C（個人対個人）',

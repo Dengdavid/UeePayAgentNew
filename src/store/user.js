@@ -116,21 +116,22 @@ export const useUserStore = defineStore("userStore", {
         showModal() {
             this.showLoginModal = true;
         },
-        async getUserInfo() {
-            if (userInfoRequest) return userInfoRequest;
+        async getUserInfo({ throwOnError = false } = {}) {
+            if (!userInfoRequest) {
+                userInfoRequest = userApi.getUserInfo()
+                    .then(res => {
+                        this.user = res || {};
+                    })
+                    .finally(() => {
+                        userInfoRequest = null;
+                    });
+            }
 
-            userInfoRequest = userApi.getUserInfo()
-                .then(res => {
-                    this.user = res || {};
-                })
-                .catch(() => {
-                    // err
-                })
-                .finally(() => {
-                    userInfoRequest = null;
-                });
-
-            return userInfoRequest;
+            try {
+                await userInfoRequest;
+            } catch (error) {
+                if (throwOnError) throw error;
+            }
         },
         async getMenuPermissions() {
             await userApi.getSecuritySettings().then(res => {

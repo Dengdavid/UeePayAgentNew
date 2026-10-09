@@ -28,7 +28,8 @@
         <div class="spacer"></div>
         <div class="input">
             <Input ref="phoneInputRef" :model-value="modelValue" type="tel" :placeholder="placeholder || $t('phoneInput.phonePlaceholder')" :autocomplete="autocomplete"
-                data-1p-ignore="true" data-lpignore="true" data-bwignore="true" @input="handleInput" :disabled="disabled" />
+                data-1p-ignore="true" data-lpignore="true" data-bwignore="true" @input="!digitsOnly && handleInput($event)"
+                @input.capture="digitsOnly && handleInput($event)" @compositionend.capture="digitsOnly && handleInput($event)" :disabled="disabled" />
         </div>
     </div>
 </template>
@@ -56,6 +57,10 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
+    digitsOnly: {
+        type: Boolean,
+        default: false
+    },
     autocomplete: {
         type: String,
         default: 'one-time-code'
@@ -71,6 +76,7 @@ onMounted(() => nextTick(() => {
   input?.setAttribute('data-bwignore', 'true')
   input?.setAttribute('data-1p-ignore', 'true')
   input?.setAttribute('data-lpignore', 'true')
+  if (props.digitsOnly) input?.setAttribute('inputmode', 'numeric')
 }))
 
 const state = computed(() => {
@@ -110,6 +116,7 @@ const handleSelect = function(name) {
 const handleInput = function(e) {
     if (props.disabled) return;
 
+    if (props.digitsOnly) e.target.value = e.target.value.replace(/\D/g, '');
     emits('update:modelValue', e.target.value);
     emits('on-change', {
         phone: e.target.value,
@@ -122,6 +129,7 @@ const handleInput = function(e) {
 .phone-input {
     position: relative;
     .select {
+        display: flex;
         position: absolute;
         top: 50%;
         left: 0;

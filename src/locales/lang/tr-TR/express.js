@@ -116,6 +116,7 @@ export default {
       usa: 'Amerika Birleşik Devletleri',
       corporateOnly: 'Bu aktarım yöntemi yalnızca kurumsal sertifikalı hesapları destekler. Lütfen önce sertifikasyon işlemini tamamlayıp tekrar deneyin.',
       balanceNotEnough: 'Yetersiz kullanılabilir bakiye',
+      amountBalanceNotEnough: '{field} kullanılabilir bakiyeyi aşıyor',
       maxAmount: 'Tutar {max} {currency} değerinden büyük olamaz',
       minAmount: 'Tutar {min} {currency} değerinden az olamaz',
       c2c: 'C2C (kişiden kişiye)',

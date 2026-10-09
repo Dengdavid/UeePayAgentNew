@@ -1,10 +1,25 @@
 <template>
   <div class="transfer-input" :class="{
-    readonly:readonly
+    readonly:readonly,
+    'has-currency-select': !!options
   }">
     <Input  v-model="c_modelValue" :placeholder="$t('express.transfer.inputAmount')" type="number" :min="min" :max="max" clearable :readonly="readonly" v-bind="$attrs" @on-change="onChange" @on-keydown="onKeydown" @on-blur="onBlur" @on-enter="onBlur" @wheel="onWheel" @on-clear="onClear">
       <template #prefix>
-        <div class="currency-box">
+        <FormItem v-if="options" class="currency-select-item">
+          <FormSelectBox :model-value="country" :options="options" labelKey="payout_currency" optionLabelKey="payout_currency" valueKey="payout_currency" :placeholder="$t('express.transfer.pleaseSelect')" :disabled="readonly || $attrs.disabled" :clearable="false" :filterable="false" transfer transfer-class-name="form-select-box-dropdown express-currency-dropdown" class="currency-select" @on-change="onSelect">
+            <template #prefix>
+              <StateIcon v-if="row?.country_code" :name="row.country_code"/>
+            </template>
+            <template #default="{row}">
+              <div class="currency-option">
+                <StateIcon :name="row.country_code" size="small"/>
+                <span>{{ row.country }}</span>
+                <span>{{ row.country_name }}</span>
+              </div>
+            </template>
+          </FormSelectBox>
+        </FormItem>
+        <div v-else class="currency-box">
           <StateIcon :name="row?.country_code"/>
           <p>{{ country  || $t('express.transfer.pleaseSelect') }}</p>
         </div>
@@ -23,6 +38,10 @@ const props=defineProps({
   country: {
     type:String,
   },
+  options: {
+    type:Array,
+    default:null,
+  },
   row:{
     type:Object,
     default:()=>({}),
@@ -40,6 +59,10 @@ const props=defineProps({
   }
 })
 const emits=defineEmits(['update:modelValue','update:country','on-select','on-change','on-blur'])
+const onSelect=(value,row)=>{
+  emits('update:country',value)
+  emits('on-select',value,row)
+}
 const c_modelValue=computed({
   get: () => props.modelValue,
   set: (value) => {
@@ -116,6 +139,31 @@ const onChange=(e)=>{
     }
   }
   --w: 110px;
+  &.has-currency-select{
+    --w: 130px;
+  }
+  .currency-select-item{
+    width: 100%;
+    margin-bottom: 0;
+  }
+  .currency-select{
+    :deep(.ivu-select-selection){
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      text-align: left;
+    }
+    :deep(.ivu-select-prefix){
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+      margin-right: var(--ui-space-6);
+      padding-left: 0;
+    }
+    :deep(.ivu-select-selected-value){
+      text-align: left;
+    }
+  }
   :deep(.ivu-input){
     text-align: right;
     font-size: 22px;
@@ -146,6 +194,16 @@ const onChange=(e)=>{
     font-size: 14px;
     color: var(--primary-color);
   }
+}
+.currency-option{
+  display: flex;
+  align-items: center;
+  gap: var(--ui-select-option-gap);
+  min-height: var(--ui-size-24);
+  white-space: nowrap;
+}
+:global(.express-currency-dropdown){
+  min-width: 220px !important;
 }
 .selectBox{
   width: var(--ui-size-300);

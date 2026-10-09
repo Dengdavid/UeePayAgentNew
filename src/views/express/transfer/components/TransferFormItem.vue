@@ -2,7 +2,7 @@
   <template v-if="data.length>0">
     <template v-for="item in data">
       <FormItemBox :label="item.fieldTitle" :prop="chilchKey?`${chilchKey}.${item.fieldName}`:item.fieldName" :desc="isText?'':item.fieldDescription"  :rules="rulesArr(item)" :isRequired="isText?false:item.required" v-if="!notKeys.includes(item.fieldName)">
-        <UiFormItem :label='item.fieldTitle' :prop="item.fieldName" :row="form" :item="item" :isText="isText" :defaultDate="['date'].includes(item.fieldType)?'2000-1-1':null" :type="item.fieldType" :options="setOptions(item)" :disabled="disabled || ['senderCorporateId'].includes(item.fieldName)"  labelKey="value" valueKey="valueId" @onChange="onChange"/>
+        <UiFormItem :label='item.fieldTitle' :prop="item.fieldName" :row="form" :item="item" :isText="isText" :defaultDate="['date'].includes(item.fieldType)?'2000-01-01':null" :type="item.fieldType" :options="setOptions(item)" :disabled="disabled || ['senderCorporateId'].includes(item.fieldName)"  labelKey="value" valueKey="valueId" @onChange="onChange"/>
       </FormItemBox>
     </template>
   </template>

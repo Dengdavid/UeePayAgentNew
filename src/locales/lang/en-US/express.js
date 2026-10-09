@@ -158,6 +158,7 @@ export default {
       usa: 'United States',
       corporateOnly: 'This transfer method is available only to verified business accounts. Complete verification and try again.',
       balanceNotEnough: 'Insufficient available balance',
+      amountBalanceNotEnough: '{field} exceeds your available balance',
       maxAmount: 'The amount cannot exceed {max} {currency}',
       minAmount: 'The amount cannot be less than {min} {currency}',
       c2c: 'C2C (Individual to Individual)',

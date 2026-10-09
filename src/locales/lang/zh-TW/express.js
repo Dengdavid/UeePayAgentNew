@@ -116,6 +116,7 @@ export default {
       usa: '美國',
       corporateOnly: '該轉賬方式僅支援企業認證帳戶，請先完成認證後再試',
       balanceNotEnough: '可用餘額不足',
+      amountBalanceNotEnough: '{field}超過可用餘額',
       maxAmount: '金額不能大於 {max} {currency}',
       minAmount: '金額不能小於 {min} {currency}',
       c2c: 'C2C (個人對個人)',

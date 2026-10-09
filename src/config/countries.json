@@ -129,7 +129,7 @@
     "language_name": "Samoan",
     "timezone": "Pacific/Pago_Pago",
     "region": "Pacific",
-    "phoneCode": "684"
+    "phoneCode": "1684"
   },
   {
     "code": "AT",
@@ -177,7 +177,7 @@
     "language_name": "svenska",
     "timezone": "Europe/Mariehamn",
     "region": "Europe",
-    "phoneCode": "35818"
+    "phoneCode": "358"
   },
   {
     "code": "AZ",
@@ -633,7 +633,7 @@
     "language_name": "Papiamento",
     "timezone": "America/Curacao",
     "region": "America",
-    "phoneCode": "531"
+    "phoneCode": "599"
   },
   {
     "code": "CX",
@@ -969,7 +969,7 @@
     "language_name": "English",
     "timezone": "Europe/Guernsey",
     "region": "Europe",
-    "phoneCode": "1481"
+    "phoneCode": "44"
   },
   {
     "code": "GH",
@@ -1497,7 +1497,7 @@
     "language_name": "русский",
     "timezone": "Asia/Almaty",
     "region": "Asia",
-    "phoneCode": "73"
+    "phoneCode": "7"
   },
   {
     "code": "LA",
@@ -2181,7 +2181,7 @@
     "language_name": "español",
     "timezone": "America/Puerto_Rico",
     "region": "America",
-    "phoneCode": "1809"
+    "phoneCode": "1"
   },
   {
     "code": "PS",
@@ -2829,7 +2829,7 @@
     "language_name": "italiano",
     "timezone": "Europe/Vatican",
     "region": "Europe",
-    "phoneCode": "379"
+    "phoneCode": "39"
   },
   {
     "code": "VC",
@@ -2949,7 +2949,7 @@
     "language_name": "français",
     "timezone": "Indian/Mayotte",
     "region": "Indian",
-    "phoneCode": "269"
+    "phoneCode": "262"
   },
   {
     "code": "ZA",

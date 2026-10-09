@@ -1,9 +1,11 @@
 <template>
-	<UiPage ref="pageRef" :fallback="{name:'card'}" isBack :pageRightStyle="pageRightStyle" >
-    <div class="card-wrap list-b-8 building-wrap">
-      <img src="@/assets/images/empty.png" alt="building" class="building-img" />
-      <div class="building-text">{{ $t('card.index.physical.underConstruction') }}</div>
-    </div>
+	<UiPage ref="pageRef" :fallback="{name:'card'}" isBack isNotBg :pageRightStyle="pageRightStyle" >
+    <CardBox>
+      <div class="card-wrap list-b-8 building-wrap">
+        <img src="@/assets/images/empty.png" alt="building" class="building-img" />
+        <div class="building-text">{{ $t('card.index.physical.underConstruction') }}</div>
+      </div>
+    </CardBox>
     <!-- <template #pageRight v-if="!isPhone">
       <MailingAddress/>
     </template> -->
